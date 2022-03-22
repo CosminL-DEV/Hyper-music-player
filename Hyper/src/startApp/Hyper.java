@@ -1,5 +1,7 @@
 package startApp;
 
+import window.Window;
+
 /**
  * ************************************
  *
@@ -12,6 +14,8 @@ package startApp;
 public class Hyper {
 
     public static void main(String[] args) {
-        // Start app
+        Window ventana = new Window();
+        ventana.setLocationRelativeTo(null);
+        ventana.setVisible(true);
     }
 }

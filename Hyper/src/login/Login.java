@@ -204,6 +204,8 @@ public class Login extends JPanel {
         this.setVisible(false);
         inputUser.setText("");
         inputPass.setText("");
+        inputUser.setBackground(new Color(255, 255, 255));
+        inputPass.setBackground(new Color(255, 255, 255));
         rememberMe.setSelected(false);
         panelRegister.setVisible(true);
     }

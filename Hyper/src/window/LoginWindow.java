@@ -2,18 +2,16 @@ package window;
 
 import java.awt.Color;
 import java.awt.Font;
-import static java.awt.Frame.MAXIMIZED_BOTH;
-import javax.swing.JFrame;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import login.Login;
+import login.Register;
 
-import themeManagement.ColorReturner;
 
 /**
  * ************************************
@@ -26,10 +24,13 @@ import themeManagement.ColorReturner;
  */
 public class LoginWindow extends JFrame {
 
+    private JFrame principal;
     private int mouseX, mouseY;
-
-    public LoginWindow() {
+    
+    public LoginWindow(JFrame principal) {
+        this.principal = principal;
         iniciarComponentes();
+        iniciarLogin();
     }
 
     private void iniciarComponentes() {
@@ -40,29 +41,6 @@ public class LoginWindow extends JFrame {
         setBounds(100, 100, 700, 500);
         setUndecorated(true);
         setLocationRelativeTo(null);
-
-        JPanel panel2 = new JPanel();
-        panel2.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (mouseX <= 350 && mouseY <=44)
-                    setLocation(getX() + e.getX() - mouseX, getY() + e.getY() - mouseY);
-            }
-        });
-        panel2.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                mouseX = e.getX();
-                mouseY = e.getY();
-            }
-        });
-        panel2.setBounds(0, 0, 350, 500);
-        JLabel lblImage = new JLabel(new ImageIcon(getClass().getResource("/resources/login.png")));
-        lblImage.setBounds(0, 0, 350, 500);
-        panel2.add(lblImage);
-        getContentPane().add(panel2);
-        panel2.setLayout(null);
-        
         JPanel panel = new JPanel();
         panel.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
@@ -77,11 +55,11 @@ public class LoginWindow extends JFrame {
                 mouseY = e.getY();
             }
         });
-        panel.setBackground(new Color(240, 245, 249));
-        panel.setBounds(350, 0, 350, 44);
-        getContentPane().add(panel);
+        panel.setBackground(new Color(0, 245, 249));
+        panel.setBounds(0, 0, 700, 44);
+        add(panel);
         panel.setLayout(null);
-
+        panel.setOpaque(false);
         JLabel lblExit = new JLabel("X");
         lblExit.addMouseListener(new MouseAdapter() {
             @Override
@@ -95,6 +73,7 @@ public class LoginWindow extends JFrame {
                 lblExit.setBackground(new Color(255, 223, 76));
                 lblExit.setForeground(Color.RED);
             }
+
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 lblExit.setBackground(new Color(240, 245, 249));
@@ -104,11 +83,24 @@ public class LoginWindow extends JFrame {
         lblExit.setForeground(new Color(255, 223, 76));
         lblExit.setFont(new Font("Tahoma", Font.BOLD, 20));
         lblExit.setHorizontalAlignment(SwingConstants.CENTER);
-        lblExit.setBounds(305, 0, 45, 44);
+        lblExit.setBounds(655, 0, 45, 44);
         lblExit.setOpaque(true);
         lblExit.setBackground(new Color(240, 245, 249));
         panel.add(lblExit);
-        
-        // Panel 3 con login
     }
+    
+    private void iniciarLogin(){
+        Register register = new Register();
+        add(register);
+        register.setBounds(0, 0, 700, 500);
+        register.setVisible(false);
+        
+        Login login = new Login(this, register);
+        add(login);
+        login.setBounds(0, 0, 700, 500);
+        login.setVisible(true);
+        
+        register.setLogin(login);
+    }
+    
 }

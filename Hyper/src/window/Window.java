@@ -17,8 +17,10 @@ import themeManagement.ColorReturner;
 public class Window extends JFrame {
 
     ColorReturner CReturner = new ColorReturner();
-    
+
     public Window() {
+        LoginWindow ventana = new LoginWindow(this);
+        ventana.setVisible(true);
         iniciarComponentes();
     }
 
@@ -30,4 +32,5 @@ public class Window extends JFrame {
         pack();
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png")));
     }
+
 }

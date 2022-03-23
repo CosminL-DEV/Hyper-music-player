@@ -1,6 +1,5 @@
 package startApp;
 
-import window.LoginWindow;
 import window.Window;
 
 /**
@@ -15,8 +14,6 @@ import window.Window;
 public class Hyper {
 
     public static void main(String[] args) {
-        LoginWindow ventana = new LoginWindow();
-        //ventana.setLocationRelativeTo(null);
-        ventana.setVisible(true);
+        Window ventana = new Window();
     }
 }

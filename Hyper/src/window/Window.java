@@ -25,7 +25,7 @@ public class Window extends JFrame {
         LoginWindow ventana = new LoginWindow(this);
         iniciarComponentes();
         // Añadir panel y todo
-        if (pref.get("Username", "").equals("null") && pref.get("Password", "").equals("null")) {
+        if (pref.get("Username", "").equals("") && pref.get("Password", "").equals("")) {
             ventana.setVisible(true);
         } else {
             setVisible(true);

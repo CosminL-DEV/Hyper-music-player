@@ -12,21 +12,20 @@ import javax.swing.SwingConstants;
 import login.Login;
 import login.Register;
 
-
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 22-03-2022
+ * @since 23-03-2022
  * @version 1.0
  *
  * ************************************
  */
 public class LoginWindow extends JFrame {
 
-    private JFrame principal;
+    private final JFrame principal;
     private int mouseX, mouseY;
-    
+
     public LoginWindow(JFrame principal) {
         this.principal = principal;
         iniciarComponentes();
@@ -88,19 +87,19 @@ public class LoginWindow extends JFrame {
         lblExit.setBackground(new Color(240, 245, 249));
         panel.add(lblExit);
     }
-    
-    private void iniciarLogin(){
+
+    private void iniciarLogin() {
         Register register = new Register();
         add(register);
         register.setBounds(0, 0, 700, 500);
         register.setVisible(false);
-        
-        Login login = new Login(this, register);
+
+        Login login = new Login(this, register, principal);
         add(login);
         login.setBounds(0, 0, 700, 500);
         login.setVisible(true);
-        
+
         register.setLogin(login);
     }
-    
+
 }

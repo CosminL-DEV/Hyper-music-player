@@ -1,21 +1,26 @@
 package login;
 
+import java.sql.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 22-03-2022
+ * @since 23-03-2022
  * @version 1.0
  *
  * ************************************
@@ -24,6 +29,7 @@ public class Register extends JPanel {
 
     private JPanel panelLogin;
     javax.swing.JPasswordField inputPass;
+    javax.swing.JPasswordField inputPass2;
     javax.swing.JTextField inputUser;
 
     public Register() {
@@ -62,7 +68,7 @@ public class Register extends JPanel {
         javax.swing.JButton acceder = new javax.swing.JButton();
         javax.swing.JPanel contra = new javax.swing.JPanel();
         javax.swing.JPanel extras = new javax.swing.JPanel();
-        javax.swing.JPasswordField inputPass2 = new javax.swing.JPasswordField();
+        inputPass2 = new javax.swing.JPasswordField();
         javax.swing.JLabel labelPass = new javax.swing.JLabel();
         javax.swing.JLabel labelPass2 = new javax.swing.JLabel();
         javax.swing.JLabel labelUser = new javax.swing.JLabel();
@@ -157,17 +163,91 @@ public class Register extends JPanel {
         acceder.setBackground(new Color(255, 223, 76));
         acceder.setBorder(null);
         acceder.setPreferredSize(new java.awt.Dimension(119, 40));
+        acceder.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registrarse();
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         formulario.add(acceder, gridBagConstraints);
+        inputUser.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(30, 32, 34)));
+        inputPass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(30, 32, 34)));
+        inputPass2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(30, 32, 34)));
 
         add(formulario, new org.netbeans.lib.awtextra.AbsoluteConstraints(375, 60, 300, 400));
     }
 
     public void setLogin(JPanel panelLogin) {
         this.panelLogin = panelLogin;
+    }
+
+    private void registrarse() {
+        if (comprobarDatos()) {
+            PreparedStatement stmt;
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
+                stmt = conexion.prepareStatement("INSERT INTO users(username,password) VALUES (?, ?)");
+                stmt.setString(1, inputUser.getText());
+                stmt.setString(2, String.valueOf(inputPass.getPassword()));
+                stmt.executeUpdate();
+
+                setVisible(false);
+                inputUser.setText("");
+                inputPass.setText("");
+                inputPass2.setText("");
+                panelLogin.setVisible(true);
+                conexion.close();
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private boolean comprobarDatos() {
+        boolean valido = true;
+        Statement sentencia;
+        PreparedStatement stmt;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
+            sentencia = conexion.createStatement();
+            String sql = "SELECT username FROM users WHERE username='" + inputUser.getText() + "'";
+            ResultSet resul = sentencia.executeQuery(sql);
+            if (resul.next()) {
+                valido = false;
+                inputUser.setBackground(new Color(255, 77, 77));
+                JOptionPane.showMessageDialog(null, "El usuario ya existe.", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } else {
+                if (inputUser.getText().isBlank()) {
+                    valido = false;
+                    inputUser.setBackground(new Color(255, 77, 77));
+                    JOptionPane.showMessageDialog(null, "El usuario no es valido", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    inputUser.setBackground(new Color(255, 255, 255));
+                }
+            }
+            if (valido) {
+                if (!Arrays.equals(inputPass.getPassword(), inputPass2.getPassword()) || inputPass.getPassword().length <= 0) {
+                    valido = false;
+                    inputPass.setBackground(new Color(255, 77, 77));
+                    inputPass2.setBackground(new Color(255, 77, 77));
+                    JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    inputPass.setBackground(new Color(255, 255, 255));
+                    inputPass2.setBackground(new Color(255, 255, 255));
+                }
+            }
+            resul.close();
+            sentencia.close();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return valido;
     }
 }

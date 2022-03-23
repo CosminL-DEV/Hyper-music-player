@@ -2,6 +2,7 @@ package window;
 
 import javax.swing.JFrame;
 import java.awt.Toolkit;
+import java.util.prefs.Preferences;
 
 import themeManagement.ColorReturner;
 
@@ -17,11 +18,18 @@ import themeManagement.ColorReturner;
 public class Window extends JFrame {
 
     ColorReturner CReturner = new ColorReturner();
+    private final Preferences pref;
 
     public Window() {
+        this.pref = Preferences.userRoot().node("Rememberme");
         LoginWindow ventana = new LoginWindow(this);
-        ventana.setVisible(true);
         iniciarComponentes();
+        // Añadir panel y todo
+        if (pref.get("Username", "").equals("null") && pref.get("Password", "").equals("null")) {
+            ventana.setVisible(true);
+        } else {
+            setVisible(true);
+        }
     }
 
     private void iniciarComponentes() {
@@ -32,5 +40,4 @@ public class Window extends JFrame {
         pack();
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png")));
     }
-
 }

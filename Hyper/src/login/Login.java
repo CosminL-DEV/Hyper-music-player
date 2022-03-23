@@ -1,5 +1,6 @@
 package login;
 
+import java.sql.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -7,32 +8,39 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 22-03-2022
+ * @since 23-03-2022
  * @version 1.0
  *
  * ************************************
  */
 public class Login extends JPanel {
 
-    private JFrame frameLogin;
-    private JPanel panelRegister;
-    javax.swing.JPasswordField inputPass;
-    javax.swing.JTextField inputUser;
-    javax.swing.JCheckBox rememberMe;
+    private final JFrame frameLogin;
+    private final JFrame framePrincipal;
+    private final JPanel panelRegister;
+    private javax.swing.JPasswordField inputPass;
+    private javax.swing.JTextField inputUser;
+    private javax.swing.JCheckBox rememberMe;
+    private final Preferences pref;
 
-    public Login(JFrame frameLogin, JPanel panelRegister) {
+    public Login(JFrame frameLogin, JPanel panelRegister, JFrame framePrincipal) {
+        this.pref = Preferences.userRoot().node("Rememberme");
         this.frameLogin = frameLogin;
+        this.framePrincipal = framePrincipal;
         this.panelRegister = panelRegister;
         iniciarComponentes();
         iniciarFormulario();
@@ -157,12 +165,20 @@ public class Login extends JPanel {
         acceder.setBackground(new Color(255, 223, 76));
         acceder.setBorder(null);
         acceder.setPreferredSize(new java.awt.Dimension(119, 40));
+        acceder.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loguearse();
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         formulario.add(acceder, gridBagConstraints);
+        inputUser.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(30, 32, 34)));
+        inputPass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(30, 32, 34)));
 
         add(formulario, new org.netbeans.lib.awtextra.AbsoluteConstraints(375, 40, 300, 400));
 
@@ -183,12 +199,72 @@ public class Login extends JPanel {
             }
         });
     }
-    
-    private void registrarse(){
+
+    private void registrarse() {
         this.setVisible(false);
         inputUser.setText("");
         inputPass.setText("");
         rememberMe.setSelected(false);
         panelRegister.setVisible(true);
+    }
+
+    private void loguearse() {
+        if (comprobarDatos()) {
+            checkRemember();
+            frameLogin.setVisible(false);
+            String user = inputUser.getText();
+            pref.put("ActualUser", user);
+            inputUser.setText("");
+            inputPass.setText("");
+            framePrincipal.setVisible(true);
+        }
+    }
+
+    private boolean comprobarDatos() {
+        boolean valido = true;
+        Statement sentencia;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
+            sentencia = conexion.createStatement();
+            String sql = "SELECT username FROM users WHERE username='" + inputUser.getText() + "'";
+            ResultSet resul = sentencia.executeQuery(sql);
+            if (!resul.next() || inputUser.getText().isBlank()) {
+                valido = false;
+                inputUser.setBackground(new Color(255, 77, 77));
+                JOptionPane.showMessageDialog(null, "El usuario introducido no existe o no es valido", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } else {
+                inputUser.setBackground(new Color(255, 255, 255));
+            }
+            if (valido) {
+                sql = "SELECT password FROM users WHERE username='" + inputUser.getText() + "'";
+                resul = sentencia.executeQuery(sql);
+                resul.next();
+                if (!Arrays.equals(resul.getString(1).toCharArray(), inputPass.getPassword())) {
+                    valido = false;
+                    inputPass.setBackground(new Color(255, 77, 77));
+                    JOptionPane.showMessageDialog(null, "La contraseña introducida es incorrecta.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    inputPass.setBackground(new Color(255, 255, 255));
+                }
+            }
+            resul.close();
+            sentencia.close();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return valido;
+    }
+
+    private void checkRemember() {
+        if (rememberMe.isSelected()) {
+            String user = inputUser.getText();
+            pref.put("Username", user);
+            String pass = String.valueOf(inputPass.getPassword());
+            pref.put("Password", pass);
+        } else {
+            pref.remove("Username");
+            pref.remove("Password");
+        }
     }
 }

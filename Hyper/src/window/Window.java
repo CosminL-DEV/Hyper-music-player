@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.util.prefs.Preferences;
 
 import themeManagement.ColorReturner;
+import views.Inicio;
 
 /**
  * ************************************
@@ -24,7 +25,7 @@ public class Window extends JFrame {
         this.pref = Preferences.userRoot().node("Rememberme");
         LoginWindow ventana = new LoginWindow(this);
         iniciarComponentes();
-        // Añadir panel y todo
+        iniciarHome();
         if (pref.get("Username", "").equals("") && pref.get("Password", "").equals("")) {
             ventana.setVisible(true);
         } else {
@@ -37,7 +38,15 @@ public class Window extends JFrame {
         setTitle("Hyper");
         this.setExtendedState(MAXIMIZED_BOTH);
         getContentPane().setBackground(CReturner.getBackground());
+        setUndecorated(true);
+        setResizable(false);
         pack();
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png")));
+    }
+    
+    private void iniciarHome(){
+        Inicio inicio = new Inicio(this);
+        add(inicio);
+        inicio.setVisible(true);
     }
 }

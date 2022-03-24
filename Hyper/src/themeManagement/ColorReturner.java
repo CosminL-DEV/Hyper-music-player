@@ -61,4 +61,24 @@ public class ColorReturner {
         String codigo = eTheme.getElementsByTagName("background").item(0).getTextContent();
         return transformador(codigo);
     }
+    
+    public Color getPrincipal(){
+        String codigo = eTheme.getElementsByTagName("principal").item(0).getTextContent();
+        return transformador(codigo);
+    }
+    
+    public Color getTexto(){
+        String codigo = eTheme.getElementsByTagName("texto").item(0).getTextContent();
+        return transformador(codigo);
+    }
+    
+    public Color getTexto2(){
+        String codigo = eTheme.getElementsByTagName("texto2").item(0).getTextContent();
+        return transformador(codigo);
+    }
+    
+    public Color getClose(){
+        String codigo = eTheme.getElementsByTagName("close").item(0).getTextContent();
+        return transformador(codigo);
+    }
 }

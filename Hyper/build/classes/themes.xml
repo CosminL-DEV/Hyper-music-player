@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <themes>
     <selected>
-        <tema>claro</tema>
+        <tema>oscuro</tema>
     </selected>
     <claro>
         <background>240,245,249</background>
     </claro>
     <oscuro>
-        <background>0,0,0</background>
+        <background>10,14,20</background>
+        <principal>194,217,53</principal>
+        <texto>240,240,240</texto>
+        <texto2>74,77,81</texto2>
+        <close>255,0,0</close>
     </oscuro>
 </themes>    

@@ -5,14 +5,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,7 +45,7 @@ public class Inicio extends JPanel {
     Font lemonR = null;
     int totalAncho;
     int totalAlto;
-    
+
     public Inicio(JFrame framePrincipal) {
         this.framePrincipal = framePrincipal;
         obtenerUsername();
@@ -47,18 +53,19 @@ public class Inicio extends JPanel {
         cargarScreenSize();
         iniciarComponentes();
         iniciarTopPage();
+        iniciarIcono();
         iniciarBarraIzq();
         iniciarBarraDer();
         iniciarBotPage();
         iniciarPanelPrincipal();
     }
-    
-    private void obtenerUsername(){
+
+    private void obtenerUsername() {
         Preferences pref = Preferences.userRoot().node("Rememberme");
         username = pref.get("ActualUser", "");
     }
-    
-    private void cargarFonts(){
+
+    private void cargarFonts() {
         InputStream is = Inicio.class.getResourceAsStream("/fonts/LEMONMILK-Bold.otf");
         InputStream is2 = Inicio.class.getResourceAsStream("/fonts/LEMONMILK-Regular.otf");
         try {
@@ -70,31 +77,30 @@ public class Inicio extends JPanel {
         // Usar asi:
         // setFont(lemonB.deriveFont(24f));
     }
-    
-    private void cargarScreenSize(){
+
+    private void cargarScreenSize() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         totalAncho = screenSize.width - 10;
         totalAlto = screenSize.height - 10;
     }
-    
-    private void iniciarComponentes(){
+
+    private void iniciarComponentes() {
         setBackground(CReturner.getPrincipal());
         setLayout(new java.awt.GridBagLayout());
     }
-    
-    private void iniciarTopPage(){
+
+    private void iniciarTopPage() {
         JPanel top = new JPanel();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        //gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_END;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
         add(top, gridBagConstraints);
         top.setOpaque(false);
         top.setBackground(CReturner.getBackground());
-        
+
         JLabel lblMin = new JLabel("-");
         lblMin.addMouseListener(new MouseAdapter() {
             @Override
@@ -120,8 +126,38 @@ public class Inicio extends JPanel {
         lblMin.setBackground(new Color(240, 245, 249));
         top.add(lblMin);
     }
-    
-    private void iniciarBarraIzq(){
+
+    private void iniciarIcono() {
+        JPanel izq = new JPanel();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        add(izq, gridBagConstraints);
+        izq.setOpaque(false);
+        izq.setBackground(CReturner.getBackground());
+        JLabel icono = new JLabel(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcon()+"icon.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        icono.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                icono.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcon()+"iconFocus.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                icono.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcon()+"icon.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+            }
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                // Desplegar creditos de la app.
+            }
+        });
+        
+        izq.add(icono);
+    }
+
+    private void iniciarBarraIzq() {
         JPanel izq = new JPanel();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -131,9 +167,10 @@ public class Inicio extends JPanel {
         gridBagConstraints.weighty = 0.1;
         add(izq, gridBagConstraints);
         izq.setOpaque(false);
-        izq.setBackground(CReturner.getBackground());
+        
+        //Barra de iconos (metida en un panel con objetos vertical)
     }
-    
+
     private void iniciarBarraDer() {
         JPanel der = new JPanel();
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -178,14 +215,14 @@ public class Inicio extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
         gridBagConstraints.weightx = 0.1;
         add(bot, gridBagConstraints);
-        bot.setOpaque(true);
+        bot.setOpaque(false);
         bot.setBackground(CReturner.getBackground());
         JLabel fake = new JLabel(" ");
         fake.setPreferredSize(new Dimension(10, 20));
         bot.add(fake);
     }
-    
-    private void iniciarPanelPrincipal(){
-        
+
+    private void iniciarPanelPrincipal() {
+        // Ni idea de como saldra esto
     }
 }

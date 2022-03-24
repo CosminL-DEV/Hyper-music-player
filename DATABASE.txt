@@ -1,0 +1,41 @@
+-- Hyper Database
+-- Version 1.0
+
+CREATE DATABASE IF NOT EXISTS hyper;
+USE hyper;
+
+--
+-- Creación de las tablas
+--
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  profile_pic VARCHAR(150),
+  username VARCHAR(16) NOT NULL,
+  password VARCHAR(16) NOT NULL,
+  PRIMARY KEY (username)
+);
+
+CREATE TABLE artist (
+
+);
+
+CREATE TABLE album (
+
+);
+
+CREATE TABLE playlist (
+
+);
+
+CREATE TABLE song (
+
+);
+
+
+
+--
+-- Inserción de datos
+--
+
+INSERT INTO users(username,password) VALUES ('cosmin','prueba');

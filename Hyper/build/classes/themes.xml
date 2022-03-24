@@ -12,5 +12,6 @@
         <texto>240,240,240</texto>
         <texto2>74,77,81</texto2>
         <close>255,0,0</close>
+        <icons>/resources/icons/dark/</icons>
     </oscuro>
 </themes>    

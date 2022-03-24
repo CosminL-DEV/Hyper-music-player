@@ -176,8 +176,7 @@ public class Inicio extends JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
-        //gridBagConstraints.weightx = 0.1;
-        //gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.weightx = 0.1;
         add(bot, gridBagConstraints);
         bot.setOpaque(true);
         bot.setBackground(CReturner.getBackground());

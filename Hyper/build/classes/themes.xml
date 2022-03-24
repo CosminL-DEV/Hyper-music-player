@@ -14,5 +14,6 @@
         <close>255,0,0</close>
         <icon>/resources/icons/</icon>
         <icons>/resources/icons/dark/</icons>
+        <absoluto>0,0,0</absoluto>
     </oscuro>
 </themes>    

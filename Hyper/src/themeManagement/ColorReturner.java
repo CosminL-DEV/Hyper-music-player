@@ -86,4 +86,14 @@ public class ColorReturner {
         String codigo = eTheme.getElementsByTagName("icon").item(0).getTextContent();
         return codigo;
     }
+    
+    public String getIcons(){
+        String codigo = eTheme.getElementsByTagName("icons").item(0).getTextContent();
+        return codigo;
+    }
+    
+    public Color getAbsoluto(){
+        String codigo = eTheme.getElementsByTagName("absoluto").item(0).getTextContent();
+        return transformador(codigo);
+    }
 }

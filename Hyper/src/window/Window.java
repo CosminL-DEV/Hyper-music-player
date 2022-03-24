@@ -1,11 +1,11 @@
 package window;
 
+import interfaz.Interfaz;
 import javax.swing.JFrame;
 import java.awt.Toolkit;
 import java.util.prefs.Preferences;
 
 import themeManagement.ColorReturner;
-import views.Inicio;
 
 /**
  * ************************************
@@ -40,12 +40,13 @@ public class Window extends JFrame {
         getContentPane().setBackground(CReturner.getBackground());
         setUndecorated(true);
         setResizable(false);
+        setDefaultLookAndFeelDecorated(true);
         pack();
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png")));
     }
     
     private void iniciarHome(){
-        Inicio inicio = new Inicio(this);
+        Interfaz inicio = new Interfaz(this);
         add(inicio);
         inicio.setVisible(true);
     }

@@ -16,20 +16,35 @@ CREATE TABLE users (
   PRIMARY KEY (username)
 );
 
+DROP TABLE IF EXISTS artist;
 CREATE TABLE artist (
-
+  artist_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  profile_pic VARCHAR(150) NOT NULL,
+  name VARCHAR(16) NOT NULL,
+  PRIMARY KEY (artist_id, name)
 );
 
+DROP TABLE IF EXISTS album;
 CREATE TABLE album (
-
+  album_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(35) NOT NULL,
+  songs JSON
 );
 
+DROP TABLE IF EXISTS playlist;
 CREATE TABLE playlist (
+  playlist_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  picture VARCHAR(150),
+  privacity VARCHAR(7), -- private, public, shared
 
+  -- songs JSON
 );
 
-CREATE TABLE song (
+-- PLAN: Crear otra tabla con song_id, fecha add, user added, relacion con la playlist. Y despues relacionar todo en una playlist.
 
+DROP TABLE IF EXISTS song;
+CREATE TABLE song (
+  song_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
 );
 
 

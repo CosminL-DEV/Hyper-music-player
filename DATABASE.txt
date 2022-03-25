@@ -4,6 +4,8 @@
 CREATE DATABASE IF NOT EXISTS hyper;
 USE hyper;
 
+SET lc_time_names = 'es_ES';
+
 --
 -- Creación de las tablas
 --
@@ -28,29 +30,64 @@ DROP TABLE IF EXISTS album;
 CREATE TABLE album (
   album_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(35) NOT NULL,
-  songs JSON
+  artist_id SMALLINT UNSIGNED NOT NULL,
+  picture VARCHAR(150),
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (artist_id) REFERENCES artist(artist_id),
+  PRIMARY KEY (album_id)
+);
+
+DROP TABLE IF EXISTS song;
+CREATE TABLE song (
+  song_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR (20) NOT NULL,
+  downloaded BOOLEAN,
+  picture VARCHAR(150),
+  url VARCHAR(150) NOT NULL,
+  duracion VARCHAR(5) NOT NULL,
+  PRIMARY KEY (song_id)
 );
 
 DROP TABLE IF EXISTS playlist;
 CREATE TABLE playlist (
   playlist_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(25),
   picture VARCHAR(150),
-  privacity VARCHAR(7), -- private, public, shared
-
-  -- songs JSON
+  privacity VARCHAR(7),
+  user VARCHAR(16) NOT NULL,
+  FOREIGN KEY (user) REFERENCES users(username),
+  PRIMARY KEY (playlist_id)
 );
 
--- PLAN: Crear otra tabla con song_id, fecha add, user added, relacion con la playlist. Y despues relacionar todo en una playlist.
-
-DROP TABLE IF EXISTS song;
-CREATE TABLE song (
-  song_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS registro_album;
+CREATE TABLE registro_album (
+  album_id SMALLINT UNSIGNED NOT NULL,
+  song_id SMALLINT UNSIGNED NOT NULL,
+  FOREIGN KEY (song_id) REFERENCES song(song_id),
+  FOREIGN KEY (album_id) REFERENCES album(album_id)
 );
 
+DROP TABLE IF EXISTS registro_playlist;
+CREATE TABLE registro_playlist (
+  playlist_id SMALLINT UNSIGNED NOT NULL,
+  song_id SMALLINT UNSIGNED NOT NULL,
+  user_added VARCHAR(16) NOT NULL,
+  fecha_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (song_id) REFERENCES song(song_id),
+  FOREIGN KEY (user_added) REFERENCES users(username),
+  FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id)
+);
 
+DROP TABLE IF EXISTS registro_song;
+CREATE TABLE registro_song (
+  song_id SMALLINT UNSIGNED NOT NULL,
+  artist_id SMALLINT UNSIGNED NOT NULL,
+  FOREIGN KEY (song_id) REFERENCES song(song_id),
+  FOREIGN KEY (artist_id) REFERENCES artist(artist_id)
+);
 
 --
 -- Inserción de datos
 --
 
-INSERT INTO users(username,password) VALUES ('cosmin','prueba');
+INSERT INTO users(username,password) VALUES ('cosmin','cosmin');

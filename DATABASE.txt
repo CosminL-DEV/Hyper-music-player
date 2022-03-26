@@ -1,7 +1,7 @@
 -- Hyper Database
 -- Version 1.0
-
-CREATE DATABASE IF NOT EXISTS hyper;
+DROP DATABASE IF EXISTS hyper;
+CREATE DATABASE hyper;
 USE hyper;
 
 SET lc_time_names = 'es_ES';
@@ -12,17 +12,17 @@ SET lc_time_names = 'es_ES';
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
-  profile_pic VARCHAR(150),
   username VARCHAR(16) NOT NULL,
   password VARCHAR(16) NOT NULL,
+  profile_pic VARCHAR(150),
   PRIMARY KEY (username)
 );
 
 DROP TABLE IF EXISTS artist;
 CREATE TABLE artist (
   artist_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(20) NOT NULL,
   profile_pic VARCHAR(150) NOT NULL,
-  name VARCHAR(16) NOT NULL,
   PRIMARY KEY (artist_id, name)
 );
 
@@ -31,20 +31,23 @@ CREATE TABLE album (
   album_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(35) NOT NULL,
   artist_id SMALLINT UNSIGNED NOT NULL,
-  picture VARCHAR(150),
   fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  picture VARCHAR(150),
   FOREIGN KEY (artist_id) REFERENCES artist(artist_id),
   PRIMARY KEY (album_id)
 );
 
+-- Generos:
+-- Nose 
 DROP TABLE IF EXISTS song;
 CREATE TABLE song (
   song_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR (20) NOT NULL,
-  downloaded BOOLEAN,
-  picture VARCHAR(150),
-  url VARCHAR(150) NOT NULL,
   duracion VARCHAR(5) NOT NULL,
+  genre VARCHAR(9) NOT NULL,
+  downloaded BOOLEAN,
+  url VARCHAR(150) NOT NULL,
+  picture VARCHAR(150),
   PRIMARY KEY (song_id)
 );
 
@@ -52,9 +55,9 @@ DROP TABLE IF EXISTS playlist;
 CREATE TABLE playlist (
   playlist_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(25),
-  picture VARCHAR(150),
   privacity VARCHAR(7),
   user VARCHAR(16) NOT NULL,
+  picture VARCHAR(150),
   FOREIGN KEY (user) REFERENCES users(username),
   PRIMARY KEY (playlist_id)
 );
@@ -91,3 +94,56 @@ CREATE TABLE registro_song (
 --
 
 INSERT INTO users(username,password) VALUES ('cosmin','cosmin');
+
+INSERT INTO artist(name, profile_pic) VALUES('JC REYES','https://i.imgur.com/EadAafp.png');
+INSERT INTO artist(name, profile_pic) VALUES('Kidd Keo','https://i.imgur.com/Iri54fU.png');
+INSERT INTO artist(name, profile_pic) VALUES('Ñengo Flow','https://i.imgur.com/xVr7irO.png');
+INSERT INTO artist(name, profile_pic) VALUES('Duki','https://i.imgur.com/Pm70jae.png');
+INSERT INTO artist(name, profile_pic) VALUES('Funzo & Baby Loud','https://i.imgur.com/wBP2YKx.png');
+INSERT INTO artist(name, profile_pic) VALUES('J Balvin','https://i.imgur.com/9zd6Dkm.png');
+INSERT INTO artist(name, profile_pic) VALUES('Rvfv','https://i.imgur.com/6mP0y49.png');
+INSERT INTO artist(name, profile_pic) VALUES('Feid','https://i.imgur.com/dGzHOF4.png');
+INSERT INTO artist(name, profile_pic) VALUES('Anuel AA','https://i.imgur.com/t8cJZf7.png');
+INSERT INTO artist(name, profile_pic) VALUES('Bad Gyal','https://i.imgur.com/toPT9vQ.png');
+INSERT INTO artist(name, profile_pic) VALUES('Paulo Londra','https://i.imgur.com/YKUYXcM.png');
+INSERT INTO artist(name, profile_pic) VALUES('Daddy Yankee','https://i.imgur.com/TsYLisX.png');
+INSERT INTO artist(name, profile_pic) VALUES('Bad Bunny','https://i.imgur.com/hXVukwI.png');
+INSERT INTO artist(name, profile_pic) VALUES('Quevedo','https://i.imgur.com/J5bzde0.png');
+INSERT INTO artist(name, profile_pic) VALUES('Tiago PZK','https://i.imgur.com/Ek1nbT0.png');
+INSERT INTO artist(name, profile_pic) VALUES('Myke Towers','https://i.imgur.com/G1H4QRC.png');
+INSERT INTO artist(name, profile_pic) VALUES('Avicii','https://i.imgur.com/jB9LrVt.png');
+
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Vicios',1,'2022-03-03','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Los Green Lanters',1,'2021-03-02','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('BACK TO ROCKPORT',2,'2020-08-28','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Keoland',2,'2018-06-28','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('The Goat',3,'2020-05-15','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Real G4 Life Vol. 3',3,'2017-02-10','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Temporada de Reggaeton',4,'2021-11-25','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Desde el Fin del Mundo',4,'2021-04-22','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Súper Sangre Joven',4,'2019-11-01','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('INMORTALES',5,'2022-02-11','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Colores',6,'2020-03-19','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('OASIS',6,'2019-06-28','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('OASIS',13,'2019-06-28','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('La Familia B Sides',6,'2014-09-16','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('NASTU',7,'2022-01-28','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('FERXXO (VOL1: M.O.R)',8,'2020-04-23','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('INTER SHIBUYA',8,'2021-12-17','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Las Leyendes Nunca Mueren',9,'2021-11-26','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Emmanuel',9,'2020-05-29','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Real Hasta la Muerte',9,'2018-07-17','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Warm Up',10,'2021-03-18','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Slow Wine Mixtape',10,'2016-11-11','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Homerun',11,'2019-05-23','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('LEGENDADDY',12,'2022-03-25','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Prestige',12,'2012-01-01','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Talento de Barrio',12,'2008-08-12','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('LAS QUE NO IBAS A SALIR',13,'2020-05-10','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('YHLQMDLG',13,'2020-02-29','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('X 100PRE',13,'2018-12-23','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('CATO SOUNDTRACK',15,'2021-10-20','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Easy Money Baby',16,'2020-01-24','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('TIM',17,'2019-06-06','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Stories',17,'2015-10-02','');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('True: Avicii By Avicii',17,'2014-01-01','');

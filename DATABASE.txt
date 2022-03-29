@@ -1,5 +1,10 @@
 -- Hyper Database
 -- Version 1.0
+
+-- Para apagar el servicio MySQL
+-- C:\Program Files\MySQL\MySQL Server 8.0\bin y ejecutar:
+-- mysqladmin -u root -p shutdown
+
 DROP DATABASE IF EXISTS hyper;
 CREATE DATABASE hyper;
 USE hyper;
@@ -43,7 +48,6 @@ DROP TABLE IF EXISTS song;
 CREATE TABLE song (
   song_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR (20) NOT NULL,
-  duracion VARCHAR(5) NOT NULL,
   genre VARCHAR(9) NOT NULL,
   downloaded BOOLEAN,
   url VARCHAR(150) NOT NULL,
@@ -93,6 +97,7 @@ CREATE TABLE registro_song (
 -- Inserción de datos
 --
 
+INSERT INTO users(username,password) VALUES ('Hyper','adminpassword');
 INSERT INTO users(username,password) VALUES ('cosmin','cosmin');
 
 INSERT INTO artist(name, profile_pic) VALUES('JC REYES','https://i.imgur.com/EadAafp.png');
@@ -147,3 +152,19 @@ INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Easy Money Baby',16,'20
 INSERT INTO album(name,artist_id,fecha,picture) VALUES ('TIM',17,'2019-06-06','https://i.imgur.com/31J1geD.png');
 INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Stories',17,'2015-10-02','https://i.imgur.com/EtQYvQX.png');
 INSERT INTO album(name,artist_id,fecha,picture) VALUES ('True: Avicii By Avicii',17,'2014-01-01','https://i.imgur.com/Fx0Dkp6.png');
+
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Hyper Novedades','public','Hyper','urlFoto');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Hyper Descubrimientos','public','Hyper','urlFoto');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 1','public','Hyper','urlFoto');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 2','public','Hyper','urlFoto');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 3','public','Hyper','urlFoto');
+
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('', '', false, 'urlLink', 'pictLink');
+
+INSERT INTO registro_album(album_id, song_id) VALUES (1,1);
+
+INSERT INTO registro_playlist(playlist_id, song_id, user_added) VALUES (1, 1, 'Hyper');
+
+INSERT INTO registro_song(song_id, artist_id) VALUES (1, 1);
+
+-- Añadir registro de playlist guardadas en x usuario para mostrarlas en su biblioteca.

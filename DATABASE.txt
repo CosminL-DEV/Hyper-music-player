@@ -50,7 +50,7 @@ CREATE TABLE song (
   name VARCHAR (20) NOT NULL,
   genre VARCHAR(9) NOT NULL,
   downloaded BOOLEAN,
-  url VARCHAR(150) NOT NULL,
+  url VARCHAR(200) NOT NULL,
   picture VARCHAR(150),
   PRIMARY KEY (song_id)
 );
@@ -159,12 +159,287 @@ INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti
 INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 2','public','Hyper','urlFoto');
 INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 3','public','Hyper','urlFoto');
 
-INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('', '', false, 'urlLink', 'pictLink');
 
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Dejavu', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-DÉJÀVU.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Demoniaca', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-DEMONIACA.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('La que me mata', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-MAIKEL-DELACALLE-LA-QUE-ME-MATA.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Dime y le caigo', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-SEKO-EL-REAL-DIME-Y-LE-CAIGO.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('De donde yo vengo', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-PEDRO-EL-GRANAINO-DE-DONDE-YO-VENGO.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Sexologia', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-SAIKO-SEXOLOGÍA.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Otro Mundo', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-WASKILLA-OG-OTRO-MUNDO.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Buscando la vida', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-CANO-BUSCANDO-LA-VIDA.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('En la buena y en la mala', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-GALEE-GALEE-EN-LA-BUENA-Y-EN-LA-MALA.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Entre el humo', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-CREME-ENTRE-EL-HUMO.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Coronamos', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-CORONAMOS.wav', 'https://i.imgur.com/uZc3eGA.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Fotos nuestras', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-CAMIN-FOTOS-NUESTRAS.wav', 'https://i.imgur.com/uZc3eGA.png');
 INSERT INTO registro_album(album_id, song_id) VALUES (1,1);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,2);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,3);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,4);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,5);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,6);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,7);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,8);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,9);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,10);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,11);
+INSERT INTO registro_album(album_id, song_id) VALUES (1,12);
+INSERT INTO registro_song(song_id, artist_id) VALUES (1, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (2, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (3, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (4, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (5, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (6, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (7, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (8, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (9, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (10, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (11, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (12, 1);
+
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Un Palo', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-UN-PALO.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Santa', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-SANTA.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Copa de Vino', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-COPA-DE-VINO.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Party de Maliantes', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-FITO-LA-R-PARTY-DE-MALIANTES.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Te Pienso', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-CANO-TE-PIENSO.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Hacerte Mia', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-HACERTE-MIA.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('34 Amor y Mafia', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-CAMIN-34-AMOR-Y-MAFIA.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('To o Na', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-EL-DADDY-TO-O-NA.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Lo Sacude', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-EL-JINCHO-LO-SACUDE.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Savannah', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-SAVANAH.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Complices', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-FITO-LA-R-CAMIN-COMPLICES.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('En la Raya', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-EL-CEJAS-EN-LA-RAYA.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Imaginandome', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-JVNQUERA-IMAGINANDOME.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Relacion Secreta', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-BANDAGA-RELACION-SECRETA.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Sin que lo sepan', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-SIN-QUE-LO-SEPAN.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Video Porno', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-FT-SAIKO-VIDEO-PORNO.wav', 'https://i.imgur.com/3W53YZJ.png');
+INSERT INTO registro_album(album_id, song_id) VALUES (2,13);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,14);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,15);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,16);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,17);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,18);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,19);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,20);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,21);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,22);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,23);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,24);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,25);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,26);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,27);
+INSERT INTO registro_album(album_id, song_id) VALUES (2,28);
+INSERT INTO registro_song(song_id, artist_id) VALUES (13, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (14, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (15, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (16, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (17, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (18, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (19, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (20, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (21, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (22, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (23, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (24, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (25, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (26, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (27, 1);
+INSERT INTO registro_song(song_id, artist_id) VALUES (28, 1);
+
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('24H', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/24H.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('MONEY TILL I DIE', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/MONEY-TILL-I-DIE.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('LOCO', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/LOCO-feat.-Dark-Polo-Gang.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('I GOT CASH', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/I-GOT-CASH.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('ME FLIPA', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/ME-FLIPA.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('SKY HIGH', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/SKY-HIGH.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('LIT BIT', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/LIL-BIT.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('DEMONS', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/DEMONS-feat.-Young-M.A.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('FLEXER', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/FLEXER.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Moon Talk', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Moon-Talk.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('VAMONOS', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/VAMONOS.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('B&W', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/B-W.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('TAMO AQUI', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/TAMO-AQUI.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Como vas?', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Como-vas.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('BOUNCE', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/BOUNCE.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('DOPE MONEY & HOES', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/DOPE-MONEY-HOES.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('EBISU', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/EBISU.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('ARMAGEDON', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/ARMAGEDDON.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('WAR', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/WAR.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('PLAYIN', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/PLAYIN.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('MUEVELO', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/MUEVELO.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('NEW DRIP', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/NEW-DRIP.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('RIP THE WOO', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/RIP-THE-WOO.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Bando Boyz Free', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Bando-Boyz-Free.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Plugstar', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Plugstar.wav', 'https://i.imgur.com/RumBcht.png');
+INSERT INTO registro_album(album_id, song_id) VALUES (3,29);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,30);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,31);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,32);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,33);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,34);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,35);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,36);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,37);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,38);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,39);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,40);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,41);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,42);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,43);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,44);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,45);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,46);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,47);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,48);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,49);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,50);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,51);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,52);
+INSERT INTO registro_album(album_id, song_id) VALUES (3,53);
+INSERT INTO registro_song(song_id, artist_id) VALUES (29, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (30, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (31, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (32, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (33, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (34, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (35, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (36, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (37, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (38, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (39, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (40, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (41, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (42, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (43, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (44, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (45, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (46, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (47, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (48, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (49, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (50, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (51, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (52, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (53, 2);
+
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('One', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/KIDD-KEO-ONE-THE-MOVIE.wav', 'https://i.imgur.com/24YXbC2.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Dbtrap', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Dbtrap.wav', 'https://i.imgur.com/24YXbC2.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('#Freetag', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Freetag.wav', 'https://i.imgur.com/24YXbC2.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Skrr', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Skrr.wav', 'https://i.imgur.com/24YXbC2.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Flashback', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Flashback.wav', 'https://i.imgur.com/24YXbC2.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Never Knew How To Love', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Kidd-keo-Never-Knew-How-To-Love.wav', 'https://i.imgur.com/24YXbC2.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Miss U', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/KIDD-KEO-MISS-U.wav', 'https://i.imgur.com/24YXbC2.png');
+INSERT INTO registro_album(album_id, song_id) VALUES (4,54);
+INSERT INTO registro_album(album_id, song_id) VALUES (4,55);
+INSERT INTO registro_album(album_id, song_id) VALUES (4,56);
+INSERT INTO registro_album(album_id, song_id) VALUES (4,57);
+INSERT INTO registro_album(album_id, song_id) VALUES (4,58);
+INSERT INTO registro_album(album_id, song_id) VALUES (4,59);
+INSERT INTO registro_album(album_id, song_id) VALUES (4,60);
+INSERT INTO registro_song(song_id, artist_id) VALUES (54, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (55, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (56, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (57, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (58, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (59, 2);
+INSERT INTO registro_song(song_id, artist_id) VALUES (60, 2);
+
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Cuidao', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Ñengo-Flow-x-El-Micha-Cuidao-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Sur y Norte', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Nengo-Flow-x-Anuel-AA-Sur-y-Norte-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('La Prision', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Nengo-Flow-La-Prision-Official-Video.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Solo', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Ñengo-Flow-x-Darell-Solo-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Adentro De Ti', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Ñengo-Flow-A-Dentro-De-Ti-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Yo Lo Frene', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Ñengo-Flow-x-Mackie-Yo-Lo-Frene-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('No Tengo Cadena', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Ñengo-Flow-x-Meluchis-No-Tengo-Cadena-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Loco Por Ti', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Ñengo-Flow-Loco-Por-Ti-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Blue Ray', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Ñengo-Flow-x-JonZ-Blue-Ray-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Pa Encima', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Ñengo-Flow-x-Jory-Boy-Pa-Encima-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Traficando', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Ñengo-Flow-x-Myke-Towers-x-Brray-Traficando-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Donde', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Nengo-Flow-x-Jhay-Cortez-Donde-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Gangsta Life', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Nengo-Flow-x-John-Jay-Gangsta-Life-Official-Audio.wav', 'https://i.imgur.com/rE2QCKW.png');
+INSERT INTO registro_album(album_id, song_id) VALUES (5,61);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,62);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,63);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,64);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,65);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,66);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,67);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,68);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,69);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,70);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,71);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,72);
+INSERT INTO registro_album(album_id, song_id) VALUES (5,73);
+INSERT INTO registro_song(song_id, artist_id) VALUES (61, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (62, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (63, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (64, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (65, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (66, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (67, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (68, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (69, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (70, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (71, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (72, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (73, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (62, 9);
+INSERT INTO registro_song(song_id, artist_id) VALUES (71, 16);
+
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Te Extraño', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/1.-Nengo-Flow-Te-Extrano-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Baby Lover', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Nengo-Flow-Baby-Lover-Official-Video.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Eres Tu', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/3.-Nengo-Flow-Eres-Tu-ft.-Arcangel-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Whyne Whini', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/4.-Nengo-Flow-Whyne-Whini-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Mami Damelo a Mi', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/5.-Nengo-Flow-Mami-Damelo-A-Mi-ft.-Darell-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Hoy hay Party', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/6.-Nengo-Flow-Hoy-Hay-Party-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Mamasita Mala', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/7.-Nengo-Flow-Mamasita-Mala-ft.-Ozuna-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Que tu Quieres', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/8.-Nengo-Flow-Que-Tu-Quieres-ft.-Farruko-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Vibora', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/9.-Nengo-Flow-Vibora-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Hoy', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/Nengo-Flow-Hoy-ft.-Bad-Bunny-Official-Video.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Paso a Paso', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/11.-Nengo-Flow-Paso-a-Paso-ft.-Jory-Boy-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Se Transforma', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/12.-Nengo-Flow-Se-Transforma-ft.-Tony-Dize-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('Se que te la estas Viviendo', '', false, 'http://localhost/hyper/wp-content/uploads/2022/03/13.-Nengo-Flow-Se-Que-Te-La-Estas-Viviendo-ft.-Gotay-Official-Audio.wav', 'https://i.imgur.com/bDIEPy6.png');
+INSERT INTO registro_album(album_id, song_id) VALUES (6,74);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,75);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,76);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,77);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,78);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,79);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,80);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,81);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,82);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,83);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,84);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,85);
+INSERT INTO registro_album(album_id, song_id) VALUES (6,86);
+INSERT INTO registro_song(song_id, artist_id) VALUES (74, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (75, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (76, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (77, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (78, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (79, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (80, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (81, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (82, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (83, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (84, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (85, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (86, 3);
+INSERT INTO registro_song(song_id, artist_id) VALUES (83, 13);
+
+
+
+
+
+
+INSERT INTO song(name, genre, downloaded, url, picture) VALUES ('', '', false, '', 'pictLink');
+
+INSERT INTO registro_album(album_id, song_id) VALUES (2,0);
+
+INSERT INTO registro_song(song_id, artist_id) VALUES (0, 2);
+
+
 
 INSERT INTO registro_playlist(playlist_id, song_id, user_added) VALUES (1, 1, 'Hyper');
-
-INSERT INTO registro_song(song_id, artist_id) VALUES (1, 1);
 
 -- Añadir registro de playlist guardadas en x usuario para mostrarlas en su biblioteca.

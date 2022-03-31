@@ -1,5 +1,5 @@
 -- Hyper Database
--- Version 0.9
+-- Version 1.0
 
 -- Para apagar el servicio MySQL
 -- C:\Program Files\MySQL\MySQL Server 8.0\bin y ejecutar:
@@ -186,7 +186,6 @@ INSERT INTO playlist(name,privacity,user,picture) VALUES ('Hyper Descubrimientos
 INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 1','public','Hyper','https://i.imgur.com/VQAcyvd.png');
 INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 2','public','Hyper','https://i.imgur.com/UIKZhLJ.png');
 INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 3','public','Hyper','https://i.imgur.com/PBI8XNp.png');
-
 
 INSERT INTO song(name, genre, url, picture) VALUES ('Dejavu', 'trap', 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-DÉJÀVU.wav', 'https://i.imgur.com/uZc3eGA.png');
 INSERT INTO song(name, genre, url, picture) VALUES ('Demoniaca', 'reggaeton', 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-DEMONIACA.wav', 'https://i.imgur.com/uZc3eGA.png');

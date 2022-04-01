@@ -294,13 +294,13 @@ public class Register extends JPanel {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
                 String linkImagen = null;
-                if(fotoSelected){
+                if (fotoSelected) {
                     linkImagen = uploadImage();
                     stmt = conexion.prepareStatement("INSERT INTO users(username,password,profile_pic) VALUES (?, ?, ?)");
                     stmt.setString(1, inputUser.getText());
                     stmt.setString(2, String.valueOf(inputPass.getPassword()));
                     stmt.setString(3, linkImagen);
-                }else{
+                } else {
                     stmt = conexion.prepareStatement("INSERT INTO users(username,password) VALUES (?, ?)");
                     stmt.setString(1, inputUser.getText());
                     stmt.setString(2, String.valueOf(inputPass.getPassword()));
@@ -313,7 +313,7 @@ public class Register extends JPanel {
                     stmt.setString(3, linkImagen);
                     stmt.executeUpdate();
                 }
-                
+
                 setVisible(false);
                 inputUser.setText("");
                 inputPass.setText("");
@@ -335,17 +335,17 @@ public class Register extends JPanel {
             config.setServerURL(new URL("http://localhost/hyper/" + "/xmlrpc.php"));
             XmlRpcClient rpcClient = new XmlRpcClient();
             rpcClient.setConfig(config);
-            
+
             BufferedImage bImage = ImageIO.read(fotoDePerfil);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            String formato = fotoDePerfil.getName().substring(fotoDePerfil.getName().indexOf(".")+1);
+            String formato = fotoDePerfil.getName().substring(fotoDePerfil.getName().indexOf(".") + 1);
             ImageIO.write(bImage, formato, bos);
             byte[] outputByteArray = bos.toByteArray();
             String base64EncodedString = Base64.getEncoder().encodeToString(outputByteArray);
 
             Map content = new Hashtable();
             content.put("name", fotoDePerfil.getName());
-            content.put("type", "image/"+formato);
+            content.put("type", "image/" + formato);
             content.put("bits", base64EncodedString);
             content.put("overwrite", false);
             Object result = rpcClient.execute("wp.uploadFile", new Object[]{
@@ -354,14 +354,14 @@ public class Register extends JPanel {
                 "root",
                 content
             });
-            
+
             int start = result.toString().indexOf("thumbnail=") + 10;
             int end = result.toString().indexOf(",", start);
             linkImagen = result.toString().substring(start, end);
             // Esta mal configurado el encoding que le llega a Wordpress y he 
             // tenido que hacer este feo apaño para por lo menos poder usarlo.
             Path source = Paths.get(fotoDePerfil.getPath());
-            Path target = Paths.get("E:/xampp/htdocs/"+linkImagen.substring(17));
+            Path target = Paths.get("E:/xampp/htdocs/" + linkImagen.substring(17));
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (XmlRpcException | IOException e) {
             System.out.println("Imagen no subida.");

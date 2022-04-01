@@ -18,10 +18,13 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import themeManagement.ColorReturner;
 
@@ -36,20 +39,19 @@ import themeManagement.ColorReturner;
  */
 public class Interfaz extends JPanel {
 
-    java.awt.GridBagConstraints gridBagConstraints;
+    private java.awt.GridBagConstraints gridBagConstraints;
     private final JFrame framePrincipal;
-    ColorReturner CReturner = new ColorReturner();
-    String username;
-    Font lemonB = null;
-    Font lemonR = null;
-    int totalAncho;
-    int totalAlto;
+    private ColorReturner CReturner = new ColorReturner();
+    private String username;
+    private Font lemonB = null;
+    private Font lemonR = null;
+    private JPanel listaPlaylist;
+    private TopBar topBar;
 
     public Interfaz(JFrame framePrincipal) {
         this.framePrincipal = framePrincipal;
         validadUsername();
         cargarFonts();
-        cargarScreenSize();
         iniciarComponentes();
         iniciarTopPage();
         iniciarIcono();
@@ -98,12 +100,6 @@ public class Interfaz extends JPanel {
         }
         // Usar asi:
         // setFont(lemonB.deriveFont(24f));
-    }
-
-    private void cargarScreenSize() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        totalAncho = screenSize.width - 10;
-        totalAlto = screenSize.height - 10;
     }
 
     private void iniciarComponentes() {
@@ -283,25 +279,71 @@ public class Interfaz extends JPanel {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 // Cargar el nuevo panel
+                // ItemStateChange y iconos Selected
             }
         });
         columna.add(library, gridBagConstraints);
 
         JLabel space = new JLabel(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "space.png")).getImage()));
-        library.setText(" BIBLIOTECA");
-        library.setFont(lemonB.deriveFont(20f));
-        library.setForeground(CReturner.getAbsoluto());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
         columna.add(space, gridBagConstraints);
 
+        listaPlaylist = new javax.swing.JPanel();
+        listaPlaylist.setOpaque(false);
+        listaPlaylist.setLayout(new java.awt.GridLayout(0, 1));
+        cargarLista();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 0);
+        columna.add(listaPlaylist, gridBagConstraints);
+
         izq.add(columna);
-        // Añadir playlists recursivas
+    }
+
+    private void cargarLista() {
+        Statement sentencia;
+        try {
+            listaPlaylist.removeAll();
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
+            sentencia = conexion.createStatement();
+            String sql = "SELECT playlist.playlist_id ,playlist.picture, playlist.name FROM playlist, registro_savedlist WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user='" + username + "'";
+            ResultSet resul = sentencia.executeQuery(sql);
+            while (resul.next()) {
+                ItemPlaylist elemento = new ItemPlaylist(resul.getString("picture"), resul.getString("name"), CReturner);
+                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseEntered(java.awt.event.MouseEvent evt) {
+                        elemento.setColor(new Color(255, 36, 36));
+                    }
+
+                    @Override
+                    public void mouseExited(java.awt.event.MouseEvent evt) {
+                        elemento.setColor(CReturner.getAbsoluto());
+                    }
+
+                    @Override
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        // Cargar el nuevo panel
+                    }
+                });
+                listaPlaylist.add(elemento);
+            }
+            resul.close();
+            sentencia.close();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void iniciarBarraDer() {
@@ -363,9 +405,20 @@ public class Interfaz extends JPanel {
         gridBagConstraints.weighty = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.setBackground(CReturner.getBackground());
-        //main.setBounds(10,10,500,500);
         main.setOpaque(false);
-
         add(main, gridBagConstraints);
+        
+        main.setLayout(new javax.swing.BoxLayout(main, javax.swing.BoxLayout.PAGE_AXIS));
+        
+        topBar = new TopBar();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(topBar, gridBagConstraints);
+        
     }
 }

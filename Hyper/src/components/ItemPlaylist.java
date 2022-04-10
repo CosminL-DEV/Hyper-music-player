@@ -1,5 +1,6 @@
-package interfaz;
+package components;
 
+import interfaz.Interfaz;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -37,7 +38,7 @@ public class ItemPlaylist extends JPanel {
         if (picture == null) {
             picture = "http://localhost/hyper/wp-content/uploads/2022/03/playlist.png";
         }
-        ImageIcon img = new ImageIcon(convertidor.convertirImagen(transformarLink(picture)));
+        ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(picture)));
         principal = new javax.swing.JLabel(new ImageIcon((img.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH))));
         principal.setText("  " + name);
         principal.setForeground(CReturner.getAbsoluto());
@@ -53,18 +54,6 @@ public class ItemPlaylist extends JPanel {
             principal.setText("  " + name.substring(0, 18) + "...");
         }
         add(principal);
-    }
-
-    private BufferedImage transformarLink(String picture) {
-        URL url;
-        BufferedImage c = null;
-        try {
-            url = new URL(picture);
-            c = ImageIO.read(url);
-        } catch (IOException ex) {
-            Logger.getLogger(ItemPlaylist.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return c;
     }
     
     public void setColor(Color color){

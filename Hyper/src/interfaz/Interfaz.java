@@ -1,5 +1,11 @@
 package interfaz;
 
+import components.TopBar;
+import components.RoundedPanel;
+import components.ItemPlaylist;
+import components.BotBar;
+import components.ReviewPlaylist;
+import components.ScrollBar;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -27,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import themeManagement.ColorReturner;
+import views.Inicio;
 
 /**
  * ************************************
@@ -47,6 +54,8 @@ public class Interfaz extends JPanel {
     private Font lemonR = null;
     private JPanel listaPlaylist;
     private TopBar topBar;
+    private BotBar botBar;
+    private JPanel content;
 
     public Interfaz(JFrame framePrincipal) {
         this.framePrincipal = framePrincipal;
@@ -185,6 +194,7 @@ public class Interfaz extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         add(izq, gridBagConstraints);
         izq.setOpaque(false);
 
@@ -306,7 +316,6 @@ public class Interfaz extends JPanel {
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 0);
         columna.add(listaPlaylist, gridBagConstraints);
-
         izq.add(columna);
     }
 
@@ -341,6 +350,7 @@ public class Interfaz extends JPanel {
             }
             resul.close();
             sentencia.close();
+            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -420,5 +430,30 @@ public class Interfaz extends JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(topBar, gridBagConstraints);
         
+        content = new Inicio();
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setVerticalScrollBar(new ScrollBar());
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setViewportView(content);
+        
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(scrollPane, gridBagConstraints);
+        
+        /*botBar = new BotBar();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(botBar, gridBagConstraints);*/
     }
 }

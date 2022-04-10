@@ -96,4 +96,9 @@ public class ColorReturner {
         String codigo = eTheme.getElementsByTagName("absoluto").item(0).getTextContent();
         return transformador(codigo);
     }
+    
+    public Color getScrollBar(){
+        String codigo = eTheme.getElementsByTagName("scrollbar").item(0).getTextContent();
+        return transformador(codigo);
+    }
 }

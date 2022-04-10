@@ -1,4 +1,4 @@
-package interfaz;
+package components;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;

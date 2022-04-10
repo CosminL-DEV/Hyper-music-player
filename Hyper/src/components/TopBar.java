@@ -1,5 +1,6 @@
-package interfaz;
+package components;
 
+import interfaz.Interfaz;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -62,7 +63,7 @@ public class TopBar extends JPanel {
         add(latIzq, gridBagConstraints);
 
         mid.setBackground(CReturner.getBackground());
-        nombrePlaylist = new JLabel("Hola");
+        nombrePlaylist = new JLabel(" ");
         nombrePlaylist.setPreferredSize(new Dimension(200, 60));
         mid.add(nombrePlaylist);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -95,6 +96,7 @@ public class TopBar extends JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(15, 0, 0, 15);
         add(latDer, gridBagConstraints);
     }
 
@@ -107,7 +109,7 @@ public class TopBar extends JPanel {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
             sentencia = conexion.createStatement();
-            String sql = "SELECT profile_pic FROM users WHERE username='" + "quevedo" + "'";
+            String sql = "SELECT profile_pic FROM users WHERE username='" + user + "'";
             ResultSet resul = sentencia.executeQuery(sql);
             resul.next();
             picture = resul.getString("profile_pic");
@@ -119,26 +121,13 @@ public class TopBar extends JPanel {
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
-        ImageIcon img = new ImageIcon(convertidor.convertirImagen(transformarLink(picture)));
+        ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(picture)));
         return new ImageIcon(
                 (img.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
     }
-
-    private BufferedImage transformarLink(String picture) {
-        URL url;
-        BufferedImage c = null;
-        try {
-            url = new URL(picture);
-            c = ImageIO.read(url);
-        } catch (IOException ex) {
-            Logger.getLogger(ItemPlaylist.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-        return c;
-    }
  
     private void desplegarMenu(java.awt.event.MouseEvent evt){
-        // Desplegar el menu y cerrarlo con otro click
+        // Desplegar el menu y cerrarlo con otro click en el panel principal porque aqui no funcionaria.
         System.out.println("h");
     }
     

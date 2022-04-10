@@ -1,12 +1,8 @@
 package components;
 
 import interfaz.Interfaz;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,7 +11,6 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -101,26 +96,9 @@ public class TopBar extends JPanel {
     }
 
     private ImageIcon getIconUser() {
-        Statement sentencia;
         Preferences pref = Preferences.userRoot().node("Rememberme");
         String user = pref.get("ActualUser", "");
-        String picture = null;
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT profile_pic FROM users WHERE username='" + user + "'";
-            ResultSet resul = sentencia.executeQuery(sql);
-            resul.next();
-            picture = resul.getString("profile_pic");
-            if (picture == null) {
-                picture = "http://localhost/hyper/wp-content/uploads/2022/04/user.png";
-            }
-            resul.close();
-            sentencia.close();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        String picture = Utilities.getIconUser(user);
         ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(picture)));
         return new ImageIcon(
                 (img.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH)));

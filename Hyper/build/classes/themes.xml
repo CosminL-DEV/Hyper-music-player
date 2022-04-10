@@ -16,5 +16,6 @@
         <icons>/resources/icons/dark/</icons>
         <absoluto>0,0,0</absoluto>
         <scrollbar>128,128,128</scrollbar>
+        <icons-specific>/resources/icons/theme-dark/</icons-specific>
     </oscuro>
 </themes>    

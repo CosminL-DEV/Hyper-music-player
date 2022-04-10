@@ -6,6 +6,7 @@ import components.ItemPlaylist;
 import components.BotBar;
 import components.ReviewPlaylist;
 import components.ScrollBar;
+import details.Playlist;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -430,7 +431,7 @@ public class Interfaz extends JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(topBar, gridBagConstraints);
         
-        content = new Inicio();
+        content = new Playlist("1");
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setVerticalScrollBar(new ScrollBar());
         scrollPane.setBorder(null);
@@ -446,7 +447,7 @@ public class Interfaz extends JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(scrollPane, gridBagConstraints);
         
-        /*botBar = new BotBar();
+        botBar = new BotBar();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -454,6 +455,6 @@ public class Interfaz extends JPanel {
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        main.add(botBar, gridBagConstraints);*/
+        main.add(botBar, gridBagConstraints);
     }
 }

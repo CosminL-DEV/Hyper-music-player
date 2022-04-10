@@ -187,11 +187,16 @@ INSERT INTO album(name,artist_id,fecha,picture) VALUES ('TIM',17,'2019-06-06','h
 INSERT INTO album(name,artist_id,fecha,picture) VALUES ('Stories',17,'2015-10-02','https://i.imgur.com/EtQYvQX.png');
 INSERT INTO album(name,artist_id,fecha,picture) VALUES ('True: Avicii By Avicii',17,'2014-01-01','https://i.imgur.com/Fx0Dkp6.png');
 
-INSERT INTO playlist(name,privacity,user,picture) VALUES ('Hyper Novedades','public','Hyper','https://i.imgur.com/e4Mq6Wc.png');
-INSERT INTO playlist(name,privacity,user,picture) VALUES ('Hyper Descubrimientos','public','Hyper','https://i.imgur.com/z4cOGY5.png');
-INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 1','public','Hyper','https://i.imgur.com/VQAcyvd.png');
-INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 2','public','Hyper','https://i.imgur.com/UIKZhLJ.png');
-INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 3','public','Hyper','https://i.imgur.com/PBI8XNp.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Hyper Novedades','publica','Hyper','https://i.imgur.com/e4Mq6Wc.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Hyper Descubrimientos','publica','Hyper','https://i.imgur.com/z4cOGY5.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 1','publica','Hyper','https://i.imgur.com/VQAcyvd.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 2','publica','Hyper','https://i.imgur.com/UIKZhLJ.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Especialmente para ti 3','publica','Hyper','https://i.imgur.com/PBI8XNp.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Trap','publica','Hyper','https://i.imgur.com/LhUTJjf.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Reggaeton','publica','Hyper','https://i.imgur.com/S69VNR2.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Rap','publica','Hyper','https://i.imgur.com/BeslWNa.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Techno','publica','Hyper','https://i.imgur.com/PlEsoYN.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('House','publica','Hyper','https://i.imgur.com/botqEsW.png');
 
 INSERT INTO song(name, genre, url, picture) VALUES ('Dejavu', 'trap', 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-DÉJÀVU.wav', 'https://i.imgur.com/uZc3eGA.png');
 INSERT INTO song(name, genre, url, picture) VALUES ('Demoniaca', 'reggaeton', 'http://localhost/hyper/wp-content/uploads/2022/03/JC-REYES-DEMONIACA.wav', 'https://i.imgur.com/uZc3eGA.png');

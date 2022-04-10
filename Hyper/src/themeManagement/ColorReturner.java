@@ -101,4 +101,9 @@ public class ColorReturner {
         String codigo = eTheme.getElementsByTagName("scrollbar").item(0).getTextContent();
         return transformador(codigo);
     }
+    
+    public String getIconsSpecific(){
+        String codigo = eTheme.getElementsByTagName("icons-specific").item(0).getTextContent();
+        return codigo;
+    }
 }

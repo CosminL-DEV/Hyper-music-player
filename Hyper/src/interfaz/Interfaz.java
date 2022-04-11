@@ -4,7 +4,6 @@ import components.TopBar;
 import components.RoundedPanel;
 import components.ItemPlaylist;
 import components.BotBar;
-import components.ReviewPlaylist;
 import components.ScrollBar;
 import details.Playlist;
 import java.awt.Color;
@@ -12,7 +11,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -25,15 +23,15 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import themeManagement.ColorReturner;
+import views.Biblioteca;
+import views.Busqueda;
 import views.Inicio;
 
 /**
@@ -57,9 +55,17 @@ public class Interfaz extends JPanel {
     private TopBar topBar;
     private BotBar botBar;
     private JPanel content;
+    private JScrollPane scrollPane;
+    private JPanel main;
+    private String actualLabel = "Inicio";
+    private JLabel home;
+    private JLabel search;
+    private JLabel library;
+    private JPanel esta;
 
     public Interfaz(JFrame framePrincipal) {
         this.framePrincipal = framePrincipal;
+        esta = this;
         validadUsername();
         cargarFonts();
         iniciarComponentes();
@@ -108,8 +114,6 @@ public class Interfaz extends JPanel {
         } catch (FontFormatException | IOException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
-        // Usar asi:
-        // setFont(lemonB.deriveFont(24f));
     }
 
     private void iniciarComponentes() {
@@ -203,7 +207,7 @@ public class Interfaz extends JPanel {
         columna.setOpaque(false);
         columna.setLayout(new java.awt.GridBagLayout());
 
-        JLabel home = new JLabel(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+        home = new JLabel(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
         home.setText(" INICIO");
         home.setFont(lemonB.deriveFont(20f));
         home.setForeground(CReturner.getAbsoluto());
@@ -218,21 +222,27 @@ public class Interfaz extends JPanel {
                 home.setForeground(new Color(255, 36, 36));
                 home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcon() + "homeFocus.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
             }
-
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 home.setForeground(CReturner.getAbsoluto());
-                home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                if(actualLabel.equals("Inicio"))
+                    home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "homeSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                else
+                    home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
             }
-
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Cargar el nuevo panel
+                content = new Inicio(esta, botBar, scrollPane, main, topBar);
+                cargarNuevoPanel();
+                actualLabel = "Inicio";
+                home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "homeSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                revalidate();
+                repaint();
             }
         });
         columna.add(home, gridBagConstraints);
 
-        JLabel search = new JLabel(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "search.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+        search = new JLabel(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "search.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
         search.setText(" BUSCAR");
         search.setFont(lemonB.deriveFont(20f));
         search.setForeground(CReturner.getAbsoluto());
@@ -249,21 +259,27 @@ public class Interfaz extends JPanel {
                 search.setForeground(new Color(255, 36, 36));
                 search.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcon() + "searchFocus.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
             }
-
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 search.setForeground(CReturner.getAbsoluto());
-                search.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "search.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                if(actualLabel.equals("Busqueda"))
+                    search.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "searchSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                else
+                    search.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "search.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
             }
-
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Cargar el nuevo panel
+                //content = new Busqueda();
+                cargarNuevoPanel();
+                actualLabel = "Busqueda";
+                search.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "searchSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                revalidate();
+                repaint();
             }
         });
         columna.add(search, gridBagConstraints);
 
-        JLabel library = new JLabel(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "library.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+        library = new JLabel(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "library.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
         library.setText(" BIBLIOTECA");
         library.setFont(lemonB.deriveFont(20f));
         library.setForeground(CReturner.getAbsoluto());
@@ -284,13 +300,20 @@ public class Interfaz extends JPanel {
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 library.setForeground(CReturner.getAbsoluto());
-                library.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "library.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                if(actualLabel.equals("Biblioteca"))
+                    library.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "librarySelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                else
+                    library.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "library.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
             }
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Cargar el nuevo panel
-                // ItemStateChange y iconos Selected
+                //content = new Biblioteca();
+                cargarNuevoPanel();
+                actualLabel = "Biblioteca";
+                library.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "librarySelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                revalidate();
+                repaint();
             }
         });
         columna.add(library, gridBagConstraints);
@@ -330,7 +353,7 @@ public class Interfaz extends JPanel {
             String sql = "SELECT playlist.playlist_id ,playlist.picture, playlist.name FROM playlist, registro_savedlist WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user='" + username + "'";
             ResultSet resul = sentencia.executeQuery(sql);
             while (resul.next()) {
-                ItemPlaylist elemento = new ItemPlaylist(resul.getString("picture"), resul.getString("name"), CReturner);
+                ItemPlaylist elemento = new ItemPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), CReturner);
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -344,7 +367,10 @@ public class Interfaz extends JPanel {
 
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        // Cargar el nuevo panel
+                        content = new Playlist(elemento.getId());
+                        cargarNuevoPanel();
+                        revalidate();
+                        repaint();
                     }
                 });
                 listaPlaylist.add(elemento);
@@ -408,7 +434,7 @@ public class Interfaz extends JPanel {
 
     private void iniciarPanelPrincipal() {
 
-        JPanel main = new RoundedPanel(35, CReturner.getBackground());
+        main = new RoundedPanel(35, CReturner.getBackground());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -431,13 +457,13 @@ public class Interfaz extends JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(topBar, gridBagConstraints);
         
-        content = new Playlist("1");
-        JScrollPane scrollPane = new JScrollPane();
+        scrollPane = new JScrollPane();
+        botBar = new BotBar();
+        content = new Inicio(this, botBar, scrollPane, main, topBar);
         scrollPane.setVerticalScrollBar(new ScrollBar());
         scrollPane.setBorder(null);
         scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setViewportView(content);
-        
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -447,7 +473,6 @@ public class Interfaz extends JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(scrollPane, gridBagConstraints);
         
-        botBar = new BotBar();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -456,5 +481,49 @@ public class Interfaz extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(botBar, gridBagConstraints);
+    }
+    
+    private void cargarNuevoPanel(){
+        clearIconos();
+        main.removeAll();
+        
+        topBar = new TopBar();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(topBar, gridBagConstraints);
+        
+        scrollPane = new JScrollPane();
+        scrollPane.setVerticalScrollBar(new ScrollBar());
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setViewportView(content);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(scrollPane, gridBagConstraints);
+        
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(botBar, gridBagConstraints);
+    }
+    
+    private void clearIconos(){
+        home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+        search.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "search.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+        library.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "library.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
     }
 }

@@ -1,15 +1,7 @@
 package components;
 
-import interfaz.Interfaz;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -34,6 +26,7 @@ public class TopBar extends JPanel {
 
     public TopBar() {
         java.awt.GridBagConstraints gridBagConstraints;
+        setMaximumSize(new Dimension(3000,60));
         javax.swing.JPanel latIzq = new javax.swing.JPanel();
         mid = new javax.swing.JPanel();
         javax.swing.JPanel latDer = new javax.swing.JPanel();

@@ -2,23 +2,26 @@ package components;
 
 import interfaz.Interfaz;
 import java.awt.AlphaComposite;
-import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
+import tabla.CancionDisplay;
 import themeManagement.ColorReturner;
 
 /**
@@ -82,5 +85,21 @@ public class Utilities {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
         return picture;
+    }
+
+    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
+    
+    public static Font cargarCoolvetica(){
+        Font coolvetica = null;
+        InputStream is = Interfaz.class.getResourceAsStream("/fonts/coolvetica rg.otf");
+        try {
+            coolvetica = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (FontFormatException | IOException ex) {
+            Logger.getLogger(Utilities.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return coolvetica;
     }
 }

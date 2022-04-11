@@ -32,6 +32,7 @@ public class BotBar extends JPanel {
     public BotBar() {
         setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
+        setMaximumSize(new Dimension(3000,60));
         addTop();
         addIzq();
         addMid();

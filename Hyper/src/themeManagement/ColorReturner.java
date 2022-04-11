@@ -106,4 +106,19 @@ public class ColorReturner {
         String codigo = eTheme.getElementsByTagName("icons-specific").item(0).getTextContent();
         return codigo;
     }
+    
+    public String getIconsOpuestos(){
+        String codigo = eTheme.getElementsByTagName("icons-opuestos").item(0).getTextContent();
+        return codigo;
+    }
+    
+    public Color getTexto3(){
+        String codigo = eTheme.getElementsByTagName("texto3").item(0).getTextContent();
+        return transformador(codigo);
+    }
+    
+    public Color getSelected(){
+        String codigo = eTheme.getElementsByTagName("selected").item(0).getTextContent();
+        return transformador(codigo);
+    }
 }

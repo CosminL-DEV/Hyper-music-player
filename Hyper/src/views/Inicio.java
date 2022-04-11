@@ -1,12 +1,15 @@
 package views;
 
 import components.ReviewPlaylist;
+import components.ScrollBar;
+import components.TopBar;
+import components.Utilities;
+import details.Album;
+import details.Playlist;
 import interfaz.Interfaz;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontFormatException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.awt.Image;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,8 +18,10 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import themeManagement.ColorReturner;
 
 /**
@@ -32,16 +37,27 @@ public class Inicio extends JPanel {
 
     ColorReturner CReturner = new ColorReturner();
     java.awt.GridBagConstraints gridBagConstraints;
-    Font coolvetica = null;
+    Font coolvetica = Utilities.cargarCoolvetica();
     String username;
+    private JPanel content;
+    private JScrollPane scrollPane;
+    private JPanel main;
+    private JPanel botBar;
+    private JPanel topBar;
+    private JPanel padre;
 
-    public Inicio() {
+    public Inicio(JPanel padre, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar) {
+        this.content = this;
+        this.padre = padre;
+        this.botBar = botBar;
+        this.topBar = topBar;
+        this.scrollPane = scrollPane;
+        this.main = main;
         setOpaque(true);
         setBackground(CReturner.getBackground());
         setLayout(new java.awt.GridBagLayout());
         Preferences pref = Preferences.userRoot().node("Rememberme");
         username = pref.get("ActualUser", "");
-        cargarFont();
         addLateralIzq();
         addLateralDer();
         addListasHyper();
@@ -49,15 +65,6 @@ public class Inicio extends JPanel {
         addAlbumNoved();
         addGeneroFav();
         addDescubrirListas();
-    }
-
-    private void cargarFont() {
-        InputStream is = Interfaz.class.getResourceAsStream("/fonts/coolvetica rg.otf");
-        try {
-            coolvetica = Font.createFont(Font.TRUETYPE_FONT, is);
-        } catch (FontFormatException | IOException ex) {
-            Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     private void addLateralIzq() {
@@ -130,11 +137,14 @@ public class Inicio extends JPanel {
                     + "LIMIT 5";
             ResultSet resul = sentencia.executeQuery(sql);
             while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        // Cargar el nuevo panel
+                        content = new Playlist(elemento.getId());
+                        cargarNuevoPanel();
+                        padre.revalidate();
+                        padre.repaint();
                     }
                 });
                 listas1.add(elemento);
@@ -206,11 +216,14 @@ public class Inicio extends JPanel {
                     + "ORDER BY RAND() LIMIT 5";
             ResultSet resul = sentencia.executeQuery(sql);
             while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        // Cargar el nuevo panel
+                        content = new Playlist(elemento.getId());
+                        cargarNuevoPanel();
+                        padre.revalidate();
+                        padre.repaint();
                     }
                 });
                 listas1.add(elemento);
@@ -282,11 +295,14 @@ public class Inicio extends JPanel {
                     + "LIMIT 5";
             ResultSet resul = sentencia.executeQuery(sql);
             while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("picture"), resul.getString("nombre"), resul.getString("artista"));
+                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("album_id"), resul.getString("picture"), resul.getString("nombre"), resul.getString("artista"));
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        // Cargar el nuevo panel
+                        //content = new Album(elemento.getId());
+                        cargarNuevoPanel();
+                        padre.revalidate();
+                        padre.repaint();
                     }
                 });
                 listas1.add(elemento);
@@ -357,11 +373,14 @@ public class Inicio extends JPanel {
                     + "LIMIT 5";
             ResultSet resul = sentencia.executeQuery(sql);
             while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        // Cargar el nuevo panel
+                        content = new Playlist(elemento.getId());
+                        cargarNuevoPanel();
+                        padre.revalidate();
+                        padre.repaint();
                     }
                 });
                 listas1.add(elemento);
@@ -433,11 +452,14 @@ public class Inicio extends JPanel {
                     + "ORDER BY RAND() LIMIT 5";
             ResultSet resul = sentencia.executeQuery(sql);
             while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        // Cargar el nuevo panel
+                        content = new Playlist(elemento.getId());
+                        cargarNuevoPanel();
+                        padre.revalidate();
+                        padre.repaint();
                     }
                 });
                 listas1.add(elemento);
@@ -469,4 +491,40 @@ public class Inicio extends JPanel {
         add(albums, gridBagConstraints);
     }
 
+    private void cargarNuevoPanel() {
+        main.removeAll();
+
+        topBar = new TopBar();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(topBar, gridBagConstraints);
+
+        scrollPane = new JScrollPane();
+        scrollPane.setVerticalScrollBar(new ScrollBar());
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setViewportView(content);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(scrollPane, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(botBar, gridBagConstraints);
+    }
 }

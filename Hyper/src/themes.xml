@@ -11,11 +11,14 @@
         <principal>194,217,53</principal>
         <texto>240,240,240</texto>
         <texto2>74,77,81</texto2>
+        <texto3>128,128,128</texto3>
         <close>255,0,0</close>
         <icon>/resources/icons/</icon>
         <icons>/resources/icons/dark/</icons>
         <absoluto>0,0,0</absoluto>
         <scrollbar>128,128,128</scrollbar>
         <icons-specific>/resources/icons/theme-dark/</icons-specific>
+        <icons-opuestos>/resources/icons/white/</icons-opuestos>
+        <selected>35,39,44</selected>
     </oscuro>
 </themes>    

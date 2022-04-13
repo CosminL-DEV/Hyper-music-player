@@ -44,15 +44,19 @@ public class Inicio extends JPanel {
     private JPanel main;
     private JPanel botBar;
     private JPanel topBar;
-    private JPanel padre;
+    private JPanel interfazPrinc;
+    private JLabel home;
+    private JPanel listaPlaylist;
 
-    public Inicio(JPanel padre, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar) {
+    public Inicio(JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JPanel listaPlaylist) {
         this.content = this;
-        this.padre = padre;
+        this.interfazPrinc = interfazPrinc;
         this.botBar = botBar;
         this.topBar = topBar;
         this.scrollPane = scrollPane;
+        this.home = home;
         this.main = main;
+        this.listaPlaylist = listaPlaylist;
         setOpaque(true);
         setBackground(CReturner.getBackground());
         setLayout(new java.awt.GridBagLayout());
@@ -141,10 +145,10 @@ public class Inicio extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId());
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
                         cargarNuevoPanel();
-                        padre.revalidate();
-                        padre.repaint();
+                        interfazPrinc.revalidate();
+                        interfazPrinc.repaint();
                     }
                 });
                 listas1.add(elemento);
@@ -220,10 +224,10 @@ public class Inicio extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId());
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
                         cargarNuevoPanel();
-                        padre.revalidate();
-                        padre.repaint();
+                        interfazPrinc.revalidate();
+                        interfazPrinc.repaint();
                     }
                 });
                 listas1.add(elemento);
@@ -299,10 +303,10 @@ public class Inicio extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        //content = new Album(elemento.getId());
+                        content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar);
                         cargarNuevoPanel();
-                        padre.revalidate();
-                        padre.repaint();
+                        interfazPrinc.revalidate();
+                        interfazPrinc.repaint();
                     }
                 });
                 listas1.add(elemento);
@@ -377,10 +381,10 @@ public class Inicio extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId());
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
                         cargarNuevoPanel();
-                        padre.revalidate();
-                        padre.repaint();
+                        interfazPrinc.revalidate();
+                        interfazPrinc.repaint();
                     }
                 });
                 listas1.add(elemento);
@@ -456,10 +460,10 @@ public class Inicio extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId());
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
                         cargarNuevoPanel();
-                        padre.revalidate();
-                        padre.repaint();
+                        interfazPrinc.revalidate();
+                        interfazPrinc.repaint();
                     }
                 });
                 listas1.add(elemento);
@@ -493,7 +497,7 @@ public class Inicio extends JPanel {
 
     private void cargarNuevoPanel() {
         main.removeAll();
-
+        home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
         topBar = new TopBar();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

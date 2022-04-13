@@ -1,14 +1,21 @@
 package details;
 
+import components.EditDialog;
 import components.ImgCircleConverter;
+import components.ItemPlaylist;
+import components.ScrollBar;
+import components.TopBar;
 import tabla.PlaylistFeed;
 import components.Utilities;
 import interfaz.Interfaz;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -19,15 +26,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
 import javax.swing.table.DefaultTableCellRenderer;
 import tabla.PlaylistCellRender;
 import tabla.PlaylistTableModel;
 import themeManagement.ColorReturner;
+import views.Inicio;
 
 /**
  * ************************************
@@ -44,8 +55,6 @@ public class Playlist extends JPanel {
     private java.awt.GridBagConstraints gridBagConstraints;
     private final Font coolvetica = Utilities.cargarCoolvetica();
     private final String playlistID;
-    private String picturePlaylist;
-    private String tituloPlaylist;
     private final ImgCircleConverter convertidor = new ImgCircleConverter();
     private ImageIcon creador;
     private ImageIcon downloaded;
@@ -54,19 +63,43 @@ public class Playlist extends JPanel {
     private List contenido = new ArrayList();
     private final String sentenciaSQL;
     private String sentenciaEjecutable;
-    components.Combobox orden;
-    javax.swing.JTextField inputBusq;
-    javax.swing.JTable tabla;
+    private String username;
+    private components.Combobox orden;
+    private javax.swing.JTextField inputBusq;
+    private javax.swing.JTable tabla;
+    private boolean guardada;
+    private JPanel listaPlaylist;
+    private JPanel interfazPrinc;
+    private JPanel content;
+    private JScrollPane scrollPane;
+    private JPanel main;
+    private JPanel botBar;
+    private JPanel topBar;
+    private JLabel home;
+    private Popup popup;
+    private JLabel privacity;
+    private JLabel titulo;
+    private JLabel portada;
 
-    public Playlist(String playlistID) {
+    public Playlist(String playlistID, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home) {
         this.playlistID = playlistID;
+        this.content = this;
+        this.listaPlaylist = listaPlaylist;
+        this.interfazPrinc = interfazPrinc;
+        this.botBar = botBar;
+        this.topBar = topBar;
+        this.scrollPane = scrollPane;
+        this.main = main;
+        this.home = home;
         sentenciaSQL = "SELECT song.picture, song.name AS nCancion, album.name AS nAlbum, registro_playlist.user_added, "
-                    + "registro_playlist.fecha_added, song.song_id, users.profile_pic, registro_playlist.fecha_added "
-                    + "FROM song, registro_playlist, registro_album, album, users "
-                    + "WHERE registro_playlist.playlist_id='" + playlistID + "' AND song.song_id = registro_album.song_id AND album.album_id = registro_album.album_id "
-                    + "AND registro_playlist.song_id = song.song_id AND users.username = registro_playlist.user_added";
+                + "registro_playlist.fecha_added, song.song_id, users.profile_pic, registro_playlist.fecha_added "
+                + "FROM song, registro_playlist, registro_album, album, users "
+                + "WHERE registro_playlist.playlist_id='" + playlistID + "' AND song.song_id = registro_album.song_id AND album.album_id = registro_album.album_id "
+                + "AND registro_playlist.song_id = song.song_id AND users.username = registro_playlist.user_added";
         sentenciaEjecutable = sentenciaSQL;
         setOpaque(true);
+        Preferences pref = Preferences.userRoot().node("Rememberme");
+        username = pref.get("ActualUser", "");
         setBackground(CReturner.getBackground());
         setLayout(new java.awt.GridBagLayout());
         addLateralIzq();
@@ -114,7 +147,7 @@ public class Playlist extends JPanel {
         conjunto.setOpaque(false);
         conjunto.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
 
-        JLabel portada = new javax.swing.JLabel();
+        portada = new javax.swing.JLabel();
         conjunto.add(portada);
 
         JPanel details = new javax.swing.JPanel();
@@ -124,7 +157,7 @@ public class Playlist extends JPanel {
         JPanel help1 = new javax.swing.JPanel();
         help1.setOpaque(false);
         help1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 0));
-        JLabel privacity = new javax.swing.JLabel();
+        privacity = new javax.swing.JLabel();
         privacity.setForeground(CReturner.getTexto());
         privacity.setFont(coolvetica.deriveFont(14f));
         help1.add(privacity);
@@ -133,7 +166,7 @@ public class Playlist extends JPanel {
         JPanel help2 = new javax.swing.JPanel();
         help2.setOpaque(false);
         help2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 0));
-        JLabel titulo = new javax.swing.JLabel();
+        titulo = new javax.swing.JLabel();
         titulo.setForeground(CReturner.getTexto());
         titulo.setFont(coolvetica.deriveFont(75f));
         help2.add(titulo);
@@ -163,6 +196,7 @@ public class Playlist extends JPanel {
         add(conjunto, gridBagConstraints);
 
         Statement sentencia;
+        String picturePlaylist = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
@@ -173,6 +207,9 @@ public class Playlist extends JPanel {
             ResultSet resul = sentencia.executeQuery(sql);
             if (resul.next()) {
                 picturePlaylist = resul.getString("playlist.picture");
+                if (picturePlaylist == null) {
+                    picturePlaylist = "http://localhost/hyper/wp-content/uploads/2022/03/playlist.png";
+                }
                 privacity.setText("LISTA " + resul.getString("playlist.privacity").toUpperCase());
                 titulo.setText(resul.getString("playlist.name"));
                 String picture = resul.getString("users.profile_pic");
@@ -188,7 +225,7 @@ public class Playlist extends JPanel {
             sentencia.close();
             conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
         }
         ImageIcon img = new ImageIcon(Utilities.redondearImagen(Utilities.transformarLink(picturePlaylist), 15, CReturner));
         portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
@@ -197,8 +234,8 @@ public class Playlist extends JPanel {
 
     private void addBarraOpciones() {
         JPanel barra = new javax.swing.JPanel();
-        barra.setOpaque(false);
         barra.setMaximumSize(new Dimension(3000, 100));
+        barra.setOpaque(false);
         barra.setLayout(new java.awt.GridBagLayout());
 
         JPanel izq = new javax.swing.JPanel();
@@ -218,18 +255,20 @@ public class Playlist extends JPanel {
             sentencia = conexion.createStatement();
             String sql = "SELECT users.username "
                     + "FROM users, registro_savedlist "
-                    + "WHERE registro_savedlist.playlist_id = '"+playlistID+"' AND users.username = registro_savedlist.user";
+                    + "WHERE registro_savedlist.playlist_id = '" + playlistID + "' AND users.username = registro_savedlist.user";
             ResultSet resul = sentencia.executeQuery(sql);
             if (resul.next()) {
-                saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsSpecific()+ "guardado.png"));
-            }else{
-                saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons()+ "guardado.png"));
+                saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsSpecific() + "guardado.png"));
+                guardada = true;
+            } else {
+                saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "guardado.png"));
+                guardada = false;
             }
             resul.close();
             sentencia.close();
             conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
         }
         guardado.setIcon(new ImageIcon(saved.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
         izq.add(guardado);
@@ -237,13 +276,29 @@ public class Playlist extends JPanel {
         downloaded = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "descargar.png"));
         descargar.setIcon(new ImageIcon(downloaded.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
         izq.add(descargar);
-        editar.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "edit.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
-        izq.add(editar);
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
+            sentencia = conexion.createStatement();
+            String sql = "SELECT playlist.user "
+                    + "FROM playlist "
+                    + "WHERE playlist.playlist_id = '" + playlistID + "' AND playlist.user = '" + username + "'";
+            ResultSet resul = sentencia.executeQuery(sql);
+            if (resul.next()) {
+                editar.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "edit.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+                izq.add(editar);
+            }
+            resul.close();
+            sentencia.close();
+            conexion.close();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
+        }
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 0.1;
         barra.add(izq, gridBagConstraints);
-        
+
         play.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -273,18 +328,60 @@ public class Playlist extends JPanel {
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Accion
+                Statement sentencia;
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
+                    sentencia = conexion.createStatement();
+                    String sql = null;
+                    if (guardada) {
+                        sql = "DELETE FROM registro_savedlist "
+                                + "WHERE registro_savedlist.playlist_id = '5' AND registro_savedlist.user = 'cosmin'";
+                        guardada = false;
+                        saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "guardado.png"));
+                        guardado.setIcon(new ImageIcon(saved.getImage().getScaledInstance(60, 61, Image.SCALE_SMOOTH)));
+                    } else {
+                        sql = "INSERT INTO registro_savedlist "
+                                + "VALUES (" + playlistID + ",'" + username + "',false)";
+                        guardada = true;
+                        saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsSpecific() + "guardado.png"));
+                        guardado.setIcon(new ImageIcon(saved.getImage().getScaledInstance(60, 61, Image.SCALE_SMOOTH)));
+                    }
+                    sentencia.executeUpdate(sql);
+                    sentencia.close();
+                    conexion.close();
+                    recargarListaPlaylist();
+                    interfazPrinc.revalidate();
+                    interfazPrinc.repaint();
+                } catch (SQLException | ClassNotFoundException ex) {
+                    Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         descargar.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 descargar.setIcon(new ImageIcon(downloaded.getImage().getScaledInstance(60, 61, Image.SCALE_SMOOTH)));
+                if (!guardada) {
+                    if (popup != null) {
+                        popup.hide();
+                    }
+                    JLabel text = new JLabel("Guarda la lista para poder descargarla");
+                    text.setBackground(CReturner.getBackground());
+                    text.setOpaque(true);
+                    text.setForeground(CReturner.getTexto());
+                    text.setFont(coolvetica.deriveFont(14f));
+                    popup = PopupFactory.getSharedInstance().getPopup(evt.getComponent(), text, evt.getXOnScreen(), evt.getYOnScreen());
+                    popup.show();
+                }
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 descargar.setIcon(new ImageIcon(downloaded.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+                if (!guardada) {
+                    popup.hide();
+                }
             }
 
             @Override
@@ -305,10 +402,33 @@ public class Playlist extends JPanel {
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Accion
+                EditDialog ed = new EditDialog(true, playlistID);
+                ed.setBounds(0, 0, 350, 270);
+                ed.setLocationRelativeTo(null);
+                ed.setVisible(true);
+                ed.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        if (ed.getGuardado() == 1) {
+                            if (ed.nuevoIsPublica()) {
+                                privacity.setText("LISTA PUBLICA");
+                            } else {
+                                privacity.setText("LISTA PRIVADA");
+                            }
+                            titulo.setText(ed.nuevoNombre());
+                            ImageIcon img = new ImageIcon(Utilities.redondearImagen(Utilities.transformarLink(ed.nuevoLink()), 15, CReturner));
+                            portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
+                        } else if (ed.getGuardado() == -1) {
+                            content = new Inicio(interfazPrinc, botBar, scrollPane, main, topBar, home, listaPlaylist);
+                            cargarNuevoPanel();
+                            recargarListaPlaylist();
+                            interfazPrinc.revalidate();
+                            interfazPrinc.repaint();
+                        }
+                    }
+                });
             }
         });
-        
 
         JPanel drch = new javax.swing.JPanel();
         drch.setOpaque(false);
@@ -382,7 +502,7 @@ public class Playlist extends JPanel {
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 20, 0);
         add(barra, gridBagConstraints);
     }
@@ -419,6 +539,7 @@ public class Playlist extends JPanel {
     private void addDatos() {
         Statement sentencia;
         contenido.clear();
+        contenido.add(null);
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
@@ -432,16 +553,16 @@ public class Playlist extends JPanel {
             sentencia.close();
             conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void reformularSentencia(){
+
+    private void reformularSentencia() {
         sentenciaEjecutable = sentenciaSQL;
-        if(!inputBusq.getText().isBlank() && !inputBusq.getText().startsWith("Buscar en la lista")){
-            sentenciaEjecutable += " AND song.name LIKE '%"+inputBusq.getText()+"%'";
+        if (!inputBusq.getText().isBlank() && !inputBusq.getText().startsWith("Buscar en la lista")) {
+            sentenciaEjecutable += " AND song.name LIKE '%" + inputBusq.getText() + "%'";
         }
-        switch(orden.getSelectedIndex()){
+        switch (orden.getSelectedIndex()) {
             case 1:
                 sentenciaEjecutable += " ORDER BY song.name";
                 break;
@@ -462,5 +583,84 @@ public class Playlist extends JPanel {
         tabla = new javax.swing.JTable(new PlaylistTableModel(contenido));
         revalidate();
         repaint();
+    }
+
+    private void recargarListaPlaylist() {
+        Statement sentencia;
+        try {
+            listaPlaylist.removeAll();
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
+            sentencia = conexion.createStatement();
+            String sql = "SELECT playlist.playlist_id ,playlist.picture, playlist.name "
+                    + "FROM playlist, registro_savedlist "
+                    + "WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user='" + username + "'";
+            ResultSet resul = sentencia.executeQuery(sql);
+            while (resul.next()) {
+                ItemPlaylist elemento = new ItemPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), CReturner);
+                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseEntered(java.awt.event.MouseEvent evt) {
+                        elemento.setColor(new Color(255, 36, 36));
+                    }
+
+                    @Override
+                    public void mouseExited(java.awt.event.MouseEvent evt) {
+                        elemento.setColor(CReturner.getAbsoluto());
+                    }
+
+                    @Override
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
+                        cargarNuevoPanel();
+                        interfazPrinc.revalidate();
+                        interfazPrinc.repaint();
+                    }
+                });
+                listaPlaylist.add(elemento);
+            }
+            resul.close();
+            sentencia.close();
+            conexion.close();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void cargarNuevoPanel() {
+        main.removeAll();
+
+        topBar = new TopBar();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(topBar, gridBagConstraints);
+
+        scrollPane = new JScrollPane();
+        scrollPane.setVerticalScrollBar(new ScrollBar());
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setViewportView(content);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(scrollPane, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(botBar, gridBagConstraints);
     }
 }

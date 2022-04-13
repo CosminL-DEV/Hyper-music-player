@@ -103,6 +103,15 @@ CREATE TABLE registro_savedlist (
   FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id)
 );
 
+DROP TABLE IF EXISTS registro_savedalbum;
+CREATE TABLE registro_savedalbum (
+  album_id SMALLINT UNSIGNED NOT NULL,
+  user VARCHAR(16) NOT NULL,
+  downloaded BOOLEAN,
+  FOREIGN KEY (user) REFERENCES users(username),
+  FOREIGN KEY (album_id) REFERENCES album(album_id)
+);
+
 INSERT INTO registro_savedlist(playlist_id,user,downloaded) VALUES (1,'cosmin',false);
 INSERT INTO registro_savedlist(playlist_id,user,downloaded) VALUES (2,'cosmin',false);
 INSERT INTO registro_savedlist(playlist_id,user,downloaded) VALUES (3,'cosmin',false);

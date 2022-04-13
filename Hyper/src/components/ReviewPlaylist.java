@@ -33,6 +33,9 @@ public class ReviewPlaylist extends JPanel {
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 0);
+        if (picture == null) {
+            picture = "http://localhost/hyper/wp-content/uploads/2022/03/playlist.png";
+        }
         ImageIcon img = new ImageIcon(Utilities.redondearImagen(Utilities.transformarLink(picture), 35, CReturner));
         JLabel imagen = new javax.swing.JLabel(new ImageIcon((img.getImage().getScaledInstance(165, 165, Image.SCALE_SMOOTH))));
         add(imagen, gridBagConstraints);

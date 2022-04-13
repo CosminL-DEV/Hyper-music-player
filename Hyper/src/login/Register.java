@@ -54,7 +54,7 @@ public class Register extends JPanel {
     private javax.swing.JTextField inputNombre;
     private javax.swing.JCheckBox isArtist;
     boolean fotoSelected = false;
-    File fotoDePerfil;
+    private File fotoDePerfil;
 
     public Register() {
         iniciarComponentes();

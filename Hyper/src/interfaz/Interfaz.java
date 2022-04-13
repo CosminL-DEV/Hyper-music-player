@@ -207,7 +207,7 @@ public class Interfaz extends JPanel {
         columna.setOpaque(false);
         columna.setLayout(new java.awt.GridBagLayout());
 
-        home = new JLabel(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+        home = new JLabel(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "homeSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
         home.setText(" INICIO");
         home.setFont(lemonB.deriveFont(20f));
         home.setForeground(CReturner.getAbsoluto());
@@ -232,7 +232,7 @@ public class Interfaz extends JPanel {
             }
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                content = new Inicio(esta, botBar, scrollPane, main, topBar);
+                content = new Inicio(esta, botBar, scrollPane, main, topBar, home, listaPlaylist);
                 cargarNuevoPanel();
                 actualLabel = "Inicio";
                 home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "homeSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
@@ -350,7 +350,9 @@ public class Interfaz extends JPanel {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
             sentencia = conexion.createStatement();
-            String sql = "SELECT playlist.playlist_id ,playlist.picture, playlist.name FROM playlist, registro_savedlist WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user='" + username + "'";
+            String sql = "SELECT playlist.playlist_id ,playlist.picture, playlist.name "
+                    + "FROM playlist, registro_savedlist "
+                    + "WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user='" + username + "'";
             ResultSet resul = sentencia.executeQuery(sql);
             while (resul.next()) {
                 ItemPlaylist elemento = new ItemPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), CReturner);
@@ -367,7 +369,7 @@ public class Interfaz extends JPanel {
 
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId());
+                        content = new Playlist(elemento.getId(), listaPlaylist, esta, botBar, scrollPane, main, topBar, home);
                         cargarNuevoPanel();
                         revalidate();
                         repaint();
@@ -399,8 +401,7 @@ public class Interfaz extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 System.exit(0);
             }
-        });
-        lblExit.addMouseListener(new java.awt.event.MouseAdapter() {
+            
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 lblExit.setForeground(CReturner.getClose());
@@ -459,7 +460,7 @@ public class Interfaz extends JPanel {
         
         scrollPane = new JScrollPane();
         botBar = new BotBar();
-        content = new Inicio(this, botBar, scrollPane, main, topBar);
+        content = new Inicio(this, botBar, scrollPane, main, topBar, home, listaPlaylist);
         scrollPane.setVerticalScrollBar(new ScrollBar());
         scrollPane.setBorder(null);
         scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

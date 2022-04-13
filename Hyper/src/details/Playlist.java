@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.table.DefaultTableCellRenderer;
+import profiles.Perfil;
 import tabla.PlaylistCellRender;
 import tabla.PlaylistTableModel;
 import themeManagement.ColorReturner;
@@ -220,6 +221,25 @@ public class Playlist extends JPanel {
                 creador = new ImageIcon(img.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
                 usuario.setText(resul.getString("playlist.user"));
                 num.setText("•  " + resul.getString("total") + " canciones");
+                usuario.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseEntered(java.awt.event.MouseEvent evt) {
+                        usuario.setForeground(CReturner.getPrincipal());
+                    }
+
+                    @Override
+                    public void mouseExited(java.awt.event.MouseEvent evt) {
+                        usuario.setForeground(CReturner.getTexto2());
+                    }
+
+                    @Override
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        content = new Perfil(usuario.getText(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
+                        cargarNuevoPanel();
+                        interfazPrinc.revalidate();
+                        interfazPrinc.repaint();
+                    }
+                });
             }
             resul.close();
             sentencia.close();
@@ -336,7 +356,7 @@ public class Playlist extends JPanel {
                     String sql = null;
                     if (guardada) {
                         sql = "DELETE FROM registro_savedlist "
-                                + "WHERE registro_savedlist.playlist_id = '5' AND registro_savedlist.user = 'cosmin'";
+                                + "WHERE registro_savedlist.playlist_id = '"+playlistID+"' AND registro_savedlist.user = '"+username+"'";
                         guardada = false;
                         saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "guardado.png"));
                         guardado.setIcon(new ImageIcon(saved.getImage().getScaledInstance(60, 61, Image.SCALE_SMOOTH)));
@@ -416,8 +436,10 @@ public class Playlist extends JPanel {
                                 privacity.setText("LISTA PRIVADA");
                             }
                             titulo.setText(ed.nuevoNombre());
-                            ImageIcon img = new ImageIcon(Utilities.redondearImagen(Utilities.transformarLink(ed.nuevoLink()), 15, CReturner));
-                            portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
+                            if (ed.getFotoSelected()){
+                                ImageIcon img = new ImageIcon(Utilities.redondearImagen(Utilities.transformarLink(ed.nuevoLink()), 15, CReturner));
+                                portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
+                            }
                         } else if (ed.getGuardado() == -1) {
                             content = new Inicio(interfazPrinc, botBar, scrollPane, main, topBar, home, listaPlaylist);
                             cargarNuevoPanel();

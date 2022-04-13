@@ -482,4 +482,8 @@ public class EditDialog extends javax.swing.JDialog {
     public String nuevoLink(){
         return linkImagen;
     }
+    
+    public boolean getFotoSelected(){
+        return fotoSelected;
+    }
 }

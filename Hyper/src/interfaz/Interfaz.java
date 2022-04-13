@@ -269,7 +269,7 @@ public class Interfaz extends JPanel {
             }
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                //content = new Busqueda();
+                content = new Busqueda(listaPlaylist, esta, botBar, scrollPane, main, topBar, home, search);
                 cargarNuevoPanel();
                 actualLabel = "Busqueda";
                 search.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "searchSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
@@ -308,7 +308,7 @@ public class Interfaz extends JPanel {
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                //content = new Biblioteca();
+                content = new Biblioteca(listaPlaylist, esta, botBar, scrollPane, main, topBar, home);
                 cargarNuevoPanel();
                 actualLabel = "Biblioteca";
                 library.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "librarySelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));

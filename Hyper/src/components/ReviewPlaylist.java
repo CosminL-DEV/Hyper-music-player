@@ -40,7 +40,7 @@ public class ReviewPlaylist extends JPanel {
         JLabel imagen = new javax.swing.JLabel(new ImageIcon((img.getImage().getScaledInstance(165, 165, Image.SCALE_SMOOTH))));
         add(imagen, gridBagConstraints);
 
-        Font coolvetica = Utilities.cargarCoolvetica();;
+        Font coolvetica = Utilities.cargarCoolvetica();
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -63,7 +63,8 @@ public class ReviewPlaylist extends JPanel {
         JLabel owner = new javax.swing.JLabel("De " + creador);
         owner.setForeground(CReturner.getTexto2());
         owner.setFont(coolvetica.deriveFont(12f));
-        add(owner, gridBagConstraints);
+        if (creador!=null)
+            add(owner, gridBagConstraints);
     }
     
     public String getId(){

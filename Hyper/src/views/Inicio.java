@@ -451,8 +451,8 @@ public class Inicio extends JPanel {
             sentencia = conexion.createStatement();
             String sql = "SELECT * FROM "
                     + "	(SELECT playlist.playlist_id ,playlist.picture, playlist.name, playlist.user "
-                    + "	FROM playlist, registro_savedlist "
-                    + "	WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user!='" + username + "A' AND playlist.user !='HyperA' AND playlist.privacity='public') AS temp "
+                    + "	FROM playlist "
+                    + "	WHERE playlist.user!='" + username + "' AND playlist.user !='Hyper' AND playlist.privacity='publica') AS temp "
                     + "ORDER BY RAND() LIMIT 5";
             ResultSet resul = sentencia.executeQuery(sql);
             while (resul.next()) {

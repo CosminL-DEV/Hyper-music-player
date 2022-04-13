@@ -1,11 +1,24 @@
 package components;
 
+import interfaz.Interfaz;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
 import themeManagement.ColorReturner;
 
 /**
@@ -22,11 +35,17 @@ public class TopBar extends JPanel {
     private javax.swing.JPanel mid;
     private final ColorReturner CReturner = new ColorReturner();
     private final ImgCircleConverter convertidor = new ImgCircleConverter();
+    private final Font coolvetica = Utilities.cargarCoolvetica();
     private JLabel nombrePlaylist;
+    private Popup popup;
+    private JPanel desplegable;
+    private String miUsername;
 
     public TopBar() {
+        Preferences pref = Preferences.userRoot().node("Rememberme");
+        miUsername = pref.get("ActualUser", "");
         java.awt.GridBagConstraints gridBagConstraints;
-        setMaximumSize(new Dimension(3000,60));
+        setMaximumSize(new Dimension(3000, 60));
         javax.swing.JPanel latIzq = new javax.swing.JPanel();
         mid = new javax.swing.JPanel();
         javax.swing.JPanel latDer = new javax.swing.JPanel();
@@ -64,6 +83,7 @@ public class TopBar extends JPanel {
         gridBagConstraints.weighty = 0.1;
         add(mid, gridBagConstraints);
 
+        crearDesplegable();
         latDer.setBackground(new java.awt.Color(51, 51, 255));
         latDer.setLayout(new java.awt.GridBagLayout());
         latDer.setOpaque(false);
@@ -96,17 +116,146 @@ public class TopBar extends JPanel {
         return new ImageIcon(
                 (img.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
     }
- 
-    private void desplegarMenu(java.awt.event.MouseEvent evt){
-        // Desplegar el menu y cerrarlo con otro click en el panel principal porque aqui no funcionaria.
-        System.out.println("h");
+
+    private void crearDesplegable() {
+        desplegable = new JPanel();
+        java.awt.GridBagConstraints gridBagConstraints;
+        JLabel uploadSong = new javax.swing.JLabel();
+        JLabel uploadAlbum = new javax.swing.JLabel();
+        JLabel perfil = new javax.swing.JLabel();
+        JLabel configuracion = new javax.swing.JLabel();
+        JLabel cerrarSesion = new javax.swing.JLabel();
+
+        desplegable.setLayout(new java.awt.GridBagLayout());
+        desplegable.setBackground(CReturner.getPrincipal());
+        desplegable.setPreferredSize(new Dimension(125, 170));
+        int ejeY = 0;
+
+        Statement sentencia;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
+            sentencia = conexion.createStatement();
+            String sql = "SELECT artist.name "
+                    + "FROM artist "
+                    + "WHERE artist.username='" + miUsername + "'";
+            ResultSet resul = sentencia.executeQuery(sql);
+            if (resul.next()) {
+                uploadSong.setText("Subir canción");
+                uploadSong.setForeground(CReturner.getBackground());
+                uploadSong.setBackground(CReturner.getTexto3());
+                uploadSong.setFont(coolvetica.deriveFont(18f));
+                uploadSong.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        // Accion
+                    }
+                });
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = ejeY;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                gridBagConstraints.weighty = 0.1;
+                gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+                desplegable.add(uploadSong, gridBagConstraints);
+                ejeY++;
+
+                uploadAlbum.setText("Subir álbum");
+                uploadAlbum.setForeground(CReturner.getBackground());
+                uploadAlbum.setBackground(CReturner.getTexto3());
+                uploadAlbum.setFont(coolvetica.deriveFont(18f));
+                uploadAlbum.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        // Accion
+                    }
+                });
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = ejeY;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                gridBagConstraints.weighty = 0.1;
+                gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+                desplegable.add(uploadAlbum, gridBagConstraints);
+                ejeY++;
+            }else
+                desplegable.setPreferredSize(new Dimension(125,100));
+            resul.close();
+            sentencia.close();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(TopBar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        perfil.setText("Perfil");
+        perfil.setForeground(CReturner.getBackground());
+        perfil.setBackground(CReturner.getTexto3());
+        perfil.setFont(coolvetica.deriveFont(18f));
+        perfil.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Accion
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = ejeY;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        desplegable.add(perfil, gridBagConstraints);
+        ejeY++;
+
+        configuracion.setText("Configuración");
+        configuracion.setForeground(CReturner.getBackground());
+        configuracion.setBackground(CReturner.getTexto3());
+        configuracion.setFont(coolvetica.deriveFont(18f));
+        configuracion.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Accion
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = ejeY;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        desplegable.add(configuracion, gridBagConstraints);
+        ejeY++;
+
+        cerrarSesion.setText("Cerrar sesión");
+        cerrarSesion.setForeground(CReturner.getBackground());
+        cerrarSesion.setBackground(CReturner.getTexto3());
+        cerrarSesion.setFont(coolvetica.deriveFont(18f));
+        cerrarSesion.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Accion
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = ejeY;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        desplegable.add(cerrarSesion, gridBagConstraints);
+        ejeY++;
     }
-    
-    public void activarMedio(){
-        // Añadir datos de la playlist actual y el panel de la tabla.
-    }
-    
-    public void desactivarMedio(){
-        mid.removeAll();
+
+    private void desplegarMenu(java.awt.event.MouseEvent evt) {
+        if (popup != null) {
+            popup.hide();
+            popup = null;
+        } else {
+            popup = PopupFactory.getSharedInstance().getPopup(evt.getComponent(), desplegable, evt.getXOnScreen() - 100, evt.getYOnScreen() + 10);
+            popup.show();
+        }
     }
 }

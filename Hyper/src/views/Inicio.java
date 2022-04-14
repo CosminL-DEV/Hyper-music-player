@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -47,8 +48,12 @@ public class Inicio extends JPanel {
     private JPanel interfazPrinc;
     private JLabel home;
     private JPanel listaPlaylist;
+    private JFrame window;
+    
+    
 
-    public Inicio(JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JPanel listaPlaylist) {
+    public Inicio(JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JPanel listaPlaylist, JFrame window) {
+        this.window = window;
         this.content = this;
         this.interfazPrinc = interfazPrinc;
         this.botBar = botBar;
@@ -145,7 +150,7 @@ public class Inicio extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                         cargarNuevoPanel();
                         interfazPrinc.revalidate();
                         interfazPrinc.repaint();
@@ -224,7 +229,7 @@ public class Inicio extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                         cargarNuevoPanel();
                         interfazPrinc.revalidate();
                         interfazPrinc.repaint();
@@ -381,7 +386,7 @@ public class Inicio extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                         cargarNuevoPanel();
                         interfazPrinc.revalidate();
                         interfazPrinc.repaint();
@@ -460,7 +465,7 @@ public class Inicio extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                         cargarNuevoPanel();
                         interfazPrinc.revalidate();
                         interfazPrinc.repaint();
@@ -498,7 +503,7 @@ public class Inicio extends JPanel {
     private void cargarNuevoPanel() {
         main.removeAll();
         home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
-        topBar = new TopBar();
+        topBar = new TopBar(listaPlaylist, interfazPrinc, botBar, scrollPane, main, home, window);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

@@ -32,6 +32,7 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -73,8 +74,12 @@ public class Perfil extends JPanel {
     private JLabel portada;
     private Popup popup;
     private File fotoDePerfil;
+    private JFrame window;
+    
+    
 
-    public Perfil(String username, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home) {
+    public Perfil(String username, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
+        this.window = window;
         this.username = username;
         this.content = this;
         this.listaPlaylist = listaPlaylist;
@@ -301,7 +306,7 @@ public class Perfil extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                         cargarNuevoPanel();
                         interfazPrinc.revalidate();
                         interfazPrinc.repaint();
@@ -341,7 +346,7 @@ public class Perfil extends JPanel {
     private void cargarNuevoPanel() {
         main.removeAll();
         home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
-        topBar = new TopBar();
+        topBar = new TopBar(listaPlaylist, interfazPrinc, botBar, scrollPane, main, home, window);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

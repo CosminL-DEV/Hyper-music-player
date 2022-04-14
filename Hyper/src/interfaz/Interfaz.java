@@ -232,7 +232,7 @@ public class Interfaz extends JPanel {
             }
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                content = new Inicio(esta, botBar, scrollPane, main, topBar, home, listaPlaylist);
+                content = new Inicio(esta, botBar, scrollPane, main, topBar, home, listaPlaylist, framePrincipal);
                 cargarNuevoPanel();
                 actualLabel = "Inicio";
                 home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "homeSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
@@ -269,7 +269,7 @@ public class Interfaz extends JPanel {
             }
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                content = new Busqueda(listaPlaylist, esta, botBar, scrollPane, main, topBar, home, search);
+                content = new Busqueda(listaPlaylist, esta, botBar, scrollPane, main, topBar, home, search, framePrincipal);
                 cargarNuevoPanel();
                 actualLabel = "Busqueda";
                 search.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "searchSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
@@ -308,7 +308,7 @@ public class Interfaz extends JPanel {
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                content = new Biblioteca(listaPlaylist, esta, botBar, scrollPane, main, topBar, home);
+                content = new Biblioteca(listaPlaylist, esta, botBar, scrollPane, main, topBar, home, framePrincipal);
                 cargarNuevoPanel();
                 actualLabel = "Biblioteca";
                 library.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "librarySelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
@@ -369,7 +369,7 @@ public class Interfaz extends JPanel {
 
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, esta, botBar, scrollPane, main, topBar, home);
+                        content = new Playlist(elemento.getId(), listaPlaylist, esta, botBar, scrollPane, main, topBar, home, framePrincipal);
                         cargarNuevoPanel();
                         revalidate();
                         repaint();
@@ -448,7 +448,15 @@ public class Interfaz extends JPanel {
         
         main.setLayout(new javax.swing.BoxLayout(main, javax.swing.BoxLayout.PAGE_AXIS));
         
-        topBar = new TopBar();
+        scrollPane = new JScrollPane();
+        botBar = new BotBar();
+        topBar = new TopBar(listaPlaylist, esta, botBar, scrollPane, main, home, framePrincipal);
+        content = new Inicio(this, botBar, scrollPane, main, topBar, home, listaPlaylist, framePrincipal);
+        scrollPane.setVerticalScrollBar(new ScrollBar());
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setViewportView(content);
+        
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -458,13 +466,6 @@ public class Interfaz extends JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(topBar, gridBagConstraints);
         
-        scrollPane = new JScrollPane();
-        botBar = new BotBar();
-        content = new Inicio(this, botBar, scrollPane, main, topBar, home, listaPlaylist);
-        scrollPane.setVerticalScrollBar(new ScrollBar());
-        scrollPane.setBorder(null);
-        scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setViewportView(content);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -488,7 +489,7 @@ public class Interfaz extends JPanel {
         clearIconos();
         main.removeAll();
         
-        topBar = new TopBar();
+        topBar = new TopBar(listaPlaylist, esta, botBar, scrollPane, main, home, framePrincipal);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

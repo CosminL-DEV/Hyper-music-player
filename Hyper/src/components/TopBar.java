@@ -15,10 +15,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
+import profiles.Artista;
+import profiles.Perfil;
 import themeManagement.ColorReturner;
 
 /**
@@ -40,10 +44,27 @@ public class TopBar extends JPanel {
     private Popup popup;
     private JPanel desplegable;
     private String miUsername;
+    private JPanel listaPlaylist;
+    private JPanel interfazPrinc;
+    private JPanel content;
+    private JScrollPane scrollPane;
+    private JPanel main;
+    private JPanel botBar;
+    private JPanel topBar;
+    private JLabel home;
+    private JFrame window;
+    Preferences pref = Preferences.userRoot().node("Rememberme");
 
-    public TopBar() {
-        Preferences pref = Preferences.userRoot().node("Rememberme");
+    public TopBar(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JLabel home, JFrame window) {
         miUsername = pref.get("ActualUser", "");
+        this.window = window;
+        this.listaPlaylist = listaPlaylist;
+        this.interfazPrinc = interfazPrinc;
+        this.botBar = botBar;
+        this.topBar = this;
+        this.scrollPane = scrollPane;
+        this.main = main;
+        this.home = home;
         java.awt.GridBagConstraints gridBagConstraints;
         setMaximumSize(new Dimension(3000, 60));
         javax.swing.JPanel latIzq = new javax.swing.JPanel();
@@ -140,7 +161,7 @@ public class TopBar extends JPanel {
                     + "FROM artist "
                     + "WHERE artist.username='" + miUsername + "'";
             ResultSet resul = sentencia.executeQuery(sql);
-            if (resul.next()) {
+            if (!resul.next()) {
                 uploadSong.setText("Subir canción");
                 uploadSong.setForeground(CReturner.getBackground());
                 uploadSong.setBackground(CReturner.getTexto3());
@@ -180,8 +201,9 @@ public class TopBar extends JPanel {
                 gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
                 desplegable.add(uploadAlbum, gridBagConstraints);
                 ejeY++;
-            }else
-                desplegable.setPreferredSize(new Dimension(125,100));
+            } else {
+                desplegable.setPreferredSize(new Dimension(125, 100));
+            }
             resul.close();
             sentencia.close();
         } catch (SQLException | ClassNotFoundException ex) {
@@ -195,7 +217,11 @@ public class TopBar extends JPanel {
         perfil.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Accion
+                content = new Perfil(miUsername, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                cargarNuevoPanel();
+                popup.hide();
+                interfazPrinc.revalidate();
+                interfazPrinc.repaint();
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -235,7 +261,11 @@ public class TopBar extends JPanel {
         cerrarSesion.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Accion
+                pref.remove("Username");
+                pref.remove("Password");
+                pref.remove("ActualUser");
+                window.setVisible(false);
+                popup.hide();
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -257,5 +287,44 @@ public class TopBar extends JPanel {
             popup = PopupFactory.getSharedInstance().getPopup(evt.getComponent(), desplegable, evt.getXOnScreen() - 100, evt.getYOnScreen() + 10);
             popup.show();
         }
+    }
+    
+    private void cargarNuevoPanel(){
+        main.removeAll();
+        
+        java.awt.GridBagConstraints gridBagConstraints;
+        
+        topBar = new TopBar(listaPlaylist, interfazPrinc, botBar, scrollPane, main, home, window);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(topBar, gridBagConstraints);
+        
+        scrollPane = new JScrollPane();
+        scrollPane.setVerticalScrollBar(new ScrollBar());
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setViewportView(content);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(scrollPane, gridBagConstraints);
+        
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        main.add(botBar, gridBagConstraints);
     }
 }

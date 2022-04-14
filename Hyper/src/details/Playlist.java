@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -81,8 +82,12 @@ public class Playlist extends JPanel {
     private JLabel privacity;
     private JLabel titulo;
     private JLabel portada;
+    private JFrame window;
+    
+    
 
-    public Playlist(String playlistID, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home) {
+    public Playlist(String playlistID, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
+        this.window = window;
         this.playlistID = playlistID;
         this.content = this;
         this.listaPlaylist = listaPlaylist;
@@ -234,7 +239,7 @@ public class Playlist extends JPanel {
 
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Perfil(usuario.getText(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
+                        content = new Perfil(usuario.getText(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                         cargarNuevoPanel();
                         interfazPrinc.revalidate();
                         interfazPrinc.repaint();
@@ -441,7 +446,7 @@ public class Playlist extends JPanel {
                                 portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
                             }
                         } else if (ed.getGuardado() == -1) {
-                            content = new Inicio(interfazPrinc, botBar, scrollPane, main, topBar, home, listaPlaylist);
+                            content = new Inicio(interfazPrinc, botBar, scrollPane, main, topBar, home, listaPlaylist, window);
                             cargarNuevoPanel();
                             recargarListaPlaylist();
                             interfazPrinc.revalidate();
@@ -633,7 +638,7 @@ public class Playlist extends JPanel {
 
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home);
+                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                         cargarNuevoPanel();
                         interfazPrinc.revalidate();
                         interfazPrinc.repaint();
@@ -649,10 +654,10 @@ public class Playlist extends JPanel {
         }
     }
 
-    private void cargarNuevoPanel() {
+    private void cargarNuevoPanel(){
         main.removeAll();
-
-        topBar = new TopBar();
+        
+        topBar = new TopBar(listaPlaylist, interfazPrinc, botBar, scrollPane, main, home, window);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -661,7 +666,7 @@ public class Playlist extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(topBar, gridBagConstraints);
-
+        
         scrollPane = new JScrollPane();
         scrollPane.setVerticalScrollBar(new ScrollBar());
         scrollPane.setBorder(null);
@@ -675,7 +680,7 @@ public class Playlist extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(scrollPane, gridBagConstraints);
-
+        
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;

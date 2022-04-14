@@ -3,7 +3,10 @@ package window;
 import interfaz.Interfaz;
 import javax.swing.JFrame;
 import java.awt.Toolkit;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.prefs.Preferences;
+import static javax.swing.JFrame.setDefaultLookAndFeelDecorated;
 
 import themeManagement.ColorReturner;
 
@@ -18,19 +21,40 @@ import themeManagement.ColorReturner;
  */
 public class Window extends JFrame {
 
-    ColorReturner CReturner = new ColorReturner();
+    private ColorReturner CReturner = new ColorReturner();
     private final Preferences pref;
+    private JFrame esta;
+    private Interfaz inicio;
 
     public Window() {
+        esta = this;
         this.pref = Preferences.userRoot().node("Rememberme");
         LoginWindow ventana = new LoginWindow(this);
         iniciarComponentes();
-        iniciarHome();
         if (pref.get("Username", "").equals("") && pref.get("Password", "").equals("")) {
             ventana.setVisible(true);
         } else {
+            inicio = iniciarHome();
+            add(inicio);
+            inicio.setVisible(true);
             setVisible(true);
         }
+        ventana.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                inicio = iniciarHome();
+                add(inicio);
+                inicio.setVisible(true);
+                setVisible(true);
+            }
+        });
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                ventana.setVisible(true);
+                esta.remove(inicio);
+            }
+        });
     }
 
     private void iniciarComponentes() {
@@ -44,10 +68,9 @@ public class Window extends JFrame {
         pack();
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/icon.png")));
     }
-    
-    private void iniciarHome(){
-        Interfaz inicio = new Interfaz(this);
-        add(inicio);
-        inicio.setVisible(true);
+
+    private Interfaz iniciarHome() {
+        inicio = new Interfaz(this);
+        return inicio;
     }
 }

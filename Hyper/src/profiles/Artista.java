@@ -33,6 +33,7 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -74,8 +75,12 @@ public class Artista extends JPanel {
     private JLabel portada;
     private Popup popup;
     private File fotoDePerfil;
+    private JFrame window;
+    
+    
 
-    public Artista(String idArtista, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home) {
+    public Artista(String idArtista, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
+        this.window = window;
         this.idArtista = idArtista;
         this.content = this;
         this.listaPlaylist = listaPlaylist;
@@ -419,7 +424,7 @@ public class Artista extends JPanel {
     private void cargarNuevoPanel() {
         main.removeAll();
         home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
-        topBar = new TopBar();
+        topBar = new TopBar(listaPlaylist, interfazPrinc, botBar, scrollPane, main, home, window);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

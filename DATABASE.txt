@@ -1655,5 +1655,3 @@ INSERT INTO registro_song(song_id, artist_id) VALUES (459, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (460, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (461, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (462, 14);
-
--- Actualizar subir cancion y poner que se añada a no album.

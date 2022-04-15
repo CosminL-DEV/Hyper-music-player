@@ -1,24 +1,119 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<themes>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><themes>
+    <ubicacion>
+        <ruta>C:\Users\cosmi\AppData\Local\Hyper\Almacenamiento</ruta>
+    </ubicacion>
     <selected>
-        <tema>oscuro</tema>
+        <tema>dark-yellow</tema>
     </selected>
-    <claro>
-        <background>240,245,249</background>
-    </claro>
-    <oscuro>
+    <dark-yellow>
         <background>10,14,20</background>
         <principal>194,217,53</principal>
+        <selected>84,87,91</selected>
         <texto>240,240,240</texto>
         <texto2>74,77,81</texto2>
         <texto3>128,128,128</texto3>
         <close>255,0,0</close>
-        <icon>/resources/icons/</icon>
-        <icons>/resources/icons/dark/</icons>
         <absoluto>0,0,0</absoluto>
         <scrollbar>128,128,128</scrollbar>
-        <icons-specific>/resources/icons/theme-dark/</icons-specific>
+        <icon>/resources/icons/</icon>
+        <icons>/resources/icons/dark/</icons>
+        <icons-specific>/resources/icons/theme-dark-yellow/</icons-specific>
         <icons-opuestos>/resources/icons/white/</icons-opuestos>
-        <selected>35,39,44</selected>
-    </oscuro>
-</themes>    
+    </dark-yellow>
+    <dark-green>
+        <background>0,0,0</background>
+        <principal>30,215,96</principal>
+        <selected>77,77,77</selected>
+        <texto>240,240,240</texto>
+        <texto2>74,77,81</texto2>
+        <texto3>128,128,128</texto3>
+        <close>255,0,0</close>
+        <absoluto>0,0,0</absoluto>
+        <scrollbar>128,128,128</scrollbar>
+        <icon>/resources/icons/</icon>
+        <icons>/resources/icons/white/</icons>
+        <icons-specific>/resources/icons/theme-dark-green/</icons-specific>
+        <icons-opuestos>/resources/icons/white/</icons-opuestos>
+    </dark-green>
+
+    <nord-light>
+        <background>236,239,244</background>
+        <principal>94,129,172</principal>
+        <selected>235,203,139</selected>
+        <texto>46,52,64</texto>
+        <texto2>167,167,167</texto2>
+        <texto3>128,128,128</texto3>
+        <close>255,0,0</close>
+        <absoluto>255,255,255</absoluto>
+        <scrollbar>128,128,128</scrollbar>
+        <icon>/resources/icons/</icon>
+        <icons>/resources/icons/white/</icons>
+        <icons-specific>/resources/icons/theme-nord-light/</icons-specific>
+        <icons-opuestos>/resources/icons/dark/</icons-opuestos>
+    </nord-light>
+
+    <nord-dark>
+        <background>46,52,64</background>
+        <principal>136,192,208</principal>
+        <selected>109,113,122</selected>
+        <texto>236,239,244</texto>
+        <texto2>157,158,159</texto2>
+        <texto3>128,128,128</texto3>
+        <close>255,0,0</close>
+        <absoluto>0,0,0</absoluto>
+        <scrollbar>128,128,128</scrollbar>
+        <icon>/resources/icons/</icon>
+        <icons>/resources/icons/dark/</icons>
+        <icons-specific>/resources/icons/theme-nord-dark/</icons-specific>
+        <icons-opuestos>/resources/icons/white/</icons-opuestos>
+    </nord-dark>
+
+    <rose-light>
+        <background>255,249,244</background>
+        <principal>255,167,137</principal>
+        <selected>235,203,139</selected>
+        <texto>54,54,54</texto>
+        <texto2>167,167,167</texto2>
+        <texto3>128,128,128</texto3>
+        <close>255,0,0</close>
+        <absoluto>255,255,255</absoluto>
+        <scrollbar>128,128,128</scrollbar>
+        <icon>/resources/icons/</icon>
+        <icons>/resources/icons/white/</icons>
+        <icons-specific>/resources/icons/theme-rose-light/</icons-specific>
+        <icons-opuestos>/resources/icons/dark/</icons-opuestos>
+    </rose-light>
+
+    <purple>
+        <background>10,14,20</background>
+        <principal>111,60,137</principal>
+        <selected>84,87,91</selected>
+        <texto>241,234,255</texto>
+        <texto2>167,167,167</texto2>
+        <texto3>128,128,128</texto3>
+        <close>255,0,0</close>
+        <absoluto>0,0,0</absoluto>
+        <scrollbar>128,128,128</scrollbar>
+        <icon>/resources/icons/</icon>
+        <icons>/resources/icons/white/</icons>
+        <icons-specific>/resources/icons/theme-purple/</icons-specific>
+        <icons-opuestos>/resources/icons/white/</icons-opuestos>
+    </purple>
+
+    <rojo-atardecer>
+        <background>38,38,38</background>
+        <principal>189,62,62</principal>
+        <selected>104,104,104</selected>
+        <texto>255,255,255</texto>
+        <texto2>167,167,167</texto2>
+        <texto3>128,128,128</texto3>
+        <close>255,0,0</close>
+        <absoluto>255,255,255</absoluto>
+        <scrollbar>128,128,128</scrollbar>
+        <icon>/resources/icons/</icon>
+        <icons>/resources/icons/white/</icons>
+        <icons-specific>/resources/icons/theme-rojo-atardecer/</icons-specific>
+        <icons-opuestos>/resources/icons/white/</icons-opuestos>
+    </rojo-atardecer>
+    
+</themes>

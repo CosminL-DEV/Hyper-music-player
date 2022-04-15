@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -57,9 +58,11 @@ public class Album extends JPanel {
     private JPanel main;
     private JPanel botBar;
     private JPanel topBar;
+    private JFrame window;
+    private JLabel home;
     private Popup popup;
 
-    public Album(String albumID, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar) {
+    public Album(String albumID, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
         this.albumID = albumID;
         this.content = this;
         this.listaPlaylist = listaPlaylist;
@@ -68,6 +71,8 @@ public class Album extends JPanel {
         this.topBar = topBar;
         this.scrollPane = scrollPane;
         this.main = main;
+        this.home = home;
+        this.window = window;
         sentenciaSQL = "SELECT song.picture, song.name AS nCancion, album.name AS nAlbum, registro_playlist.user_added, "
                 + "registro_playlist.fecha_added, song.song_id, users.profile_pic, registro_playlist.fecha_added "
                 + "FROM song, registro_playlist, registro_album, album, users "
@@ -180,7 +185,7 @@ public class Album extends JPanel {
             sentencia = conexion.createStatement();
             String sql = "SELECT album.picture, album.name AS nAlbum, artist.name AS nArtist, artist.profile_pic, COUNT(registro_album.album_id) AS total "
                     + "FROM album, artist, registro_album "
-                    + "WHERE album.album_id = '"+albumID+"' AND album.album_id = registro_album.album_id AND album.artist_id = artist.artist_id";
+                    + "WHERE album.album_id = '" + albumID + "' AND album.album_id = registro_album.album_id AND album.artist_id = artist.artist_id";
             ResultSet resul = sentencia.executeQuery(sql);
             if (resul.next()) {
                 pictureAlbum = resul.getString("album.picture");

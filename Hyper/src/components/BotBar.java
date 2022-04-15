@@ -65,19 +65,19 @@ public class BotBar extends JPanel {
         JLabel repetir = new javax.swing.JLabel();
         izq.setOpaque(false);
         izq.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
-        aleatorioIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "aleatorio.png"));
+        aleatorioIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos() + "aleatorio.png"));
         aleatorio.setIcon(new ImageIcon(aleatorioIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)));
         izq.add(aleatorio);
-        anteriorIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "anterior.png"));
+        anteriorIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos() + "anterior.png"));
         anterior.setIcon(new ImageIcon(anteriorIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)));
         izq.add(anterior);
         pararIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsSpecific()+ "play.png"));
         parar.setIcon(new ImageIcon(pararIcon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
         izq.add(parar);
-        siguienteIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "siguiente.png"));
+        siguienteIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos() + "siguiente.png"));
         siguiente.setIcon(new ImageIcon(siguienteIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)));
         izq.add(siguiente);
-        repetirIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "repetir.png"));
+        repetirIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos() + "repetir.png"));
         repetir.setIcon(new ImageIcon(repetirIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)));
         izq.add(repetir);
         aleatorio.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -195,10 +195,10 @@ public class BotBar extends JPanel {
         JLabel barraVol = new javax.swing.JLabel();
         drch.setOpaque(false);
         drch.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 5));
-        colaIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "cola.png"));
+        colaIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos() + "cola.png"));
         cola.setIcon(new ImageIcon(colaIcon.getImage().getScaledInstance(25, 35, Image.SCALE_SMOOTH)));
         drch.add(cola);
-        volumenIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "volumen.png"));
+        volumenIcon = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos() + "volumen.png"));
         volumen.setIcon(new ImageIcon(volumenIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)));
         barraVol.setText("Barra volumen");
         controlVol.setOpaque(false);

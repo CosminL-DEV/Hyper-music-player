@@ -75,8 +75,6 @@ public class Perfil extends JPanel {
     private Popup popup;
     private File fotoDePerfil;
     private JFrame window;
-    
-    
 
     public Perfil(String username, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
         this.window = window;

@@ -1,10 +1,12 @@
 package window;
 
+import components.Utilities;
 import interfaz.Interfaz;
 import javax.swing.JFrame;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.File;
 import java.util.prefs.Preferences;
 import static javax.swing.JFrame.setDefaultLookAndFeelDecorated;
 
@@ -31,6 +33,7 @@ public class Window extends JFrame {
         this.pref = Preferences.userRoot().node("Rememberme");
         LoginWindow ventana = new LoginWindow(this);
         iniciarComponentes();
+        crearCarpeta();
         if (pref.get("Username", "").equals("") && pref.get("Password", "").equals("")) {
             ventana.setVisible(true);
         } else {
@@ -72,5 +75,14 @@ public class Window extends JFrame {
     private Interfaz iniciarHome() {
         inicio = new Interfaz(this);
         return inicio;
+    }
+    
+    private void crearCarpeta(){
+        File directorio = CReturner.getFolderPath().toFile();
+        if (!directorio.exists()) {
+            if (directorio.mkdirs()) {
+                Utilities.escribirRuta(directorio.getAbsolutePath());
+            }
+        }
     }
 }

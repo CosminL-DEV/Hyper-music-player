@@ -44,8 +44,6 @@ CREATE TABLE album (
   PRIMARY KEY (album_id)
 );
 
--- Generos:
--- trap, reggaeton, rap, techno, house.
 DROP TABLE IF EXISTS song;
 CREATE TABLE song (
   song_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1642,9 +1640,20 @@ INSERT INTO song(name, genre, url, picture) VALUES ('Cayo La Noche - Remix', 're
 INSERT INTO song(name, genre, url, picture) VALUES ('Universitaria', 'trap', 'http://localhost/hyper/wp-content/uploads/2022/03/Universitaria-QUEVEDO-PROD.-LINTON.wav', 'https://i.imgur.com/AXd90yL.png');
 INSERT INTO song(name, genre, url, picture) VALUES ('Rimmel', 'techno', 'http://localhost/hyper/wp-content/uploads/2022/03/Rimmel-Quevedo.wav', 'https://i.imgur.com/TYySnkv.png');
 INSERT INTO song(name, genre, url, picture) VALUES ('No Me Digas Nada', 'house', 'http://localhost/hyper/wp-content/uploads/2022/03/No-Me-Digas-Nada-QUEVEDO-PROD.-LINTON.wav', 'https://i.imgur.com/8X56S8B.png');
+INSERT INTO users(username,password) VALUES ('noFoundArtist','noFoundArtist321');
+INSERT INTO artist(artist_id,name, username, profile_pic) VALUES('404','noFoundArtist','noFoundArtist','http://localhost/hyper/wp-content/uploads/2022/03/playlist.png');
+INSERT INTO album(album_id,name,artist_id,fecha,picture) VALUES (404,'NO ALBUM',404,'2021-01-01','http://localhost/hyper/wp-content/uploads/2022/03/playlist.png');
+INSERT INTO registro_album(album_id, song_id) VALUES (404, 457);
+INSERT INTO registro_album(album_id, song_id) VALUES (404, 458);
+INSERT INTO registro_album(album_id, song_id) VALUES (404, 459);
+INSERT INTO registro_album(album_id, song_id) VALUES (404, 460);
+INSERT INTO registro_album(album_id, song_id) VALUES (404, 461);
+INSERT INTO registro_album(album_id, song_id) VALUES (404, 462);
 INSERT INTO registro_song(song_id, artist_id) VALUES (457, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (458, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (459, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (460, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (461, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (462, 14);
+
+-- Actualizar subir cancion y poner que se añada a no album.

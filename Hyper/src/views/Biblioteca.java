@@ -223,7 +223,7 @@ public class Biblioteca extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar);
+                        content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                         cargarNuevoPanel();
                         interfazPrinc.revalidate();
                         interfazPrinc.repaint();

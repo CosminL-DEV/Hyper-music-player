@@ -1,6 +1,6 @@
 package components;
 
-import interfaz.Interfaz;
+import configuracion.Configuracion;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -15,6 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -53,7 +55,10 @@ public class TopBar extends JPanel {
     private JPanel topBar;
     private JLabel home;
     private JFrame window;
-    Preferences pref = Preferences.userRoot().node("Rememberme");
+    private Preferences pref = Preferences.userRoot().node("Rememberme");
+    private boolean esArtista = false;
+    private String idDelArtista = null;
+    private JDialog options;
 
     public TopBar(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JLabel home, JFrame window) {
         miUsername = pref.get("ActualUser", "");
@@ -91,6 +96,7 @@ public class TopBar extends JPanel {
         add(latIzq, gridBagConstraints);
 
         mid.setBackground(CReturner.getBackground());
+        mid.setOpaque(false);
         nombrePlaylist = new JLabel(" ");
         nombrePlaylist.setPreferredSize(new Dimension(200, 60));
         mid.add(nombrePlaylist);
@@ -152,16 +158,127 @@ public class TopBar extends JPanel {
         desplegable.setPreferredSize(new Dimension(125, 170));
         int ejeY = 0;
 
+        if (miUsername.equalsIgnoreCase("Hyper")) {
+            JLabel adminOptions = new javax.swing.JLabel();
+            adminOptions.setText("Opciones de admin");
+            adminOptions.setForeground(CReturner.getBackground());
+            adminOptions.setBackground(CReturner.getTexto3());
+            adminOptions.setFont(coolvetica.deriveFont(14f));
+            options = new JDialog(window, "Opciones de administrador");
+            options.setBounds(0, 0, 200, 500);
+            options.setBackground(CReturner.getBackground());
+            options.setLayout(new java.awt.GridLayout(10, 1, 0, 0));
+            AdminPlaylistUpdater aplu = new AdminPlaylistUpdater();
+            JButton boton1 = new JButton("Actualizar Novedades");
+            boton1.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    aplu.actualizarNovedades();
+                }
+            });
+            JButton boton2 = new JButton("Actualizar Descubrimientos");
+            boton2.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    aplu.actualizarDescubrimientos();
+                }
+            });
+            JButton boton3 = new JButton("Actualizar Para Ti 1");
+            boton3.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    aplu.actualizarEspecial1();
+                }
+            });
+            JButton boton4 = new JButton("Actualizar Para Ti 2");
+            boton4.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    aplu.actualizarEspecial2();
+                }
+            });
+            JButton boton5 = new JButton("Actualizar Para Ti 3");
+            boton5.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    aplu.actualizarEspecial3();
+                }
+            });
+            JButton boton6 = new JButton("Actualizar Trap");
+            boton6.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    aplu.actualizarTrap();
+                }
+            });
+            JButton boton7 = new JButton("Actualizar Reggaeton");
+            boton7.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    aplu.actualizarReggaeton();
+                }
+            });
+            JButton boton8 = new JButton("Actualizar Rap");
+            boton8.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    aplu.actualizarRap();
+                }
+            });
+            JButton boton9 = new JButton("Actualizar Techno");
+            boton9.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    aplu.actualizarTechno();
+                }
+            });
+            JButton boton10 = new JButton("Actualizar House");
+            boton10.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    aplu.actualizarHouse();
+                }
+            });
+            options.add(boton1);
+            options.add(boton2);
+            options.add(boton3);
+            options.add(boton4);
+            options.add(boton5);
+            options.add(boton6);
+            options.add(boton7);
+            options.add(boton8);
+            options.add(boton9);
+            options.add(boton10);
+            adminOptions.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    options.setLocationRelativeTo(null);
+                    options.setVisible(true);
+                    popup.hide();
+                }
+            });
+            gridBagConstraints = new java.awt.GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = ejeY;
+            gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+            gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+            gridBagConstraints.weighty = 0.1;
+            gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+            desplegable.add(adminOptions, gridBagConstraints);
+            ejeY++;
+        }
+
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
             sentencia = conexion.createStatement();
-            String sql = "SELECT artist.name "
+            String sql = "SELECT artist.artist_id "
                     + "FROM artist "
                     + "WHERE artist.username='" + miUsername + "'";
             ResultSet resul = sentencia.executeQuery(sql);
-            if (!resul.next()) {
+            if (resul.next()) {
+                idDelArtista = resul.getString("artist_id");
                 uploadSong.setText("Subir canción");
                 uploadSong.setForeground(CReturner.getBackground());
                 uploadSong.setBackground(CReturner.getTexto3());
@@ -169,7 +286,11 @@ public class TopBar extends JPanel {
                 uploadSong.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        // Accion
+                        UploadSong cp = new UploadSong();
+                        cp.setBounds(0, 0, 350, 270);
+                        cp.setLocationRelativeTo(null);
+                        cp.setVisible(true);
+                        popup.hide();
                     }
                 });
                 gridBagConstraints = new java.awt.GridBagConstraints();
@@ -189,7 +310,11 @@ public class TopBar extends JPanel {
                 uploadAlbum.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        // Accion
+                        content = new UploadAlbum(idDelArtista, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                        cargarNuevoPanel();
+                        popup.hide();
+                        interfazPrinc.revalidate();
+                        interfazPrinc.repaint();
                     }
                 });
                 gridBagConstraints = new java.awt.GridBagConstraints();
@@ -217,7 +342,11 @@ public class TopBar extends JPanel {
         perfil.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                content = new Perfil(miUsername, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                if (idDelArtista != null) {
+                    content = new Artista(idDelArtista, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                } else {
+                    content = new Perfil(miUsername, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                }
                 cargarNuevoPanel();
                 popup.hide();
                 interfazPrinc.revalidate();
@@ -241,7 +370,11 @@ public class TopBar extends JPanel {
         configuracion.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Accion
+                content = new Configuracion(interfazPrinc, botBar, scrollPane, main, topBar, home, listaPlaylist, window);
+                cargarNuevoPanel();
+                popup.hide();
+                interfazPrinc.revalidate();
+                interfazPrinc.repaint();
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -288,12 +421,12 @@ public class TopBar extends JPanel {
             popup.show();
         }
     }
-    
-    private void cargarNuevoPanel(){
+
+    private void cargarNuevoPanel() {
         main.removeAll();
-        
+
         java.awt.GridBagConstraints gridBagConstraints;
-        
+
         topBar = new TopBar(listaPlaylist, interfazPrinc, botBar, scrollPane, main, home, window);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -303,7 +436,7 @@ public class TopBar extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(topBar, gridBagConstraints);
-        
+
         scrollPane = new JScrollPane();
         scrollPane.setVerticalScrollBar(new ScrollBar());
         scrollPane.setBorder(null);
@@ -317,7 +450,7 @@ public class TopBar extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         main.add(scrollPane, gridBagConstraints);
-        
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;

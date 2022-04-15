@@ -76,8 +76,6 @@ public class Artista extends JPanel {
     private Popup popup;
     private File fotoDePerfil;
     private JFrame window;
-    
-    
 
     public Artista(String idArtista, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
         this.window = window;
@@ -185,14 +183,26 @@ public class Artista extends JPanel {
         add(conjunto, gridBagConstraints);
 
         Statement sentencia;
+        boolean tieneCanciones = false;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
             sentencia = conexion.createStatement();
-            String sql = "SELECT artist.username, artist.name, artist.profile_pic, COUNT(registro_song.artist_id) AS total "
+            String sql = "SELECT registro_song.song_id "
+                    + "FROM registro_song "
+                    + "WHERE registro_song.artist_id = '"+idArtista+"'";
+            ResultSet resul = sentencia.executeQuery(sql);
+            if (resul.next()) {
+                tieneCanciones = true;
+                sql = "SELECT artist.username, artist.name, artist.profile_pic, COUNT(registro_song.artist_id) AS total "
                     + "FROM users, artist, registro_song "
                     + "WHERE artist.artist_id = '" + idArtista + "' AND artist.username = users.username AND registro_song.artist_id=artist.artist_id";
-            ResultSet resul = sentencia.executeQuery(sql);
+            }else{
+                sql = "SELECT artist.username, artist.name, artist.profile_pic "
+                    + "FROM users, artist "
+                    + "WHERE artist.artist_id = '" + idArtista + "' AND artist.username = users.username";
+            }
+            resul = sentencia.executeQuery(sql);
             if (resul.next()) {
                 titulo.setText(resul.getString("name"));
                 String picture = resul.getString("profile_pic");
@@ -201,7 +211,8 @@ public class Artista extends JPanel {
                 }
                 ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(picture)));
                 portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
-                num.setText(resul.getString("total") + " canciones");
+                if(tieneCanciones)
+                    num.setText(resul.getString("total") + " canciones");
                 if (resul.getString("username").equalsIgnoreCase(miUsername)) {
                     portada.addMouseListener(new java.awt.event.MouseAdapter() {
                         @Override
@@ -313,7 +324,7 @@ public class Artista extends JPanel {
                 elemento.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar);
+                        content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                         cargarNuevoPanel();
                         interfazPrinc.revalidate();
                         interfazPrinc.repaint();
@@ -372,7 +383,7 @@ public class Artista extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
         deHyper.add(texto1, gridBagConstraints);
-        
+
         JPanel resultados = new JPanel();
         resultados.setBackground(CReturner.getBackground());
         ImageIcon playIcon = new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsSpecific() + "play.png")).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
@@ -384,9 +395,8 @@ public class Artista extends JPanel {
             sentencia = conexion.createStatement();
             String sql = "SELECT song.song_id, song.name "
                     + "FROM song, registro_song "
-                    + "WHERE song.song_id = registro_song.song_id AND registro_song.artist_id = '"+idArtista+"'";
+                    + "WHERE song.song_id = registro_song.song_id AND registro_song.artist_id = '" + idArtista + "'";
             ResultSet resul = sentencia.executeQuery(sql);
-            System.out.println(idArtista);
             while (resul.next()) {
                 JLabel elemento = new JLabel(resul.getString("name"));
                 elemento.setForeground(CReturner.getTexto());
@@ -394,7 +404,7 @@ public class Artista extends JPanel {
                 elemento.setFont(coolvetica.deriveFont(16f));
                 resultados.add(elemento);
                 // Add listener de canciones
-                
+
             }
             resul.close();
             sentencia.close();
@@ -409,7 +419,7 @@ public class Artista extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
         gridBagConstraints.weighty = 0.1;
         deHyper.add(resultados, gridBagConstraints);
-        
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;

@@ -36,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.table.DefaultTableCellRenderer;
+import profiles.Artista;
 import profiles.Perfil;
 import tabla.PlaylistCellRender;
 import tabla.PlaylistTableModel;
@@ -83,7 +84,8 @@ public class Playlist extends JPanel {
     private JLabel titulo;
     private JLabel portada;
     private JFrame window;
-    
+    private boolean esArtista = false;
+    private String artistId;
     
 
     public Playlist(String playlistID, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
@@ -207,10 +209,18 @@ public class Playlist extends JPanel {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
             sentencia = conexion.createStatement();
-            String sql = "SELECT playlist.picture, playlist.privacity, playlist.name, playlist.user, users.profile_pic, COUNT(registro_playlist.playlist_id) AS total "
+            String sql = "SELECT artist.artist_id "
+                    + "FROM artist, playlist "
+                    + "WHERE artist.username = playlist.user AND playlist.playlist_id = '" + playlistID + "'";
+            ResultSet resul = sentencia.executeQuery(sql);
+            if (resul.next()) {
+                esArtista = true;
+                artistId = resul.getString("artist_id");
+            }
+            sql = "SELECT playlist.picture, playlist.privacity, playlist.name, playlist.user, users.profile_pic, COUNT(registro_playlist.playlist_id) AS total "
                     + "FROM playlist, users, registro_playlist "
                     + "WHERE playlist.playlist_id = '" + playlistID + "' AND playlist.user = users.username AND playlist.playlist_id = registro_playlist.playlist_id";
-            ResultSet resul = sentencia.executeQuery(sql);
+            resul = sentencia.executeQuery(sql);
             if (resul.next()) {
                 picturePlaylist = resul.getString("playlist.picture");
                 if (picturePlaylist == null) {
@@ -239,7 +249,10 @@ public class Playlist extends JPanel {
 
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Perfil(usuario.getText(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                        if(esArtista)
+                            content = new Artista(artistId, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                        else
+                            content = new Perfil(usuario.getText(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                         cargarNuevoPanel();
                         interfazPrinc.revalidate();
                         interfazPrinc.repaint();
@@ -286,7 +299,7 @@ public class Playlist extends JPanel {
                 saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsSpecific() + "guardado.png"));
                 guardada = true;
             } else {
-                saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "guardado.png"));
+                saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos()+ "guardado.png"));
                 guardada = false;
             }
             resul.close();
@@ -298,7 +311,7 @@ public class Playlist extends JPanel {
         guardado.setIcon(new ImageIcon(saved.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
         izq.add(guardado);
 
-        downloaded = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "descargar.png"));
+        downloaded = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos() + "descargar.png"));
         descargar.setIcon(new ImageIcon(downloaded.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
         izq.add(descargar);
         try {
@@ -310,7 +323,7 @@ public class Playlist extends JPanel {
                     + "WHERE playlist.playlist_id = '" + playlistID + "' AND playlist.user = '" + username + "'";
             ResultSet resul = sentencia.executeQuery(sql);
             if (resul.next()) {
-                editar.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "edit.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+                editar.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos() + "edit.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
                 izq.add(editar);
             }
             resul.close();
@@ -417,12 +430,12 @@ public class Playlist extends JPanel {
         editar.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                editar.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "edit.png")).getImage().getScaledInstance(60, 61, Image.SCALE_SMOOTH)));
+                editar.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos() + "edit.png")).getImage().getScaledInstance(60, 61, Image.SCALE_SMOOTH)));
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                editar.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "edit.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+                editar.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos() + "edit.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
             }
 
             @Override

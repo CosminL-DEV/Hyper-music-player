@@ -19,6 +19,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Hashtable;
 import java.util.Map;
@@ -327,6 +328,14 @@ public class EditDialog extends javax.swing.JDialog {
                                 + "WHERE playlist.playlist_id = '" + id + "'";
                         sentencia.executeUpdate(sql);
                     } else {
+                        ArrayList<String> canciones = new ArrayList<>();
+                        sql = "SELECT registro_album.song_id "
+                                + "FROM registro_album "
+                                + "WHERE registro_album.album_id = '" + id + "'";
+                        ResultSet resul = sentencia.executeQuery(sql);
+                        while (resul.next()) {
+                            canciones.add(resul.getString("song_id"));
+                        }
                         sql = "DELETE FROM registro_savedalbum "
                                 + "WHERE registro_savedalbum.album_id = '" + id + "'";
                         sentencia.executeUpdate(sql);
@@ -336,6 +345,14 @@ public class EditDialog extends javax.swing.JDialog {
                         sql = "DELETE FROM album "
                                 + "WHERE album.album_id = '" + id + "'";
                         sentencia.executeUpdate(sql);
+                        for (String elem : canciones) {
+                            sql = "DELETE FROM registro_song "
+                                    + "WHERE registro_song.song_id = '" + elem + "'";
+                            sentencia.executeUpdate(sql);
+                            sql = "DELETE FROM song "
+                                    + "WHERE song.song_id = '" + elem + "'";
+                            sentencia.executeUpdate(sql);
+                        }
                     }
                     sentencia.close();
                     conexion.close();
@@ -466,24 +483,24 @@ public class EditDialog extends javax.swing.JDialog {
         }
         return linkImagen;
     }
-    
-    public int getGuardado(){
+
+    public int getGuardado() {
         return guardado;
     }
-    
-    public String nuevoNombre(){
+
+    public String nuevoNombre() {
         return inputNombre.getText();
     }
-    
-    public boolean nuevoIsPublica(){
+
+    public boolean nuevoIsPublica() {
         return radioPublica.isSelected();
     }
-    
-    public String nuevoLink(){
+
+    public String nuevoLink() {
         return linkImagen;
     }
-    
-    public boolean getFotoSelected(){
+
+    public boolean getFotoSelected() {
         return fotoSelected;
     }
 }

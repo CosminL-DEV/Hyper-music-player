@@ -8,8 +8,10 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,7 +23,20 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import tabla.CancionDisplay;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import themeManagement.ColorReturner;
 
 /**
@@ -91,8 +106,8 @@ public class Utilities {
         long diffInMillies = date2.getTime() - date1.getTime();
         return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
-    
-    public static Font cargarCoolvetica(){
+
+    public static Font cargarCoolvetica() {
         Font coolvetica = null;
         InputStream is = Interfaz.class.getResourceAsStream("/fonts/coolvetica rg.otf");
         try {
@@ -101,5 +116,56 @@ public class Utilities {
             Logger.getLogger(Utilities.class.getName()).log(Level.SEVERE, null, ex);
         }
         return coolvetica;
+    }
+
+    public static void cambiarTema(String nuevoTema) {
+        nuevoTema = nuevoTema.toLowerCase();
+        Document documento = null;
+        File archivo = null;
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            archivo = new File("src/themes.xml");
+            documento = db.parse(archivo);
+            documento.getDocumentElement().normalize();
+            NodeList nSelected = documento.getElementsByTagName("selected");
+            Node nNode = nSelected.item(0);
+            Element eElement = (Element) nNode;
+            eElement.getElementsByTagName("tema").item(0).setTextContent(nuevoTema);
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(documento);
+            StreamResult result = new StreamResult(archivo);
+            transformer.transform(source, result);
+        } catch (ParserConfigurationException | SAXException | IOException | TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException ex) {
+            Logger.getLogger(Utilities.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static void escribirRuta(String nuevaRuta){
+        Document documento = null;
+        File archivo = null;
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            archivo = new File("src/themes.xml");
+            documento = db.parse(archivo);
+            documento.getDocumentElement().normalize();
+            NodeList nSelected = documento.getElementsByTagName("ubicacion");
+            Node nNode = nSelected.item(0);
+            Element eElement = (Element) nNode;
+            eElement.getElementsByTagName("ruta").item(0).setTextContent(nuevaRuta);
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(documento);
+            StreamResult result = new StreamResult(archivo);
+            transformer.transform(source, result);
+        } catch (ParserConfigurationException | SAXException | IOException | TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException ex) {
+            Logger.getLogger(Utilities.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

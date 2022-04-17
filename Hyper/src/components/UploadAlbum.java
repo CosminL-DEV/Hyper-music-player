@@ -45,6 +45,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import songManager.QueueManager;
+import songManager.QueueManager.Cancion;
 import themeManagement.ColorReturner;
 
 /**
@@ -82,7 +84,8 @@ public class UploadAlbum extends JPanel {
     private JPanel botones;
     private String albumId;
 
-    public UploadAlbum(String idArtista, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
+    public UploadAlbum(String idArtista, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, 
+            JPanel main, JPanel topBar, JLabel home, JFrame window) {
         this.idArtista = idArtista;
         this.content = this;
         this.listaPlaylist = listaPlaylist;

@@ -43,6 +43,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import songManager.QueueManager;
+import songManager.QueueManager.Cancion;
 import themeManagement.ColorReturner;
 
 /**
@@ -76,7 +78,8 @@ public class Perfil extends JPanel {
     private File fotoDePerfil;
     private JFrame window;
 
-    public Perfil(String username, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
+    public Perfil(String username, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, 
+            JPanel main, JPanel topBar, JLabel home, JFrame window) {
         this.window = window;
         this.username = username;
         this.content = this;

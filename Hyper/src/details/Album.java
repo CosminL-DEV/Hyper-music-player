@@ -21,6 +21,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.Popup;
+import songManager.QueueManager;
+import songManager.QueueManager.Cancion;
 import themeManagement.ColorReturner;
 
 /**
@@ -62,7 +64,8 @@ public class Album extends JPanel {
     private JLabel home;
     private Popup popup;
 
-    public Album(String albumID, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
+    public Album(String albumID, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, 
+            JPanel main, JPanel topBar, JLabel home, JFrame window) {
         this.albumID = albumID;
         this.content = this;
         this.listaPlaylist = listaPlaylist;

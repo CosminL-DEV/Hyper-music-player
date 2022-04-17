@@ -30,6 +30,8 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import profiles.Artista;
+import songManager.QueueManager;
+import songManager.QueueManager.Cancion;
 import tabla.CancionDisplay;
 import themeManagement.ColorReturner;
 
@@ -66,9 +68,9 @@ public class Busqueda extends JPanel {
     private JLabel search;
     private JFrame window;
     
-    
 
-    public Busqueda(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JLabel search, JFrame window) {
+    public Busqueda(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, 
+            JPanel main, JPanel topBar, JLabel home, JLabel search, JFrame window) {
         this.playIcon = new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsSpecific() + "play.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
         this.window = window;
         this.content = this;

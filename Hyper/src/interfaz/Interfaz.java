@@ -3,7 +3,7 @@ package interfaz;
 import components.TopBar;
 import components.RoundedPanel;
 import components.ItemPlaylist;
-import components.BotBar;
+import songManager.BotBar;
 import components.CreatePlaylist;
 import components.EditDialog;
 import components.ScrollBar;
@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import songManager.QueueManager;
 import themeManagement.ColorReturner;
 import views.Biblioteca;
 import views.Busqueda;
@@ -192,7 +193,6 @@ public class Interfaz extends JPanel {
                 creditos.setVisible(true);
             }
         });
-
         izq.add(icono);
     }
 
@@ -381,7 +381,7 @@ public class Interfaz extends JPanel {
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         columna.add(addPlaylist, gridBagConstraints);
-        
+
         listaPlaylist = new javax.swing.JPanel();
         listaPlaylist.setOpaque(false);
         listaPlaylist.setLayout(new java.awt.GridLayout(0, 1));

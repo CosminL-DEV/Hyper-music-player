@@ -23,6 +23,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import songManager.QueueManager;
+import songManager.QueueManager.Cancion;
 import themeManagement.ColorReturner;
 
 /**
@@ -49,10 +51,9 @@ public class Inicio extends JPanel {
     private JLabel home;
     private JPanel listaPlaylist;
     private JFrame window;
-    
-    
 
-    public Inicio(JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JPanel listaPlaylist, JFrame window) {
+    public Inicio(JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar,
+            JLabel home, JPanel listaPlaylist, JFrame window) {
         this.window = window;
         this.content = this;
         this.interfazPrinc = interfazPrinc;

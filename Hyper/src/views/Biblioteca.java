@@ -22,6 +22,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import songManager.QueueManager;
+import songManager.QueueManager.Cancion;
 import themeManagement.ColorReturner;
 
 /**
@@ -51,7 +53,8 @@ public class Biblioteca extends JPanel {
     
     
 
-    public Biblioteca(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
+    public Biblioteca(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, 
+            JPanel main, JPanel topBar, JLabel home, JFrame window) {
         this.window = window;
         this.content = this;
         this.listaPlaylist = listaPlaylist;

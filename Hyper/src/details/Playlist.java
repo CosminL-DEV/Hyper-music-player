@@ -38,6 +38,9 @@ import javax.swing.PopupFactory;
 import javax.swing.table.DefaultTableCellRenderer;
 import profiles.Artista;
 import profiles.Perfil;
+import songManager.BotBar;
+import songManager.QueueManager;
+import songManager.QueueManager.Cancion;
 import tabla.PlaylistCellRender;
 import tabla.PlaylistTableModel;
 import themeManagement.ColorReturner;
@@ -86,9 +89,10 @@ public class Playlist extends JPanel {
     private JFrame window;
     private boolean esArtista = false;
     private String artistId;
-    
+    private BotBar botBar2;
 
-    public Playlist(String playlistID, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JFrame window) {
+    public Playlist(String playlistID, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, 
+            JPanel main, JPanel topBar, JLabel home, JFrame window) {
         this.window = window;
         this.playlistID = playlistID;
         this.content = this;
@@ -350,7 +354,13 @@ public class Playlist extends JPanel {
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Accion
+                // Modela el qm.
+                botBar2 = new BotBar();
+                botBar = botBar2;
+                botBar2.addCancion("1");
+                cargarNuevoPanel();
+                botBar.revalidate();
+                botBar.repaint();
             }
         });
         guardado.addMouseListener(new java.awt.event.MouseAdapter() {

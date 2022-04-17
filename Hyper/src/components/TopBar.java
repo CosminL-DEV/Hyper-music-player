@@ -25,6 +25,8 @@ import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import profiles.Artista;
 import profiles.Perfil;
+import songManager.QueueManager;
+import songManager.QueueManager.Cancion;
 import themeManagement.ColorReturner;
 
 /**
@@ -60,7 +62,8 @@ public class TopBar extends JPanel {
     private String idDelArtista = null;
     private JDialog options;
 
-    public TopBar(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JLabel home, JFrame window) {
+    public TopBar(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, 
+            JLabel home, JFrame window) {
         miUsername = pref.get("ActualUser", "");
         this.window = window;
         this.listaPlaylist = listaPlaylist;

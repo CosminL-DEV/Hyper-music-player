@@ -77,6 +77,7 @@ public class BotBar extends JPanel {
     private Long currentFrame;
     private Clip clip;
     private String linkCancionActual;
+    private float volumenSelected = 50;
 
     public BotBar() {
         setOpaque(false);
@@ -400,9 +401,9 @@ public class BotBar extends JPanel {
         barraVol.setForeground(CReturner.getTexto());
         barraVol.addChangeListener((ChangeEvent e) -> {
             if (reproduciendo) {
-                float value = barraVol.getValue();
-                setVolume(value);
-                if (value == 0) {
+                volumenSelected = barraVol.getValue();
+                setVolume(volumenSelected);
+                if (volumenSelected == 0) {
                     volumen.setIcon(new ImageIcon(volumenMutedIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH)));
                     muted = true;
                 } else {
@@ -610,6 +611,7 @@ public class BotBar extends JPanel {
             clip = AudioSystem.getClip();
             clip.open(stream);
             clip.loop(0);
+            setVolume(volumenSelected);
             progreso.setMaximum((int) (clip.getMicrosecondLength() / 1000000));
         } catch (LineUnavailableException | IOException ex) {
             Logger.getLogger(BotBar.class.getName()).log(Level.SEVERE, null, ex);

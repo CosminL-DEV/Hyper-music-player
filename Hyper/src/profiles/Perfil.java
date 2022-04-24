@@ -4,8 +4,9 @@ import components.ImgCircleConverter;
 import components.ReviewPlaylist;
 import components.ScrollBar;
 import components.TopBar;
-import components.Utilities;
-import details.Playlist;
+import appManagement.Utilities;
+import playlist.Playlist;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -24,7 +25,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Base64;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,15 +43,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import songManager.QueueManager;
-import songManager.QueueManager.Cancion;
-import themeManagement.ColorReturner;
+import songManager.BotBar;
+import appManagement.ColorReturner;
+import java.util.HashMap;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 13-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -63,8 +63,8 @@ public class Perfil extends JPanel {
     private JPanel content;
     private JScrollPane scrollPane;
     private JPanel main;
-    private JPanel botBar;
-    private JPanel topBar;
+    private BotBar botBar;
+    private TopBar topBar;
     private JLabel home;
     private String miUsername;
     private String username;
@@ -78,8 +78,8 @@ public class Perfil extends JPanel {
     private File fotoDePerfil;
     private JFrame window;
 
-    public Perfil(String username, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, 
-            JPanel main, JPanel topBar, JLabel home, JFrame window) {
+    public Perfil(String username, JPanel listaPlaylist, JPanel interfazPrinc, BotBar botBar, JScrollPane scrollPane,
+            JPanel main, TopBar topBar, JLabel home, JFrame window) {
         this.window = window;
         this.username = username;
         this.content = this;
@@ -186,80 +186,80 @@ public class Perfil extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT users.username, users.profile_pic, COUNT(playlist.user) AS total "
-                    + "FROM users, playlist "
-                    + "WHERE users.username = '" + username + "' AND playlist.privacity = 'publica' AND playlist.user = '" + username + "'";
-            ResultSet resul = sentencia.executeQuery(sql);
-            if (resul.next()) {
-                titulo.setText(resul.getString("username"));
-                String picture = resul.getString("profile_pic");
-                if (picture == null) {
-                    picture = "http://localhost/hyper/wp-content/uploads/2022/04/user.png";
-                }
-                ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(picture)));
-                portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
-                num.setText(resul.getString("total") + " listas públicas");
-                if (username.equalsIgnoreCase(miUsername)) {
-                    portada.addMouseListener(new java.awt.event.MouseAdapter() {
-                        @Override
-                        public void mouseEntered(java.awt.event.MouseEvent evt) {
-                            if (popup != null) {
-                                popup.hide();
-                            }
-                            JLabel text = new JLabel("Click aqui para seleccionar la nueva imagen");
-                            text.setBackground(CReturner.getBackground());
-                            text.setOpaque(true);
-                            text.setForeground(CReturner.getTexto());
-                            text.setFont(coolvetica.deriveFont(14f));
-                            popup = PopupFactory.getSharedInstance().getPopup(evt.getComponent(), text, evt.getXOnScreen(), evt.getYOnScreen());
-                            popup.show();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT users.username, users.profile_pic, COUNT(playlist.user) AS total "
+                        + "FROM users, playlist "
+                        + "WHERE users.username = '" + username + "' AND playlist.privacity = 'publica' AND playlist.user = '" + username + "'";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    if (resul.next()) {
+                        titulo.setText(resul.getString("username"));
+                        String picture = resul.getString("profile_pic");
+                        if (picture == null) {
+                            picture = "http://localhost/hyper/wp-content/uploads/2022/04/user.png";
                         }
-
-                        @Override
-                        public void mouseExited(java.awt.event.MouseEvent evt) {
-                            popup.hide();
-                        }
-
-                        @Override
-                        public void mouseClicked(java.awt.event.MouseEvent evt) {
-                            JFileChooser inputPic = new JFileChooser();
-                            FileFilter imageFilter = new FileNameExtensionFilter(
-                                    "Image files", ImageIO.getReaderFileSuffixes());
-                            inputPic.setFileFilter(imageFilter);
-                            int returnVal = inputPic.showOpenDialog(Perfil.this);
-                            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                                fotoDePerfil = inputPic.getSelectedFile();
-                                Statement sentencia;
-                                String nuevoLink = uploadImage();
-                                try {
-                                    Class.forName("com.mysql.cj.jdbc.Driver");
-                                    Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-                                    sentencia = conexion.createStatement();
-                                    String sql = "UPDATE users "
-                                            + "SET users.profile_pic = '" + nuevoLink + "' "
-                                            + "WHERE users.username = '" + username + "'";
-                                    sentencia.executeUpdate(sql);
-                                    sentencia.close();
-                                    conexion.close();
-                                } catch (SQLException | ClassNotFoundException ex) {
-                                    Logger.getLogger(Perfil.class.getName()).log(Level.SEVERE, null, ex);
+                        ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(picture)));
+                        portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
+                        num.setText(resul.getString("total") + " listas públicas");
+                        if (username.equalsIgnoreCase(miUsername)) {
+                            portada.addMouseListener(new java.awt.event.MouseAdapter() {
+                                @Override
+                                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                                    if (popup != null) {
+                                        popup.hide();
+                                    }
+                                    JLabel text = new JLabel("Click aqui para seleccionar la nueva imagen");
+                                    text.setBackground(CReturner.getBackground());
+                                    text.setOpaque(true);
+                                    text.setForeground(CReturner.getTexto());
+                                    text.setFont(coolvetica.deriveFont(14f));
+                                    popup = PopupFactory.getSharedInstance().getPopup(evt.getComponent(), text, evt.getXOnScreen(), evt.getYOnScreen());
+                                    popup.show();
                                 }
-                                ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(nuevoLink)));
-                                portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
-                                cargarNuevoPanel();
-                            }
+
+                                @Override
+                                public void mouseExited(java.awt.event.MouseEvent evt) {
+                                    popup.hide();
+                                }
+
+                                @Override
+                                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                    JFileChooser inputPic = new JFileChooser();
+                                    FileFilter imageFilter = new FileNameExtensionFilter(
+                                            "Image files", ImageIO.getReaderFileSuffixes());
+                                    inputPic.setFileFilter(imageFilter);
+                                    int returnVal = inputPic.showOpenDialog(Perfil.this);
+                                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                                        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                        fotoDePerfil = inputPic.getSelectedFile();
+                                        Statement sentencia;
+                                        String nuevoLink = uploadImage();
+                                        try {
+                                            Class.forName("com.mysql.cj.jdbc.Driver");
+                                            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                                                sentencia = conexion.createStatement();
+                                                String sql = "UPDATE users "
+                                                        + "SET users.profile_pic = '" + nuevoLink + "' "
+                                                        + "WHERE users.username = '" + username + "'";
+                                                sentencia.executeUpdate(sql);
+                                                sentencia.close();
+                                            }
+                                        } catch (SQLException | ClassNotFoundException ex) {
+                                            Logger.getLogger(Perfil.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                        ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(nuevoLink)));
+                                        portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
+                                        cargarNuevoPanel();
+                                        setCursor(null);
+                                    }
+                                }
+                            });
                         }
-                    });
+                    }
                 }
+
+                sentencia.close();
             }
-
-            resul.close();
-
-            sentencia.close();
-
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Perfil.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -296,28 +296,30 @@ public class Perfil extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT playlist_id, picture, name, user "
-                    + "FROM playlist "
-                    + "WHERE playlist.user = '" + username + "'";
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT playlist_id, picture, name, user "
+                        + "FROM playlist "
+                        + "WHERE playlist.user = '" + username + "'";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        listas1.add(elemento);
                     }
-                });
-                listas1.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Perfil.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -396,16 +398,16 @@ public class Perfil extends JPanel {
             byte[] outputByteArray = bos.toByteArray();
             String base64EncodedString = Base64.getEncoder().encodeToString(outputByteArray);
 
-            Map content = new Hashtable();
-            content.put("name", fotoDePerfil.getName());
-            content.put("type", "image/" + formato);
-            content.put("bits", base64EncodedString);
-            content.put("overwrite", false);
+            Map contenido = new HashMap();
+            contenido.put("name", fotoDePerfil.getName());
+            contenido.put("type", "image/" + formato);
+            contenido.put("bits", base64EncodedString);
+            contenido.put("overwrite", false);
             Object result = rpcClient.execute("wp.uploadFile", new Object[]{
                 0,
                 "root",
                 "root",
-                content
+                contenido
             });
 
             int start = result.toString().indexOf("thumbnail=") + 10;
@@ -414,7 +416,7 @@ public class Perfil extends JPanel {
             // Esta mal configurado el encoding que le llega a Wordpress y he 
             // tenido que hacer este feo apaño para por lo menos poder usarlo.
             Path source = Paths.get(fotoDePerfil.getPath());
-            Path target = Paths.get("E:/xampp/htdocs/" + linkImagen.substring(17));
+            Path target = Paths.get(CReturner.getRutaXampp() + linkImagen.substring(17));
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (XmlRpcException | IOException e) {
             System.out.println("Imagen no subida.");

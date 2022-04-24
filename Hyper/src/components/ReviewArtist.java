@@ -1,24 +1,25 @@
 package components;
 
+import appManagement.Utilities;
 import java.awt.Font;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 13-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
  */
 public class ReviewArtist extends JPanel {
 
-    ColorReturner CReturner = new ColorReturner();
+    private ColorReturner CReturner = new ColorReturner();
     private String idArtist;
     private final ImgCircleConverter convertidor = new ImgCircleConverter();
 

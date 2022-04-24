@@ -22,7 +22,7 @@ import javax.swing.JPanel;
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 23-03-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -165,11 +165,8 @@ public class Login extends JPanel {
         acceder.setBackground(new Color(255, 223, 76));
         acceder.setBorder(null);
         acceder.setPreferredSize(new java.awt.Dimension(119, 40));
-        acceder.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loguearse();
-            }
+        acceder.addActionListener((java.awt.event.ActionEvent evt) -> {
+            loguearse();
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

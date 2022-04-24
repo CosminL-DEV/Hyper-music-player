@@ -10,20 +10,20 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 24-03-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
  */
 public class Credits extends JDialog {
 
-    ColorReturner CReturner = new ColorReturner();
+    private ColorReturner CReturner = new ColorReturner();
 
     public Credits() {
         InputStream is = Interfaz.class.getResourceAsStream("/fonts/LEMONMILK-Bold.otf");

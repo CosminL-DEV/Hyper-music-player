@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,7 +19,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,12 +33,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import appManagement.ColorReturner;
+import java.util.HashMap;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 23-03-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -53,7 +53,7 @@ public class Register extends JPanel {
     private javax.swing.JTextField inputUser;
     private javax.swing.JTextField inputNombre;
     private javax.swing.JCheckBox isArtist;
-    boolean fotoSelected = false;
+    private boolean fotoSelected = false;
     private File fotoDePerfil;
 
     public Register() {
@@ -221,16 +221,13 @@ public class Register extends JPanel {
         isArtist.setText("¿Eres artista?");
         isArtist.setBackground(new Color(240, 245, 249));
         extras2.add(isArtist);
-        isArtist.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent arg0) {
-                if (isArtist.isSelected()) {
-                    inputNombre.setEnabled(true);
-                    inputNombre.setText("");
-                } else {
-                    inputNombre.setEnabled(false);
-                    inputNombre.setText("(Solo rellenar si eres artista)");
-                }
+        isArtist.addItemListener((ItemEvent arg0) -> {
+            if (isArtist.isSelected()) {
+                inputNombre.setEnabled(true);
+                inputNombre.setText("");
+            } else {
+                inputNombre.setEnabled(false);
+                inputNombre.setText("(Solo rellenar si eres artista)");
             }
         });
         JLabel separar = new JLabel("             ");
@@ -240,20 +237,17 @@ public class Register extends JPanel {
         seleccionar.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         seleccionar.setPreferredSize(new java.awt.Dimension(25, 20));
         extras2.add(seleccionar);
-        seleccionar.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JFileChooser inputPic = new JFileChooser();
-                FileFilter imageFilter = new FileNameExtensionFilter(
-                        "Image files", ImageIO.getReaderFileSuffixes());
-                inputPic.setFileFilter(imageFilter);
-                int returnVal = inputPic.showOpenDialog(Register.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    fotoDePerfil = inputPic.getSelectedFile();
-                    fotoSelected = true;
-                } else {
-                    fotoSelected = false;
-                }
+        seleccionar.addActionListener((java.awt.event.ActionEvent evt) -> {
+            JFileChooser inputPic = new JFileChooser();
+            FileFilter imageFilter = new FileNameExtensionFilter(
+                    "Image files", ImageIO.getReaderFileSuffixes());
+            inputPic.setFileFilter(imageFilter);
+            int returnVal = inputPic.showOpenDialog(Register.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                fotoDePerfil = inputPic.getSelectedFile();
+                fotoSelected = true;
+            } else {
+                fotoSelected = false;
             }
         });
         formulario.add(extras2, gridBagConstraints);
@@ -264,11 +258,8 @@ public class Register extends JPanel {
         acceder.setBackground(new Color(255, 223, 76));
         acceder.setBorder(null);
         acceder.setPreferredSize(new java.awt.Dimension(119, 40));
-        acceder.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                registrarse();
-            }
+        acceder.addActionListener((java.awt.event.ActionEvent evt) -> {
+            registrarse();
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -292,36 +283,36 @@ public class Register extends JPanel {
             PreparedStatement stmt;
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-                String linkImagen = null;
-                if (fotoSelected) {
-                    linkImagen = uploadImage();
-                    stmt = conexion.prepareStatement("INSERT INTO users(username,password,profile_pic) VALUES (?, ?, ?)");
-                    stmt.setString(1, inputUser.getText());
-                    stmt.setString(2, String.valueOf(inputPass.getPassword()));
-                    stmt.setString(3, linkImagen);
-                } else {
-                    stmt = conexion.prepareStatement("INSERT INTO users(username,password) VALUES (?, ?)");
-                    stmt.setString(1, inputUser.getText());
-                    stmt.setString(2, String.valueOf(inputPass.getPassword()));
-                }
-                stmt.executeUpdate();
-                if (isArtist.isSelected()) {
-                    stmt = conexion.prepareStatement("INSERT INTO artist(name,username,profile_pic) VALUES (?, ?, ?)");
-                    stmt.setString(1, inputNombre.getText());
-                    stmt.setString(2, inputUser.getText());
-                    stmt.setString(3, linkImagen);
+                try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                    String linkImagen = null;
+                    if (fotoSelected) {
+                        linkImagen = uploadImage();
+                        stmt = conexion.prepareStatement("INSERT INTO users(username,password,profile_pic) VALUES (?, ?, ?)");
+                        stmt.setString(1, inputUser.getText());
+                        stmt.setString(2, String.valueOf(inputPass.getPassword()));
+                        stmt.setString(3, linkImagen);
+                    } else {
+                        stmt = conexion.prepareStatement("INSERT INTO users(username,password) VALUES (?, ?)");
+                        stmt.setString(1, inputUser.getText());
+                        stmt.setString(2, String.valueOf(inputPass.getPassword()));
+                    }
                     stmt.executeUpdate();
-                }
+                    if (isArtist.isSelected()) {
+                        stmt = conexion.prepareStatement("INSERT INTO artist(name,username,profile_pic) VALUES (?, ?, ?)");
+                        stmt.setString(1, inputNombre.getText());
+                        stmt.setString(2, inputUser.getText());
+                        stmt.setString(3, linkImagen);
+                        stmt.executeUpdate();
+                    }
 
-                setVisible(false);
-                inputUser.setText("");
-                inputPass.setText("");
-                inputPass2.setText("");
-                inputNombre.setText("");
-                isArtist.setSelected(false);
-                panelLogin.setVisible(true);
-                conexion.close();
+                    setVisible(false);
+                    inputUser.setText("");
+                    inputPass.setText("");
+                    inputPass2.setText("");
+                    inputNombre.setText("");
+                    isArtist.setSelected(false);
+                    panelLogin.setVisible(true);
+                }
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -343,16 +334,16 @@ public class Register extends JPanel {
             byte[] outputByteArray = bos.toByteArray();
             String base64EncodedString = Base64.getEncoder().encodeToString(outputByteArray);
 
-            Map content = new Hashtable();
-            content.put("name", fotoDePerfil.getName());
-            content.put("type", "image/" + formato);
-            content.put("bits", base64EncodedString);
-            content.put("overwrite", false);
+            Map contenido = new HashMap();
+            contenido.put("name", fotoDePerfil.getName());
+            contenido.put("type", "image/" + formato);
+            contenido.put("bits", base64EncodedString);
+            contenido.put("overwrite", false);
             Object result = rpcClient.execute("wp.uploadFile", new Object[]{
                 0,
                 "root",
                 "root",
-                content
+                contenido
             });
 
             int start = result.toString().indexOf("thumbnail=") + 10;
@@ -360,8 +351,9 @@ public class Register extends JPanel {
             linkImagen = result.toString().substring(start, end);
             // Esta mal configurado el encoding que le llega a Wordpress y he 
             // tenido que hacer este feo apaño para por lo menos poder usarlo.
+            ColorReturner CReturner = new ColorReturner();
             Path source = Paths.get(fotoDePerfil.getPath());
-            Path target = Paths.get("E:/xampp/htdocs/" + linkImagen.substring(17));
+            Path target = Paths.get(CReturner.getRutaXampp() + linkImagen.substring(17));
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (XmlRpcException | IOException e) {
             System.out.println("Imagen no subida.");
@@ -372,7 +364,6 @@ public class Register extends JPanel {
     private boolean comprobarDatos() {
         boolean valido = true;
         Statement sentencia;
-        PreparedStatement stmt;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");

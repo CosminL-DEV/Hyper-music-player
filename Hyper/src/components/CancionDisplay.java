@@ -1,6 +1,6 @@
-package tabla;
+package components;
 
-import components.Utilities;
+import appManagement.Utilities;
 import java.awt.Font;
 import java.awt.Image;
 import java.sql.Connection;
@@ -13,24 +13,26 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 22-03-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
  */
 public class CancionDisplay extends JPanel {
 
+    private String idCancion;
+
     public CancionDisplay(ImageIcon playIcon, String portadaLink, String tituloSong, String idCancion) {
+        this.idCancion = idCancion;
         java.awt.GridBagConstraints gridBagConstraints;
         Font coolvetica = Utilities.cargarCoolvetica();
         ColorReturner CReturner = new ColorReturner();
-        setOpaque(false);
         setBackground(CReturner.getSelected());
 
         JLabel play = new javax.swing.JLabel();
@@ -74,19 +76,19 @@ public class CancionDisplay extends JPanel {
         int contador = 0;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT artist.name "
-                    + "FROM artist, registro_song "
-                    + "WHERE artist.artist_id = registro_song.artist_id AND registro_song.song_id = '" + idCancion + "'";
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                artistasArray[contador] = resul.getString("name");
-                contador++;
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT artist.name "
+                        + "FROM artist, registro_song "
+                        + "WHERE artist.artist_id = registro_song.artist_id AND registro_song.song_id = '" + idCancion + "'";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        artistasArray[contador] = resul.getString("name");
+                        contador++;
+                    }
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(CancionDisplay.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -106,6 +108,10 @@ public class CancionDisplay extends JPanel {
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
         add(artistas, gridBagConstraints);
+    }
+
+    public String getIdCancion() {
+        return idCancion;
     }
 
 }

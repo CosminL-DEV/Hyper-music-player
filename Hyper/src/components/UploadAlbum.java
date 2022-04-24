@@ -1,6 +1,8 @@
 package components;
 
-import details.Album;
+import dialogs.EditDialog;
+import appManagement.Utilities;
+import album.Album;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -23,7 +25,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,15 +46,15 @@ import org.apache.commons.io.FileUtils;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import songManager.QueueManager;
-import songManager.QueueManager.Cancion;
-import themeManagement.ColorReturner;
+import songManager.BotBar;
+import appManagement.ColorReturner;
+import java.util.HashMap;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 15-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -68,8 +69,8 @@ public class UploadAlbum extends JPanel {
     private JPanel content;
     private JScrollPane scrollPane;
     private JPanel main;
-    private JPanel botBar;
-    private JPanel topBar;
+    private BotBar botBar;
+    private TopBar topBar;
     private JLabel home;
     private JFrame window;
     private Popup popup;
@@ -84,8 +85,8 @@ public class UploadAlbum extends JPanel {
     private JPanel botones;
     private String albumId;
 
-    public UploadAlbum(String idArtista, JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, 
-            JPanel main, JPanel topBar, JLabel home, JFrame window) {
+    public UploadAlbum(String idArtista, JPanel listaPlaylist, JPanel interfazPrinc, BotBar botBar, JScrollPane scrollPane,
+            JPanel main, TopBar topBar, JLabel home, JFrame window) {
         this.idArtista = idArtista;
         this.content = this;
         this.listaPlaylist = listaPlaylist;
@@ -318,15 +319,13 @@ public class UploadAlbum extends JPanel {
         subir.setBackground(CReturner.getTexto());
         subir.setBorder(null);
         subir.setPreferredSize(new Dimension(300, 50));
-        subir.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if (comprobarDatos()) {
-                    Statement sentencia;
-                    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                    try {
-                        Class.forName("com.mysql.cj.jdbc.Driver");
-                        Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
+        subir.addActionListener((java.awt.event.ActionEvent evt) -> {
+            if (comprobarDatos()) {
+                Statement sentencia;
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
                         sentencia = conexion.createStatement();
                         linkPicture = uploadImage();
                         String sql = "INSERT INTO album(name, artist_id, picture) "
@@ -362,17 +361,16 @@ public class UploadAlbum extends JPanel {
                             sentencia.executeUpdate(sql);
                         }
                         sentencia.close();
-                        conexion.close();
-                    } catch (SQLException | ClassNotFoundException ex) {
-                        Logger.getLogger(EditDialog.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    setCursor(null);
-                    content = new Album(albumId, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                    cargarNuevoPanel();
-                    interfazPrinc.revalidate();
-                    interfazPrinc.repaint();
-
+                } catch (SQLException | ClassNotFoundException ex) {
+                    Logger.getLogger(EditDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                setCursor(null);
+                content = new Album(albumId, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                cargarNuevoPanel();
+                interfazPrinc.revalidate();
+                interfazPrinc.repaint();
+
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -419,8 +417,6 @@ public class UploadAlbum extends JPanel {
 
     private void cargarNuevoPanel() {
         main.removeAll();
-
-        java.awt.GridBagConstraints gridBagConstraints;
 
         topBar = new TopBar(listaPlaylist, interfazPrinc, botBar, scrollPane, main, home, window);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -471,16 +467,16 @@ public class UploadAlbum extends JPanel {
             byte[] outputByteArray = bos.toByteArray();
             String base64EncodedString = Base64.getEncoder().encodeToString(outputByteArray);
 
-            Map content = new Hashtable();
-            content.put("name", archivoFoto.getName());
-            content.put("type", "image/" + formato);
-            content.put("bits", base64EncodedString);
-            content.put("overwrite", false);
+            Map contenido = new HashMap();
+            contenido.put("name", archivoFoto.getName());
+            contenido.put("type", "image/" + formato);
+            contenido.put("bits", base64EncodedString);
+            contenido.put("overwrite", false);
             Object result = rpcClient.execute("wp.uploadFile", new Object[]{
                 0,
                 "root",
                 "root",
-                content
+                contenido
             });
 
             int start = result.toString().indexOf("thumbnail=") + 10;
@@ -489,7 +485,7 @@ public class UploadAlbum extends JPanel {
             // Esta mal configurado el encoding que le llega a Wordpress y he 
             // tenido que hacer este feo apaño para por lo menos poder usarlo.
             Path source = Paths.get(archivoFoto.getPath());
-            Path target = Paths.get("E:/xampp/htdocs/" + linkImagen.substring(17));
+            Path target = Paths.get(CReturner.getRutaXampp() + linkImagen.substring(17));
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (XmlRpcException | IOException e) {
             System.out.println("Imagen no subida.");
@@ -506,16 +502,16 @@ public class UploadAlbum extends JPanel {
             rpcClient.setConfig(config);
             byte[] bytes = FileUtils.readFileToByteArray(archivoCancion);
             String base64EncodedString = Base64.getEncoder().encodeToString(bytes);
-            Map content = new Hashtable();
-            content.put("name", archivoCancion.getName());
-            content.put("type", "audio/wav");
-            content.put("bits", base64EncodedString);
-            content.put("overwrite", false);
+            Map contenido = new HashMap();
+            contenido.put("name", archivoCancion.getName());
+            contenido.put("type", "audio/wav");
+            contenido.put("bits", base64EncodedString);
+            contenido.put("overwrite", false);
             Object result = rpcClient.execute("wp.uploadFile", new Object[]{
                 0,
                 "root",
                 "root",
-                content
+                contenido
             });
 
             int start = result.toString().indexOf("thumbnail=") + 10;
@@ -524,7 +520,7 @@ public class UploadAlbum extends JPanel {
             // Esta mal configurado el encoding que le llega a Wordpress y he 
             // tenido que hacer este feo apaño para por lo menos poder usarlo.
             Path source = Paths.get(archivoCancion.getPath());
-            Path target = Paths.get("E:/xampp/htdocs/" + songLink.substring(17));
+            Path target = Paths.get(CReturner.getRutaXampp() + songLink.substring(17));
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (XmlRpcException | IOException e) {
             System.out.println("Canción no subida.");

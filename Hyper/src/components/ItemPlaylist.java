@@ -1,18 +1,19 @@
 package components;
 
+import appManagement.Utilities;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 01-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -42,12 +43,12 @@ public class ItemPlaylist extends JPanel {
         }
         add(principal);
     }
-    
-    public void setColor(Color color){
+
+    public void setColor(Color color) {
         principal.setForeground(color);
     }
-    
-    public String getId(){
+
+    public String getId() {
         return idPlaylist;
     }
 }

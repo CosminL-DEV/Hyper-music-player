@@ -1,12 +1,15 @@
 package views;
 
+import interfaz.Interfaz;
 import components.ReviewPlaylist;
 import components.ScrollBar;
 import components.TopBar;
-import components.Utilities;
-import details.Album;
-import details.Playlist;
-import interfaz.Interfaz;
+import appManagement.Utilities;
+import appManagement.ColorReturner;
+import songManager.BotBar;
+import album.Album;
+import playlist.Playlist;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -23,36 +26,33 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import songManager.QueueManager;
-import songManager.QueueManager.Cancion;
-import themeManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 22-03-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
  */
 public class Inicio extends JPanel {
 
-    ColorReturner CReturner = new ColorReturner();
-    java.awt.GridBagConstraints gridBagConstraints;
-    Font coolvetica = Utilities.cargarCoolvetica();
-    String username;
-    private JPanel content;
-    private JScrollPane scrollPane;
-    private JPanel main;
-    private JPanel botBar;
-    private JPanel topBar;
-    private JPanel interfazPrinc;
-    private JLabel home;
-    private JPanel listaPlaylist;
+    private ColorReturner CReturner = new ColorReturner();
+    private java.awt.GridBagConstraints gridBagConstraints;
+    private Font coolvetica = Utilities.cargarCoolvetica();
+    private String username;
     private JFrame window;
+    private BotBar botBar;
+    private TopBar topBar;
+    private JScrollPane scrollPane;
+    private JPanel interfazPrinc;
+    private JPanel content;
+    private JPanel main;
+    private JPanel listaPlaylist;
+    private JLabel home;
 
-    public Inicio(JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar,
+    public Inicio(JPanel interfazPrinc, BotBar botBar, JScrollPane scrollPane, JPanel main, TopBar topBar,
             JLabel home, JPanel listaPlaylist, JFrame window) {
         this.window = window;
         this.content = this;
@@ -140,28 +140,30 @@ public class Inicio extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT playlist_id, picture, name, user "
-                    + "FROM playlist "
-                    + "LIMIT 5";
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT playlist_id, picture, name, user "
+                        + "FROM playlist "
+                        + "LIMIT 5";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        listas1.add(elemento);
                     }
-                });
-                listas1.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -184,85 +186,6 @@ public class Inicio extends JPanel {
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 50, 0);
         add(deHyper, gridBagConstraints);
-    }
-
-    private void addListasPropias() {
-        JPanel tusListas = new javax.swing.JPanel();
-        JPanel texto1 = new javax.swing.JPanel();
-        JLabel titulo1 = new javax.swing.JLabel();
-        JPanel listas1 = new javax.swing.JPanel();
-
-        tusListas.setBackground(CReturner.getBackground());
-        tusListas.setLayout(new java.awt.GridBagLayout());
-
-        texto1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 5));
-        texto1.setBackground(CReturner.getBackground());
-        titulo1.setText("Sumérgete de nuevo en tu música");
-        titulo1.setFont(coolvetica.deriveFont(22f));
-        titulo1.setForeground(CReturner.getTexto());
-        texto1.add(titulo1);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
-        tusListas.add(texto1, gridBagConstraints);
-
-        listas1.setPreferredSize(new java.awt.Dimension(150, 200));
-        listas1.setLayout(new java.awt.GridLayout(1, 5, 0, 0));
-        listas1.setBackground(CReturner.getBackground());
-
-        Statement sentencia;
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT * FROM "
-                    + "(SELECT playlist.playlist_id ,playlist.picture, playlist.name, playlist.user "
-                    + "FROM playlist, registro_savedlist "
-                    + "WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user='" + username + "') AS temp "
-                    + "ORDER BY RAND() LIMIT 5";
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
-                    }
-                });
-                listas1.add(elemento);
-            }
-            resul.close();
-            sentencia.close();
-            conexion.close();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 0.1;
-        tusListas.add(listas1, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 50, 0);
-        add(tusListas, gridBagConstraints);
     }
 
     private void addAlbumNoved() {
@@ -296,30 +219,32 @@ public class Inicio extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT album.album_id, album.picture, album.name AS nombre, artist.name AS artista "
-                    + "FROM album, artist "
-                    + "WHERE album.artist_id = artist.artist_id "
-                    + "ORDER BY album.fecha DESC "
-                    + "LIMIT 5";
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("album_id"), resul.getString("picture"), resul.getString("nombre"), resul.getString("artista"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT album.album_id, album.picture, album.name AS nombre, artist.name AS artista "
+                        + "FROM album, artist "
+                        + "WHERE album.artist_id = artist.artist_id "
+                        + "ORDER BY album.fecha DESC "
+                        + "LIMIT 5";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("album_id"), resul.getString("picture"), resul.getString("nombre"), resul.getString("artista"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        listas1.add(elemento);
                     }
-                });
-                listas1.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -338,7 +263,7 @@ public class Inicio extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 50, 0);
         add(albums, gridBagConstraints);
@@ -375,29 +300,31 @@ public class Inicio extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT playlist_id, picture, name, user "
-                    + "FROM playlist "
-                    + "WHERE user = 'Hyper' AND playlist_id > 5 "
-                    + "LIMIT 5";
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT playlist_id, picture, name, user "
+                        + "FROM playlist "
+                        + "WHERE user = 'Hyper' AND playlist_id > 5 "
+                        + "LIMIT 5";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        listas1.add(elemento);
                     }
-                });
-                listas1.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -416,7 +343,7 @@ public class Inicio extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 50, 0);
         add(generos, gridBagConstraints);
@@ -453,30 +380,32 @@ public class Inicio extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT * FROM "
-                    + "	(SELECT playlist.playlist_id ,playlist.picture, playlist.name, playlist.user "
-                    + "	FROM playlist "
-                    + "	WHERE playlist.user!='" + username + "' AND playlist.user !='Hyper' AND playlist.privacity='publica') AS temp "
-                    + "ORDER BY RAND() LIMIT 5";
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT * FROM "
+                        + "	(SELECT playlist.playlist_id ,playlist.picture, playlist.name, playlist.user "
+                        + "	FROM playlist "
+                        + "	WHERE playlist.user!='" + username + "' AND playlist.user !='Hyper' AND playlist.privacity='publica') AS temp "
+                        + "ORDER BY RAND() LIMIT 5";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        listas1.add(elemento);
                     }
-                });
-                listas1.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -495,10 +424,91 @@ public class Inicio extends JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
         add(albums, gridBagConstraints);
+    }
+
+    private void addListasPropias() {
+        JPanel tusListas = new javax.swing.JPanel();
+        JPanel texto1 = new javax.swing.JPanel();
+        JLabel titulo1 = new javax.swing.JLabel();
+        JPanel listas1 = new javax.swing.JPanel();
+
+        tusListas.setBackground(CReturner.getBackground());
+        tusListas.setLayout(new java.awt.GridBagLayout());
+
+        texto1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 5));
+        texto1.setBackground(CReturner.getBackground());
+        titulo1.setText("Sumérgete de nuevo en tu música");
+        titulo1.setFont(coolvetica.deriveFont(22f));
+        titulo1.setForeground(CReturner.getTexto());
+        texto1.add(titulo1);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
+        tusListas.add(texto1, gridBagConstraints);
+
+        listas1.setPreferredSize(new java.awt.Dimension(150, 200));
+        listas1.setLayout(new java.awt.GridLayout(1, 5, 0, 0));
+        listas1.setBackground(CReturner.getBackground());
+
+        Statement sentencia;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT * FROM "
+                        + "(SELECT playlist.playlist_id ,playlist.picture, playlist.name, playlist.user "
+                        + "FROM playlist, registro_savedlist "
+                        + "WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user='" + username + "') AS temp "
+                        + "ORDER BY RAND() LIMIT 5";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        listas1.add(elemento);
+                    }
+                }
+                sentencia.close();
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.weightx = 0.1;
+        tusListas.add(listas1, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.CENTER;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 50, 0);
+        add(tusListas, gridBagConstraints);
     }
 
     private void cargarNuevoPanel() {

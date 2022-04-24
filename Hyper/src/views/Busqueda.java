@@ -1,16 +1,23 @@
 package views;
 
+import dialogs.CreatePlaylist;
+import components.ElementoListaPopup;
+import components.ItemPlaylist;
 import components.ReviewArtist;
 import components.ReviewPlaylist;
 import components.ScrollBar;
 import components.TabPanel;
 import components.TopBar;
-import components.Utilities;
-import details.Album;
-import details.Playlist;
+import appManagement.Utilities;
+import album.Album;
+import playlist.Playlist;
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -23,23 +30,24 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import profiles.Artista;
-import songManager.QueueManager;
-import songManager.QueueManager.Cancion;
-import tabla.CancionDisplay;
-import themeManagement.ColorReturner;
+import songManager.BotBar;
+import components.CancionDisplay;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 22-03-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -51,8 +59,8 @@ public class Busqueda extends JPanel {
     private JPanel content;
     private JScrollPane scrollPane;
     private JPanel main;
-    private JPanel botBar;
-    private JPanel topBar;
+    private BotBar botBar;
+    private TopBar topBar;
     private JLabel home;
     private String miUsername;
     private final ColorReturner CReturner = new ColorReturner();
@@ -67,10 +75,15 @@ public class Busqueda extends JPanel {
     private boolean primera = true;
     private JLabel search;
     private JFrame window;
-    
+    private JMenuItem optReproducir;
+    private JMenuItem optAddCola;
+    private JMenu optAddPlaylist;
+    private JPopupMenu pmenu;
+    private Statement sentenciaExtra;
+    private String idSelected;
 
-    public Busqueda(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, 
-            JPanel main, JPanel topBar, JLabel home, JLabel search, JFrame window) {
+    public Busqueda(JPanel listaPlaylist, JPanel interfazPrinc, BotBar botBar, JScrollPane scrollPane,
+            JPanel main, TopBar topBar, JLabel home, JLabel search, JFrame window) {
         this.playIcon = new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsSpecific() + "play.png")).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
         this.window = window;
         this.content = this;
@@ -90,6 +103,7 @@ public class Busqueda extends JPanel {
         addLateralIzq();
         addLateralDer();
         addTopPage();
+        setupPopup();
         devSongTab();
         devPlaylistTab();
         devAlbumTab();
@@ -136,12 +150,9 @@ public class Busqueda extends JPanel {
         tabP.addTab("Playlist", busqPlaylist);
         tabP.addTab("Albums", busqAlbum);
         tabP.addTab("Artistas", busqArtist);
-        tabP.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (e.getSource() instanceof JTabbedPane) {
-                    primera = true;
-                }
+        tabP.addChangeListener((ChangeEvent e) -> {
+            if (e.getSource() instanceof JTabbedPane) {
+                primera = true;
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -153,6 +164,145 @@ public class Busqueda extends JPanel {
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 0);
         add(tabP, gridBagConstraints);
+    }
+
+    private void setupPopup() {
+        pmenu = new JPopupMenu();
+        pmenu.setLayout(new java.awt.GridLayout(0, 1, 10, 5));
+        pmenu.setBorder(javax.swing.BorderFactory.createLineBorder(CReturner.getTexto(), 2));
+        pmenu.setBackground(CReturner.getBackground());
+        optReproducir = new javax.swing.JMenuItem();
+        optReproducir.setText("Reproducir");
+        optReproducir.setForeground(CReturner.getTexto());
+        optReproducir.setFont(coolvetica.deriveFont(15f));
+        optReproducir.setOpaque(true);
+        optReproducir.setBackground(CReturner.getBackground());
+        optReproducir.addActionListener((java.awt.event.ActionEvent evt) -> {
+            botBar.addCancion(idSelected);
+            botBar.revalidate();
+            botBar.repaint();
+        });
+        pmenu.add(optReproducir);
+
+        optAddCola = new javax.swing.JMenuItem();
+        optAddCola.setText("Añadir a la cola");
+        optAddCola.setForeground(CReturner.getTexto());
+        optAddCola.setFont(coolvetica.deriveFont(15f));
+        optAddCola.setOpaque(true);
+        optAddCola.setBackground(CReturner.getBackground());
+        optAddCola.addActionListener((java.awt.event.ActionEvent evt) -> {
+            botBar.addToCola(idSelected);
+        });
+        pmenu.add(optAddCola);
+
+        optAddPlaylist = new javax.swing.JMenu();
+        optAddPlaylist.setText("Añadir a la playlist");
+        optAddPlaylist.setForeground(CReturner.getTexto());
+        optAddPlaylist.setFont(coolvetica.deriveFont(15f));
+        optAddPlaylist.setOpaque(true);
+        optAddPlaylist.setBackground(CReturner.getBackground());
+
+        JMenuItem optAddNewLista = new javax.swing.JMenuItem();
+        optAddNewLista.setText("Añadir a una lista nueva");
+        optAddNewLista.setForeground(CReturner.getTexto());
+        optAddNewLista.setFont(coolvetica.deriveFont(15f));
+        optAddNewLista.setOpaque(true);
+        optAddNewLista.setBackground(CReturner.getBackground());
+        optAddNewLista.addActionListener((java.awt.event.ActionEvent evt) -> {
+            CreatePlaylist cp = new CreatePlaylist();
+            cp.setBounds(0, 0, 350, 270);
+            cp.setLocationRelativeTo(null);
+            cp.setVisible(true);
+            cp.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if (cp.getGuardado() == 1) {
+                        recargarListaPlaylist();
+                        interfazPrinc.revalidate();
+                        interfazPrinc.repaint();
+                        Statement sentencia;
+                        try {
+                            Class.forName("com.mysql.cj.jdbc.Driver");
+                            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                                sentencia = conexion.createStatement();
+                                sql = "INSERT INTO registro_playlist(playlist_id,song_id,user_added) "
+                                        + "VALUES('" + cp.getIdPlaylist() + "','" + idSelected + "','" + miUsername + "')";
+                                sentencia.executeUpdate(sql);
+                                sentencia.close();
+                            }
+                        } catch (SQLException | ClassNotFoundException ex) {
+                            Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            });
+        });
+        optAddPlaylist.add(optAddNewLista);
+        Statement sentencia;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                sql = "SELECT playlist.playlist_id, playlist.name "
+                        + "FROM playlist "
+                        + "WHERE user = '" + miUsername + "'";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ElementoListaPopup elemLista = new ElementoListaPopup();
+                        elemLista.setIdPlaylist(resul.getString("playlist_id"));
+                        elemLista.setText(resul.getString("name"));
+                        elemLista.setForeground(CReturner.getTexto());
+                        elemLista.setFont(coolvetica.deriveFont(15f));
+                        elemLista.setOpaque(true);
+                        elemLista.setBackground(CReturner.getBackground());
+                        elemLista.addActionListener((java.awt.event.ActionEvent evt) -> {
+                            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                            try {
+                                try (Connection conexion1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                                    sentenciaExtra = conexion1.createStatement();
+                                    String sql2 = "SELECT registro_playlist.song_id "
+                                            + "FROM registro_playlist "
+                                            + "WHERE registro_playlist.playlist_id = '" + elemLista.getIdPlaylist() + "' AND registro_playlist.song_id = '" + idSelected + "'";
+                                    sentenciaExtra = conexion1.createStatement();
+                                    ResultSet resul1 = sentenciaExtra.executeQuery(sql2);
+                                    boolean hacer = true;
+                                    if (resul1.next()) {
+                                        hacer = false;
+                                    }
+                                    resul1.close();
+                                    if (hacer) {
+                                        sql2 = "SELECT registro_savedlist.downloaded "
+                                                + "FROM registro_savedlist "
+                                                + "WHERE registro_savedlist.playlist_id = '" + elemLista.getIdPlaylist() + "' AND registro_savedlist.user = '" + miUsername + "'";
+                                        resul1 = sentenciaExtra.executeQuery(sql2);
+                                        boolean nuevaDownloaded = false;
+                                        if (resul1.next()) {
+                                            nuevaDownloaded = resul1.getString("downloaded").equals("1");
+                                        }
+                                        sql2 = "INSERT INTO registro_playlist(playlist_id,song_id,user_added) "
+                                                + "VALUES('" + elemLista.getIdPlaylist() + "','" + idSelected + "','" + miUsername + "')";
+                                        sentenciaExtra.executeUpdate(sql2);
+                                        if (nuevaDownloaded) {
+                                            Utilities.descargarCanciones(idSelected);
+                                        }
+                                    }
+                                    sentenciaExtra.close();
+                                }
+                            } catch (SQLException ex) {
+                                Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            setCursor(null);
+                        });
+                        optAddPlaylist.add(elemLista);
+                    }
+                }
+                sentencia.close();
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        pmenu.add(optAddPlaylist);
     }
 
     private void devSongTab() {
@@ -216,6 +366,7 @@ public class Busqueda extends JPanel {
         busqSong.add(contenedor, gridBagConstraints);
 
         resultados.setBackground(CReturner.getBackground());
+        resultados.setOpaque(false);
         resultados.setLayout(new java.awt.GridLayout(0, 1, 0, 10));
         sql = "SELECT song.song_id, song.picture, song.name "
                 + "FROM song "
@@ -237,17 +388,42 @@ public class Busqueda extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                CancionDisplay panel = new CancionDisplay(playIcon, resul.getString("picture"), resul.getString("name"), resul.getString("song_id"));
-                resultados.add(panel);
-                // Añadir listener a estos
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        CancionDisplay panel = new CancionDisplay(playIcon, resul.getString("picture"), resul.getString("name"), resul.getString("song_id"));
+                        panel.setBackground(CReturner.getBackground());
+                        panel.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent e) {
+                                if (e.getButton() == 3) {
+                                    idSelected = panel.getIdCancion();
+                                    pmenu.show(interfazPrinc, e.getXOnScreen(), e.getYOnScreen());
+                                } else if (e.getClickCount() == 2 && !e.isConsumed()) {
+                                    e.consume();
+                                    idSelected = panel.getIdCancion();
+                                    botBar.addCancion(idSelected);
+                                    botBar.revalidate();
+                                    botBar.repaint();
+                                }
+                            }
+
+                            @Override
+                            public void mouseEntered(java.awt.event.MouseEvent e) {
+                                panel.setBackground(CReturner.getSelected());
+                            }
+
+                            @Override
+                            public void mouseExited(java.awt.event.MouseEvent e) {
+                                panel.setBackground(CReturner.getBackground());
+                            }
+                        });
+                        resultados.add(panel);
+                    }
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Busqueda.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -335,25 +511,27 @@ public class Busqueda extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        resultados.add(elemento);
                     }
-                });
-                resultados.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Busqueda.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -442,25 +620,27 @@ public class Busqueda extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("album_id"), resul.getString("picture"), resul.getString("nombre"), resul.getString("artista"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("album_id"), resul.getString("picture"), resul.getString("nombre"), resul.getString("artista"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        resultados.add(elemento);
                     }
-                });
-                resultados.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Busqueda.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -502,7 +682,7 @@ public class Busqueda extends JPanel {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 sql = "SELECT artist.artist_id, artist.profile_pic, artist.name "
                         + "FROM artist "
-                        + "WHERE artist.name LIKE '"+inputTexto.getText()+"%' "
+                        + "WHERE artist.name LIKE '" + inputTexto.getText() + "%' "
                         + "ORDER BY artist.name "
                         + "LIMIT 20";
                 resultados.removeAll();
@@ -548,25 +728,69 @@ public class Busqueda extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewArtist elemento = new ReviewArtist(resul.getString("artist_id"), resul.getString("profile_pic"), resul.getString("name"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Artista(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewArtist elemento = new ReviewArtist(resul.getString("artist_id"), resul.getString("profile_pic"), resul.getString("name"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Artista(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        resultados.add(elemento);
                     }
-                });
-                resultados.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Busqueda.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void recargarListaPlaylist() {
+        Statement sentencia;
+        try {
+            listaPlaylist.removeAll();
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                sql = "SELECT playlist.playlist_id ,playlist.picture, playlist.name "
+                        + "FROM playlist, registro_savedlist "
+                        + "WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user='" + miUsername + "'";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ItemPlaylist elemento = new ItemPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), CReturner);
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                                elemento.setColor(new Color(255, 36, 36));
+                            }
+
+                            @Override
+                            public void mouseExited(java.awt.event.MouseEvent evt) {
+                                elemento.setColor(CReturner.getAbsoluto());
+                            }
+
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                            }
+                        });
+                        listaPlaylist.add(elemento);
+                    }
+                }
+                sentencia.close();
+            }
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Busqueda.class.getName()).log(Level.SEVERE, null, ex);
         }

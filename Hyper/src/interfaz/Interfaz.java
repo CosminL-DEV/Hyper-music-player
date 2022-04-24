@@ -4,12 +4,11 @@ import components.TopBar;
 import components.RoundedPanel;
 import components.ItemPlaylist;
 import songManager.BotBar;
-import components.CreatePlaylist;
-import components.EditDialog;
+import dialogs.CreatePlaylist;
 import components.ScrollBar;
-import components.Utilities;
-import details.Playlist;
+import playlist.Playlist;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -34,8 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
-import songManager.QueueManager;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
 import views.Biblioteca;
 import views.Busqueda;
 import views.Inicio;
@@ -44,7 +42,7 @@ import views.Inicio;
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 23-03-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -96,14 +94,14 @@ public class Interfaz extends JPanel {
                 Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
                 sentencia = conexion.createStatement();
                 String sql = "SELECT password FROM users WHERE username='" + username + "'";
-                ResultSet resul = sentencia.executeQuery(sql);
-                resul.next();
-                if (!pref.get("Password", "").equals(resul.getString(1))) {
-                    resul.close();
-                    sentencia.close();
-                    System.exit(0);
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    resul.next();
+                    if (!pref.get("Password", "").equals(resul.getString(1))) {
+                        resul.close();
+                        sentencia.close();
+                        System.exit(0);
+                    }
                 }
-                resul.close();
                 sentencia.close();
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
@@ -240,12 +238,14 @@ public class Interfaz extends JPanel {
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 content = new Inicio(esta, botBar, scrollPane, main, topBar, home, listaPlaylist, framePrincipal);
                 cargarNuevoPanel();
                 actualLabel = "Inicio";
                 home.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "homeSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
                 revalidate();
                 repaint();
+                setCursor(null);
             }
         });
         columna.add(home, gridBagConstraints);
@@ -280,12 +280,14 @@ public class Interfaz extends JPanel {
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 content = new Busqueda(listaPlaylist, esta, botBar, scrollPane, main, topBar, home, search, framePrincipal);
                 cargarNuevoPanel();
                 actualLabel = "Busqueda";
                 search.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "searchSelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
                 revalidate();
                 repaint();
+                setCursor(null);
             }
         });
         columna.add(search, gridBagConstraints);
@@ -320,12 +322,14 @@ public class Interfaz extends JPanel {
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 content = new Biblioteca(listaPlaylist, esta, botBar, scrollPane, main, topBar, home, framePrincipal);
                 cargarNuevoPanel();
                 actualLabel = "Biblioteca";
                 library.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "librarySelected.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
                 revalidate();
                 repaint();
+                setCursor(null);
             }
         });
         columna.add(library, gridBagConstraints);
@@ -402,38 +406,40 @@ public class Interfaz extends JPanel {
         try {
             listaPlaylist.removeAll();
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT playlist.playlist_id ,playlist.picture, playlist.name "
-                    + "FROM playlist, registro_savedlist "
-                    + "WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user='" + username + "'";
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ItemPlaylist elemento = new ItemPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), CReturner);
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseEntered(java.awt.event.MouseEvent evt) {
-                        elemento.setColor(new Color(255, 36, 36));
-                    }
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT playlist.playlist_id ,playlist.picture, playlist.name "
+                        + "FROM playlist, registro_savedlist "
+                        + "WHERE playlist.playlist_id=registro_savedlist.playlist_id AND registro_savedlist.user='" + username + "'";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ItemPlaylist elemento = new ItemPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), CReturner);
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                                elemento.setColor(new Color(255, 36, 36));
+                            }
 
-                    @Override
-                    public void mouseExited(java.awt.event.MouseEvent evt) {
-                        elemento.setColor(CReturner.getAbsoluto());
-                    }
+                            @Override
+                            public void mouseExited(java.awt.event.MouseEvent evt) {
+                                elemento.setColor(CReturner.getAbsoluto());
+                            }
 
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, esta, botBar, scrollPane, main, topBar, home, framePrincipal);
-                        cargarNuevoPanel();
-                        revalidate();
-                        repaint();
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Playlist(elemento.getId(), listaPlaylist, esta, botBar, scrollPane, main, topBar, home, framePrincipal);
+                                cargarNuevoPanel();
+                                revalidate();
+                                repaint();
+                                setCursor(null);
+                            }
+                        });
+                        listaPlaylist.add(elemento);
                     }
-                });
-                listaPlaylist.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }

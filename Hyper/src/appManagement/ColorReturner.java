@@ -1,4 +1,4 @@
-package themeManagement;
+package appManagement;
 
 import java.awt.Color;
 import java.io.File;
@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 22-03-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -29,6 +29,7 @@ public class ColorReturner {
 
     private Element eTheme;
     private String temaSelected;
+    private String rutaXampp;
 
     public ColorReturner() {
         try {
@@ -38,6 +39,7 @@ public class ColorReturner {
             Document documento = db.parse(file);
             documento.getDocumentElement().normalize();
             temaSelected = getThemeSelected(documento);
+            rutaXampp = getRutaPrograma(documento);
             NodeList nodoTema = documento.getElementsByTagName(temaSelected);
             Node nodoTheme = nodoTema.item(0);
             eTheme = (Element) nodoTheme;
@@ -55,14 +57,25 @@ public class ColorReturner {
         return eElement.getElementsByTagName("tema").item(0).getTextContent();
     }
 
+    private String getRutaPrograma(Document documento) {
+        NodeList nSelected = documento.getElementsByTagName("xampp");
+        Node nNode = nSelected.item(0);
+        Element eElement = (Element) nNode;
+        return eElement.getElementsByTagName("ruta").item(0).getTextContent();
+    }
+
     private Color transformador(String codigo) {
         String[] codigos = codigo.split(",");
         Color color = new Color(Integer.parseInt(codigos[0]), Integer.parseInt(codigos[1]), Integer.parseInt(codigos[2]));
         return color;
     }
-    
-    public String getTemaActual(){
+
+    public String getTemaActual() {
         return temaSelected;
+    }
+
+    public String getRutaXampp() {
+        return rutaXampp;
     }
 
     public Color getBackground() {
@@ -129,8 +142,8 @@ public class ColorReturner {
         String codigo = eTheme.getElementsByTagName("selected").item(0).getTextContent();
         return transformador(codigo);
     }
-    
-    public Path getFolderPath(){
+
+    public Path getFolderPath() {
         Path localPath = Paths.get(System.getenv("LOCALAPPDATA"));
         Path finalPath = Paths.get(localPath.toString(), "Hyper", "Almacenamiento");
         return finalPath;

@@ -29,7 +29,8 @@ import javax.swing.plaf.basic.ComboPopup;
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 11-04-2022
+ * @param <E>
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************

@@ -1,5 +1,8 @@
 package components;
 
+import appManagement.AdminPlaylistUpdater;
+import appManagement.Utilities;
+import dialogs.UploadSong;
 import configuracion.Configuracion;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -25,15 +28,14 @@ import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import profiles.Artista;
 import profiles.Perfil;
-import songManager.QueueManager;
-import songManager.QueueManager.Cancion;
-import themeManagement.ColorReturner;
+import songManager.BotBar;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 22-03-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -53,8 +55,8 @@ public class TopBar extends JPanel {
     private JPanel content;
     private JScrollPane scrollPane;
     private JPanel main;
-    private JPanel botBar;
-    private JPanel topBar;
+    private BotBar botBar;
+    private TopBar topBar;
     private JLabel home;
     private JFrame window;
     private Preferences pref = Preferences.userRoot().node("Rememberme");
@@ -62,7 +64,7 @@ public class TopBar extends JPanel {
     private String idDelArtista = null;
     private JDialog options;
 
-    public TopBar(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, 
+    public TopBar(JPanel listaPlaylist, JPanel interfazPrinc, BotBar botBar, JScrollPane scrollPane, JPanel main,
             JLabel home, JFrame window) {
         miUsername = pref.get("ActualUser", "");
         this.window = window;
@@ -139,7 +141,6 @@ public class TopBar extends JPanel {
     }
 
     private ImageIcon getIconUser() {
-        Preferences pref = Preferences.userRoot().node("Rememberme");
         String user = pref.get("ActualUser", "");
         String picture = Utilities.getIconUser(user);
         ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(picture)));
@@ -279,60 +280,60 @@ public class TopBar extends JPanel {
             String sql = "SELECT artist.artist_id "
                     + "FROM artist "
                     + "WHERE artist.username='" + miUsername + "'";
-            ResultSet resul = sentencia.executeQuery(sql);
-            if (resul.next()) {
-                idDelArtista = resul.getString("artist_id");
-                uploadSong.setText("Subir canción");
-                uploadSong.setForeground(CReturner.getBackground());
-                uploadSong.setBackground(CReturner.getTexto3());
-                uploadSong.setFont(coolvetica.deriveFont(18f));
-                uploadSong.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        UploadSong cp = new UploadSong();
-                        cp.setBounds(0, 0, 350, 270);
-                        cp.setLocationRelativeTo(null);
-                        cp.setVisible(true);
-                        popup.hide();
-                    }
-                });
-                gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = ejeY;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-                gridBagConstraints.weighty = 0.1;
-                gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-                desplegable.add(uploadSong, gridBagConstraints);
-                ejeY++;
+            try (ResultSet resul = sentencia.executeQuery(sql)) {
+                if (resul.next()) {
+                    idDelArtista = resul.getString("artist_id");
+                    uploadSong.setText("Subir canción");
+                    uploadSong.setForeground(CReturner.getBackground());
+                    uploadSong.setBackground(CReturner.getTexto3());
+                    uploadSong.setFont(coolvetica.deriveFont(18f));
+                    uploadSong.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            UploadSong cp = new UploadSong();
+                            cp.setBounds(0, 0, 350, 270);
+                            cp.setLocationRelativeTo(null);
+                            cp.setVisible(true);
+                            popup.hide();
+                        }
+                    });
+                    gridBagConstraints = new java.awt.GridBagConstraints();
+                    gridBagConstraints.gridx = 0;
+                    gridBagConstraints.gridy = ejeY;
+                    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                    gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                    gridBagConstraints.weighty = 0.1;
+                    gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+                    desplegable.add(uploadSong, gridBagConstraints);
+                    ejeY++;
 
-                uploadAlbum.setText("Subir álbum");
-                uploadAlbum.setForeground(CReturner.getBackground());
-                uploadAlbum.setBackground(CReturner.getTexto3());
-                uploadAlbum.setFont(coolvetica.deriveFont(18f));
-                uploadAlbum.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        content = new UploadAlbum(idDelArtista, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        popup.hide();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
-                    }
-                });
-                gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = ejeY;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-                gridBagConstraints.weighty = 0.1;
-                gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-                desplegable.add(uploadAlbum, gridBagConstraints);
-                ejeY++;
-            } else {
-                desplegable.setPreferredSize(new Dimension(125, 100));
+                    uploadAlbum.setText("Subir álbum");
+                    uploadAlbum.setForeground(CReturner.getBackground());
+                    uploadAlbum.setBackground(CReturner.getTexto3());
+                    uploadAlbum.setFont(coolvetica.deriveFont(18f));
+                    uploadAlbum.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            content = new UploadAlbum(idDelArtista, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                            cargarNuevoPanel();
+                            popup.hide();
+                            interfazPrinc.revalidate();
+                            interfazPrinc.repaint();
+                        }
+                    });
+                    gridBagConstraints = new java.awt.GridBagConstraints();
+                    gridBagConstraints.gridx = 0;
+                    gridBagConstraints.gridy = ejeY;
+                    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                    gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+                    gridBagConstraints.weighty = 0.1;
+                    gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+                    desplegable.add(uploadAlbum, gridBagConstraints);
+                    ejeY++;
+                } else {
+                    desplegable.setPreferredSize(new Dimension(125, 100));
+                }
             }
-            resul.close();
             sentencia.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(TopBar.class.getName()).log(Level.SEVERE, null, ex);

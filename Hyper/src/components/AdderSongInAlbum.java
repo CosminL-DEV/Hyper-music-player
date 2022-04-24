@@ -1,5 +1,6 @@
 package components;
 
+import appManagement.Utilities;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
@@ -10,13 +11,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 15-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -47,7 +48,7 @@ public class AdderSongInAlbum extends JPanel {
         inputNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                if (inputNombre.getText().length() > 20) {
+                if (inputNombre.getText().length() > 25) {
                     inputNombre.setText(inputNombre.getText().substring(0, 25));
                 }
             }
@@ -102,20 +103,17 @@ public class AdderSongInAlbum extends JPanel {
         subirCancion.setBackground(CReturner.getTexto());
         subirCancion.setBorder(null);
         subirCancion.setPreferredSize(new Dimension(150, 30));
-        subirCancion.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JFileChooser inputSong = new JFileChooser();
-                FileFilter songFilter = new FileNameExtensionFilter("wav files", "wav");
-                inputSong.setFileFilter(songFilter);
-                int returnVal = inputSong.showOpenDialog(AdderSongInAlbum.this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    archivoCancion = inputSong.getSelectedFile();
-                    nombreArchivo.setText(archivoCancion.getName());
-                    cancionSeleccionada = true;
-                } else {
-                    cancionSeleccionada = false;
-                }
+        subirCancion.addActionListener((java.awt.event.ActionEvent evt) -> {
+            JFileChooser inputSong = new JFileChooser();
+            FileFilter songFilter = new FileNameExtensionFilter("wav files", "wav");
+            inputSong.setFileFilter(songFilter);
+            int returnVal = inputSong.showOpenDialog(AdderSongInAlbum.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                archivoCancion = inputSong.getSelectedFile();
+                nombreArchivo.setText(archivoCancion.getName());
+                cancionSeleccionada = true;
+            } else {
+                cancionSeleccionada = false;
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();

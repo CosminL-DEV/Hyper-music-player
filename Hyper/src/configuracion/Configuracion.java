@@ -4,7 +4,8 @@ import components.Combobox;
 import components.ImgCircleConverter;
 import components.ScrollBar;
 import components.TopBar;
-import components.Utilities;
+import appManagement.Utilities;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -23,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Base64;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,14 +46,16 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import profiles.Artista;
 import profiles.Perfil;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
+import java.util.HashMap;
 import org.apache.commons.io.FileUtils;
+import songManager.BotBar;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 14-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -68,8 +70,8 @@ public class Configuracion extends JPanel {
     private JPanel content;
     private JScrollPane scrollPane;
     private JPanel main;
-    private JPanel botBar;
-    private JPanel topBar;
+    private BotBar botBar;
+    private TopBar topBar;
     private JPanel interfazPrinc;
     private JLabel home;
     private JPanel listaPlaylist;
@@ -84,7 +86,8 @@ public class Configuracion extends JPanel {
     private Combobox orden;
     private Preferences pref;
 
-    public Configuracion(JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, JPanel main, JPanel topBar, JLabel home, JPanel listaPlaylist, JFrame window) {
+    public Configuracion(JPanel interfazPrinc, BotBar botBar, JScrollPane scrollPane, JPanel main, TopBar topBar, JLabel home,
+            JPanel listaPlaylist, JFrame window) {
         this.window = window;
         this.content = this;
         this.interfazPrinc = interfazPrinc;
@@ -159,162 +162,161 @@ public class Configuracion extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT artist.name "
-                    + "FROM artist "
-                    + "WHERE artist.username = '" + username + "'";
-            ResultSet resul = sentencia.executeQuery(sql);
-            if (resul.next()) {
-                esArtista = true;
-            } else {
-                JPanel help1 = new javax.swing.JPanel();
-                help1.setOpaque(false);
-                help1.setLayout(new java.awt.GridLayout(2, 0, 0, 25));
-                JPanel help2 = new javax.swing.JPanel();
-                help2.setOpaque(false);
-                help2.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CReturner.getTexto()));
-                help2.setLayout(new java.awt.BorderLayout());
-                inputName = new javax.swing.JTextField("Nombre");
-                inputName.setForeground(CReturner.getTexto());
-                inputName.setBackground(CReturner.getBackground());
-                inputName.setFont(coolvetica.deriveFont(15f));
-                inputName.setPreferredSize(new Dimension(200, 20));
-                inputName.setBorder(null);
-                inputName.addKeyListener(new java.awt.event.KeyAdapter() {
-                    @Override
-                    public void keyReleased(java.awt.event.KeyEvent evt) {
-                        if (inputName.getText().length() > 20) {
-                            inputName.setText(inputName.getText().substring(0, 20));
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT artist.name "
+                        + "FROM artist "
+                        + "WHERE artist.username = '" + username + "'";
+                ResultSet resul = sentencia.executeQuery(sql);
+                if (resul.next()) {
+                    esArtista = true;
+                } else {
+                    JPanel help1 = new javax.swing.JPanel();
+                    help1.setOpaque(false);
+                    help1.setLayout(new java.awt.GridLayout(2, 0, 0, 25));
+                    JPanel help2 = new javax.swing.JPanel();
+                    help2.setOpaque(false);
+                    help2.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, CReturner.getTexto()));
+                    help2.setLayout(new java.awt.BorderLayout());
+                    inputName = new javax.swing.JTextField("Nombre");
+                    inputName.setForeground(CReturner.getTexto());
+                    inputName.setBackground(CReturner.getBackground());
+                    inputName.setFont(coolvetica.deriveFont(15f));
+                    inputName.setPreferredSize(new Dimension(200, 20));
+                    inputName.setBorder(null);
+                    inputName.addKeyListener(new java.awt.event.KeyAdapter() {
+                        @Override
+                        public void keyReleased(java.awt.event.KeyEvent evt) {
+                            if (inputName.getText().length() > 20) {
+                                inputName.setText(inputName.getText().substring(0, 20));
+                            }
                         }
-                    }
-                });
-                help2.add(inputName);
-                help1.add(help2);
+                    });
+                    help2.add(inputName);
+                    help1.add(help2);
 
-                conjunto.add(help1);
+                    conjunto.add(help1);
 
-                javax.swing.JButton convertir = new javax.swing.JButton();
-                convertir.setText("Convertir perfil en artista");
-                convertir.setFont(coolvetica.deriveFont(16f));
-                convertir.setForeground(CReturner.getBackground());
-                convertir.setBackground(CReturner.getTexto());
-                convertir.setBorder(null);
-                convertir.setPreferredSize(new Dimension(200, 40));
-                help1.add(convertir);
-                convertir.addActionListener(new java.awt.event.ActionListener() {
-                    @Override
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    javax.swing.JButton convertir = new javax.swing.JButton();
+                    convertir.setText("Convertir perfil en artista");
+                    convertir.setFont(coolvetica.deriveFont(16f));
+                    convertir.setForeground(CReturner.getBackground());
+                    convertir.setBackground(CReturner.getTexto());
+                    convertir.setBorder(null);
+                    convertir.setPreferredSize(new Dimension(200, 40));
+                    help1.add(convertir);
+                    convertir.addActionListener((java.awt.event.ActionEvent evt) -> {
                         if (comprobarDatos()) {
-                            Statement sentencia;
+                            Statement sentencia1;
                             String idArtista = null;
                             try {
                                 Class.forName("com.mysql.cj.jdbc.Driver");
-                                Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-                                sentencia = conexion.createStatement();
-                                String sql = "INSERT INTO artist(name, username, profile_pic) "
-                                        + "VALUES('" + inputName.getText() + "', '" + username + "', '" + picture + "')";
-                                sentencia.executeUpdate(sql);
-                                sql = "SELECT artist.artist_id "
-                                        + "FROM artist "
-                                        + "WHERE artist.username = '" + username + "'";
-                                ResultSet resul = sentencia.executeQuery(sql);
-                                if (resul.next()) {
-                                    idArtista = resul.getString("artist_id");
+                                try (Connection conexion1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                                    sentencia1 = conexion1.createStatement();
+                                    String sql1 = "INSERT INTO artist(name, username, profile_pic) "
+                                            + "VALUES('" + inputName.getText() + "', '" + username + "', '" + picture + "')";
+                                    sentencia1.executeUpdate(sql1);
+                                    sql1 = "SELECT artist.artist_id "
+                                            + "FROM artist "
+                                            + "WHERE artist.username = '" + username + "'";
+                                    ResultSet resul1 = sentencia1.executeQuery(sql1);
+                                    if (resul1.next()) {
+                                        idArtista = resul1.getString("artist_id");
+                                    }
+                                    sentencia1.close();
                                 }
-                                sentencia.close();
-                                conexion.close();
                             } catch (SQLException | ClassNotFoundException ex) {
                                 Logger.getLogger(Configuracion.class.getName()).log(Level.SEVERE, null, ex);
                             }
+                            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                             content = new Artista(idArtista, listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
                             cargarNuevoPanel();
                             interfazPrinc.revalidate();
                             interfazPrinc.repaint();
-                        }
-                    }
-                }
-                );
-
-            }
-            sql = "SELECT users.profile_pic "
-                    + "FROM users "
-                    + "WHERE users.username = '" + username + "'";
-            resul = sentencia.executeQuery(sql);
-            if (resul.next()) {
-                picture = resul.getString("profile_pic");
-                if (picture == null) {
-                    tieneFoto = false;
-                    picture = "http://localhost/hyper/wp-content/uploads/2022/04/user.png";
-                }
-                ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(picture)));
-                portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
-                if (username.equalsIgnoreCase(username)) {
-                    portada.addMouseListener(new java.awt.event.MouseAdapter() {
-                        @Override
-                        public void mouseEntered(java.awt.event.MouseEvent evt) {
-                            if (popup != null) {
-                                popup.hide();
-                            }
-                            JLabel text = new JLabel("Click aqui para seleccionar la nueva imagen");
-                            text.setBackground(CReturner.getBackground());
-                            text.setOpaque(true);
-                            text.setForeground(CReturner.getTexto());
-                            text.setFont(coolvetica.deriveFont(14f));
-                            popup = PopupFactory.getSharedInstance().getPopup(evt.getComponent(), text, evt.getXOnScreen(), evt.getYOnScreen());
-                            popup.show();
-                        }
-
-                        @Override
-                        public void mouseExited(java.awt.event.MouseEvent evt) {
-                            popup.hide();
-                        }
-
-                        @Override
-                        public void mouseClicked(java.awt.event.MouseEvent evt) {
-                            JFileChooser inputPic = new JFileChooser();
-                            FileFilter imageFilter = new FileNameExtensionFilter(
-                                    "Image files", ImageIO.getReaderFileSuffixes());
-                            inputPic.setFileFilter(imageFilter);
-                            int returnVal = inputPic.showOpenDialog(Configuracion.this);
-                            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                                fotoDePerfil = inputPic.getSelectedFile();
-                                tieneFoto = true;
-                                Statement sentencia;
-                                String nuevoLink = uploadImage();
-                                picture = nuevoLink;
-                                try {
-                                    Class.forName("com.mysql.cj.jdbc.Driver");
-                                    Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-                                    sentencia = conexion.createStatement();
-                                    String sql = "UPDATE users "
-                                            + "SET users.profile_pic = '" + nuevoLink + "' "
-                                            + "WHERE users.username = '" + username + "'";
-                                    sentencia.executeUpdate(sql);
-                                    if (esArtista) {
-                                        sql = "UPDATE artist "
-                                                + "SET artist.profile_pic = '" + nuevoLink + "' "
-                                                + "WHERE artist.username = '" + username + "'";
-                                        sentencia.executeUpdate(sql);
-                                    }
-                                    sentencia.close();
-                                    conexion.close();
-                                } catch (SQLException | ClassNotFoundException ex) {
-                                    Logger.getLogger(Perfil.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(nuevoLink)));
-                                portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
-                                cargarNuevoPanel();
-                                interfazPrinc.revalidate();
-                                interfazPrinc.repaint();
-                            }
+                            setCursor(null);
                         }
                     });
                 }
+                sql = "SELECT users.profile_pic "
+                        + "FROM users "
+                        + "WHERE users.username = '" + username + "'";
+                resul = sentencia.executeQuery(sql);
+                if (resul.next()) {
+                    picture = resul.getString("profile_pic");
+                    if (picture == null) {
+                        tieneFoto = false;
+                        picture = "http://localhost/hyper/wp-content/uploads/2022/04/user.png";
+                    }
+                    ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(picture)));
+                    portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
+                    if (username.equalsIgnoreCase(username)) {
+                        portada.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                                if (popup != null) {
+                                    popup.hide();
+                                }
+                                JLabel text = new JLabel("Click aqui para seleccionar la nueva imagen");
+                                text.setBackground(CReturner.getBackground());
+                                text.setOpaque(true);
+                                text.setForeground(CReturner.getTexto());
+                                text.setFont(coolvetica.deriveFont(14f));
+                                popup = PopupFactory.getSharedInstance().getPopup(evt.getComponent(), text, evt.getXOnScreen(), evt.getYOnScreen());
+                                popup.show();
+                            }
+
+                            @Override
+                            public void mouseExited(java.awt.event.MouseEvent evt) {
+                                popup.hide();
+                            }
+
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                JFileChooser inputPic = new JFileChooser();
+                                FileFilter imageFilter = new FileNameExtensionFilter(
+                                        "Image files", ImageIO.getReaderFileSuffixes());
+                                inputPic.setFileFilter(imageFilter);
+                                int returnVal = inputPic.showOpenDialog(Configuracion.this);
+                                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                                    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                    fotoDePerfil = inputPic.getSelectedFile();
+                                    tieneFoto = true;
+                                    Statement sentencia;
+                                    String nuevoLink = uploadImage();
+                                    picture = nuevoLink;
+                                    try {
+                                        Class.forName("com.mysql.cj.jdbc.Driver");
+                                        try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                                            sentencia = conexion.createStatement();
+                                            String sql = "UPDATE users "
+                                                    + "SET users.profile_pic = '" + nuevoLink + "' "
+                                                    + "WHERE users.username = '" + username + "'";
+                                            sentencia.executeUpdate(sql);
+                                            if (esArtista) {
+                                                sql = "UPDATE artist "
+                                                        + "SET artist.profile_pic = '" + nuevoLink + "' "
+                                                        + "WHERE artist.username = '" + username + "'";
+                                                sentencia.executeUpdate(sql);
+                                            }
+                                            sentencia.close();
+                                        }
+                                    } catch (SQLException | ClassNotFoundException ex) {
+                                        Logger.getLogger(Perfil.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(nuevoLink)));
+                                    portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH))));
+                                    cargarNuevoPanel();
+                                    interfazPrinc.revalidate();
+                                    interfazPrinc.repaint();
+                                    setCursor(null);
+                                }
+                            }
+                        });
+                    }
+                }
+                resul.close();
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Configuracion.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -332,20 +334,20 @@ public class Configuracion extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT artist.name "
-                    + "FROM artist "
-                    + "WHERE artist.name = '" + inputName.getText() + "'";
-            ResultSet resul = sentencia.executeQuery(sql);
-            if (resul.next()) {
-                valido = false;
-                JOptionPane.showMessageDialog(new JFrame(), "El nombre introducido ya esta en uso.", "ERROR",
-                        JOptionPane.ERROR_MESSAGE);
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT artist.name "
+                        + "FROM artist "
+                        + "WHERE artist.name = '" + inputName.getText() + "'";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    if (resul.next()) {
+                        valido = false;
+                        JOptionPane.showMessageDialog(new JFrame(), "El nombre introducido ya esta en uso.", "ERROR",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Configuracion.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -389,15 +391,12 @@ public class Configuracion extends JPanel {
         guardar.setBackground(CReturner.getTexto());
         guardar.setBorder(null);
         guardar.setPreferredSize(new Dimension(200, 40));
-        guardar.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Utilities.cambiarTema(orden.getSelectedItem().toString());
-                JOptionPane.showMessageDialog(new JFrame(), "Se ha cambiado de tema correctamente. \n"
-                        + "Para ver el nuevo tema se va a reiniciar el programa", "CONFIRMADO",
-                        JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
-            }
+        guardar.addActionListener((java.awt.event.ActionEvent evt) -> {
+            Utilities.cambiarTema(orden.getSelectedItem().toString());
+            JOptionPane.showMessageDialog(new JFrame(), "Se ha cambiado de tema correctamente. \n"
+                    + "Para ver el nuevo tema se va a reiniciar el programa", "CONFIRMADO",
+                    JOptionPane.INFORMATION_MESSAGE);
+            System.exit(0);
         });
         contenedor2.add(guardar);
         contenedor.add(contenedor2);
@@ -443,27 +442,24 @@ public class Configuracion extends JPanel {
         guardar.setBackground(CReturner.getTexto());
         guardar.setBorder(null);
         guardar.setPreferredSize(new Dimension(200, 40));
-        guardar.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JFileChooser chooser;
-                chooser = new JFileChooser();
-                chooser.setCurrentDirectory(new java.io.File("."));
-                chooser.setDialogTitle("Selecciona la ruta");
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                chooser.setAcceptAllFileFilterUsed(false);
-                if (chooser.showOpenDialog(content) == JFileChooser.APPROVE_OPTION) {
-                    Path rutaAntigua = CReturner.getFolderPath().getParent();
-                    Path rutaNueva = chooser.getSelectedFile().toPath();
-                    Path rutaFinal = Paths.get(rutaNueva.toString(), "Hyper");
-                    try {
-                        Path newFinal = Paths.get(rutaFinal.toString(), "Almacenamiento");
-                        Utilities.escribirRuta(newFinal.toString());
-                        ubicacion.setText(newFinal.toString());
-                        FileUtils.moveDirectory(rutaAntigua.toFile(), rutaFinal.toFile());
-                    } catch (IOException ex) {
-                        Logger.getLogger(Configuracion.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+        guardar.addActionListener((java.awt.event.ActionEvent evt) -> {
+            JFileChooser chooser;
+            chooser = new JFileChooser();
+            chooser.setCurrentDirectory(new java.io.File("."));
+            chooser.setDialogTitle("Selecciona la ruta");
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
+            if (chooser.showOpenDialog(content) == JFileChooser.APPROVE_OPTION) {
+                Path rutaAntigua = CReturner.getFolderPath().getParent();
+                Path rutaNueva = chooser.getSelectedFile().toPath();
+                Path rutaFinal = Paths.get(rutaNueva.toString(), "Hyper");
+                try {
+                    Path newFinal = Paths.get(rutaFinal.toString(), "Almacenamiento");
+                    Utilities.escribirRuta(newFinal.toString());
+                    ubicacion.setText(newFinal.toString());
+                    FileUtils.moveDirectory(rutaAntigua.toFile(), rutaFinal.toFile());
+                } catch (IOException ex) {
+                    Logger.getLogger(Configuracion.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -492,14 +488,11 @@ public class Configuracion extends JPanel {
         borrar.setBackground(CReturner.getTexto());
         borrar.setBorder(null);
         borrar.setPreferredSize(new Dimension(200, 40));
-        borrar.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                int input = JOptionPane.showConfirmDialog(null, "¿Estas seguro de que deseas realizar esta accion?\n"
-                        + "Todos los datos relativos a tu cuenta seran borrados.", "CONFIRMACION", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-                if (input == 0) {
-                    borrarTodo();
-                }
+        borrar.addActionListener((java.awt.event.ActionEvent evt) -> {
+            int input = JOptionPane.showConfirmDialog(null, "¿Estas seguro de que deseas realizar esta accion?\n"
+                    + "Todos los datos relativos a tu cuenta seran borrados.", "CONFIRMACION", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (input == 0) {
+                borrarTodo();
             }
         });
         contenedor.add(borrar);
@@ -518,46 +511,46 @@ public class Configuracion extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String idArtista = null;
-            ResultSet resul = sentencia.executeQuery("SELECT artist_id "
-                    + "FROM artist "
-                    + "WHERE username = '" + username + "'");
-            if (resul.next()) {
-                idArtista = resul.getString("artist_id");
-            }
-            String sql = "DELETE FROM registro_savedlist "
-                    + "WHERE registro_savedlist.user = '" + username + "'";
-            sentencia.executeUpdate(sql);
-            sql = "DELETE FROM registro_savedalbum "
-                    + "WHERE registro_savedalbum.user = '" + username + "'";
-            sentencia.executeUpdate(sql);
-            sql = "DELETE FROM registro_playlist "
-                    + "WHERE registro_playlist.user_added = '" + username + "'";
-            sentencia.executeUpdate(sql);
-            sql = "DELETE FROM registro_playlist "
-                    + "WHERE registro_playlist.user_added = '" + username + "'";
-            sentencia.executeUpdate(sql);
-            if (idArtista != null) {
-                sql = "DELETE FROM registro_song "
-                        + "WHERE registro_song.artist_id = '" + idArtista + "'";
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String idArtista = null;
+                ResultSet resul = sentencia.executeQuery("SELECT artist_id "
+                        + "FROM artist "
+                        + "WHERE username = '" + username + "'");
+                if (resul.next()) {
+                    idArtista = resul.getString("artist_id");
+                }
+                String sql = "DELETE FROM registro_savedlist "
+                        + "WHERE registro_savedlist.user = '" + username + "'";
                 sentencia.executeUpdate(sql);
-                sql = "DELETE FROM album "
-                        + "WHERE album.artist_id = '" + idArtista + "'";
+                sql = "DELETE FROM registro_savedalbum "
+                        + "WHERE registro_savedalbum.user = '" + username + "'";
                 sentencia.executeUpdate(sql);
+                sql = "DELETE FROM registro_playlist "
+                        + "WHERE registro_playlist.user_added = '" + username + "'";
+                sentencia.executeUpdate(sql);
+                sql = "DELETE FROM registro_playlist "
+                        + "WHERE registro_playlist.user_added = '" + username + "'";
+                sentencia.executeUpdate(sql);
+                if (idArtista != null) {
+                    sql = "DELETE FROM registro_song "
+                            + "WHERE registro_song.artist_id = '" + idArtista + "'";
+                    sentencia.executeUpdate(sql);
+                    sql = "DELETE FROM album "
+                            + "WHERE album.artist_id = '" + idArtista + "'";
+                    sentencia.executeUpdate(sql);
+                }
+                sql = "DELETE FROM playlist "
+                        + "WHERE playlist.user = '" + username + "'";
+                sentencia.executeUpdate(sql);
+                sql = "DELETE FROM artist "
+                        + "WHERE artist.username = '" + username + "'";
+                sentencia.executeUpdate(sql);
+                sql = "DELETE FROM users "
+                        + "WHERE users.username = '" + username + "'";
+                sentencia.executeUpdate(sql);
+                sentencia.close();
             }
-            sql = "DELETE FROM playlist "
-                    + "WHERE playlist.user = '" + username + "'";
-            sentencia.executeUpdate(sql);
-            sql = "DELETE FROM artist "
-                    + "WHERE artist.username = '" + username + "'";
-            sentencia.executeUpdate(sql);
-            sql = "DELETE FROM users "
-                    + "WHERE users.username = '" + username + "'";
-            sentencia.executeUpdate(sql);
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Perfil.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -619,16 +612,16 @@ public class Configuracion extends JPanel {
             byte[] outputByteArray = bos.toByteArray();
             String base64EncodedString = Base64.getEncoder().encodeToString(outputByteArray);
 
-            Map content = new Hashtable();
-            content.put("name", fotoDePerfil.getName());
-            content.put("type", "image/" + formato);
-            content.put("bits", base64EncodedString);
-            content.put("overwrite", false);
+            Map contenido = new HashMap();
+            contenido.put("name", fotoDePerfil.getName());
+            contenido.put("type", "image/" + formato);
+            contenido.put("bits", base64EncodedString);
+            contenido.put("overwrite", false);
             Object result = rpcClient.execute("wp.uploadFile", new Object[]{
                 0,
                 "root",
                 "root",
-                content
+                contenido
             });
 
             int start = result.toString().indexOf("thumbnail=") + 10;
@@ -637,7 +630,7 @@ public class Configuracion extends JPanel {
             // Esta mal configurado el encoding que le llega a Wordpress y he 
             // tenido que hacer este feo apaño para por lo menos poder usarlo.
             Path source = Paths.get(fotoDePerfil.getPath());
-            Path target = Paths.get("E:/xampp/htdocs/" + linkImagen.substring(17));
+            Path target = Paths.get(CReturner.getRutaXampp() + linkImagen.substring(17));
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (XmlRpcException | IOException e) {
             System.out.println("Imagen no subida.");

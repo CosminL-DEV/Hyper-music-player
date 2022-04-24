@@ -1,15 +1,13 @@
 package songManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 16-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -21,7 +19,7 @@ public class QueueManager {
     private Cancion actual;
 
     public void addLista(ArrayList<String> lista) {
-        for (String e : lista) {
+        lista.forEach(e -> {
             if (ultimaLista == null) {
                 Cancion cancion = new Cancion(null, null, e);
                 this.primeraLista = cancion;
@@ -32,30 +30,31 @@ public class QueueManager {
                 this.ultimaLista.next = cancion;
                 this.ultimaLista = cancion;
             }
-        }
+        });
     }
 
     public void setListaRandom(ArrayList<String> lista) {
         Collections.shuffle(lista);
         ultimaLista = actual;
-        for (String e : lista) {
-            Cancion cancion = new Cancion(ultimaLista, null, e);
+        lista.stream().map(e -> new Cancion(ultimaLista, null, e)).map(cancion -> {
             this.ultimaLista.next = cancion;
+            return cancion;
+        }).forEachOrdered(cancion -> {
             this.ultimaLista = cancion;
-        }
+        });
     }
 
     public void setListaNormal(ArrayList<String> lista) {
         ultimaLista = actual;
-        for (String e : lista) {
-            Cancion cancion = new Cancion(ultimaLista, null, e);
+        lista.stream().map(e -> new Cancion(ultimaLista, null, e)).map(cancion -> {
             this.ultimaLista.next = cancion;
+            return cancion;
+        }).forEachOrdered(cancion -> {
             this.ultimaLista = cancion;
-        }
+        });
     }
 
     public void addCola(String e) {
-        // Metodo creado pero no implementado.
         Cancion index = this.primeraLista;
         while (index != null) {
             if (index == actual) {
@@ -64,6 +63,9 @@ public class QueueManager {
             index = index.next;
         }
         Cancion insertValue = new Cancion(index, index.next, e);
+        if (index.next == null) {
+            index.next = ultimaLista;
+        }
         index.next.previous = insertValue;
         index.next = insertValue;
     }
@@ -77,16 +79,28 @@ public class QueueManager {
     }
 
     public Cancion getActual() {
+        if (actual == null) {
+            return new Cancion(null, null, "null");
+        }
         return actual;
     }
 
-    // Solo para pruebas, quizas sirve para añadir el preview de la cola.
+    public void reiniciarActual() {
+        this.actual = this.primeraLista;
+    }
+
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Cancion current = this.primeraLista;
+        boolean llego = false;
         while (current != null) {
-            sb.append(current.e + "->");
+            if (llego) {
+                sb.append(current.e).append(",");
+            }
+            if (current == actual) {
+                llego = true;
+            }
             current = current.next;
         }
         return sb.toString();

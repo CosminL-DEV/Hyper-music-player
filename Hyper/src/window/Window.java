@@ -1,6 +1,7 @@
 package window;
 
-import components.Utilities;
+import appManagement.Utilities;
+import appManagement.ColorReturner;
 import interfaz.Interfaz;
 import javax.swing.JFrame;
 import java.awt.Toolkit;
@@ -10,13 +11,11 @@ import java.io.File;
 import java.util.prefs.Preferences;
 import static javax.swing.JFrame.setDefaultLookAndFeelDecorated;
 
-import themeManagement.ColorReturner;
-
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 22-03-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -24,13 +23,13 @@ import themeManagement.ColorReturner;
 public class Window extends JFrame {
 
     private ColorReturner CReturner = new ColorReturner();
-    private final Preferences pref;
     private JFrame esta;
     private Interfaz inicio;
 
     public Window() {
         esta = this;
-        this.pref = Preferences.userRoot().node("Rememberme");
+        Preferences pref;
+        pref = Preferences.userRoot().node("Rememberme");
         LoginWindow ventana = new LoginWindow(this);
         iniciarComponentes();
         crearCarpeta();
@@ -76,8 +75,8 @@ public class Window extends JFrame {
         inicio = new Interfaz(this);
         return inicio;
     }
-    
-    private void crearCarpeta(){
+
+    private void crearCarpeta() {
         File directorio = CReturner.getFolderPath().toFile();
         if (!directorio.exists()) {
             if (directorio.mkdirs()) {

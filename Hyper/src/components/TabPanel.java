@@ -8,20 +8,19 @@ import java.awt.RenderingHints;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.plaf.metal.MetalTabbedPaneUI;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author DJ-Raven
- * @since 13-04-2022
+ * @since 24-04-2022
  * @version 1.0
- * FROM https://github.com/DJ-Raven/tabbed-pane-material/blob/main/src/tabbed/MaterialTabbed.java
+ * https://github.com/DJ-Raven/tabbed-pane-material/blob/main/src/tabbed/MaterialTabbed.java
  *
  * ************************************
  */
@@ -55,20 +54,17 @@ public class TabPanel extends JTabbedPane {
             animator.setResolution(0);
             animator.setAcceleration(.5f);
             animator.setDeceleration(.5f);
-            tabPane.addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent ce) {
-                    int selected = tabPane.getSelectedIndex();
-                    if (selected != -1) {
-                        if (currentRectangle != null) {
-                            if (animator.isRunning()) {
-                                animator.stop();
-                            }
-                            animator.removeTarget(target);
-                            target = new PropertySetter(MaterialTabbedUI.this, "currentRectangle", currentRectangle, getTabBounds(selected, calcRect));
-                            animator.addTarget(target);
-                            animator.start();
+            tabPane.addChangeListener((ChangeEvent ce) -> {
+                int selected = tabPane.getSelectedIndex();
+                if (selected != -1) {
+                    if (currentRectangle != null) {
+                        if (animator.isRunning()) {
+                            animator.stop();
                         }
+                        animator.removeTarget(target);
+                        target = new PropertySetter(MaterialTabbedUI.this, "currentRectangle", currentRectangle, getTabBounds(selected, calcRect));
+                        animator.addTarget(target);
+                        animator.start();
                     }
                 }
             });

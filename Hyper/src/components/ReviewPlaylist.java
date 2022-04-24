@@ -1,25 +1,26 @@
 package components;
 
+import appManagement.Utilities;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 08-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
  */
 public class ReviewPlaylist extends JPanel {
 
-    ColorReturner CReturner = new ColorReturner();
+    private ColorReturner CReturner = new ColorReturner();
     private String idPlaylist;
 
     public ReviewPlaylist(String idPlaylist, String picture, String nombre, String creador) {
@@ -63,11 +64,12 @@ public class ReviewPlaylist extends JPanel {
         JLabel owner = new javax.swing.JLabel("De " + creador);
         owner.setForeground(CReturner.getTexto2());
         owner.setFont(coolvetica.deriveFont(12f));
-        if (creador!=null)
+        if (creador != null) {
             add(owner, gridBagConstraints);
+        }
     }
-    
-    public String getId(){
+
+    public String getId() {
         return idPlaylist;
     }
 }

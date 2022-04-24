@@ -47,7 +47,7 @@ CREATE TABLE album (
 DROP TABLE IF EXISTS song;
 CREATE TABLE song (
   song_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR (20) NOT NULL,
+  name VARCHAR (25) NOT NULL,
   genre VARCHAR(9) NOT NULL,
   url VARCHAR(200) NOT NULL,
   picture VARCHAR(150),
@@ -114,26 +114,26 @@ CREATE TABLE registro_savedalbum (
 -- Inserción de datos
 --
 
-INSERT INTO users(username,password) VALUES ('Hyper','adminpassword');
-INSERT INTO users(username,password) VALUES ('cosmin','cosmin');
+INSERT INTO users(username,password, profile_pic) VALUES ('Hyper','adminpassword','https://i.imgur.com/XynYYOH.png');
+INSERT INTO users(username,password) VALUES ('Cosmin','cosmin');
 
-INSERT INTO users(username,password) VALUES ('JcReyes','artistpassword');
-INSERT INTO users(username,password) VALUES ('KiddKeo','artistpassword');
-INSERT INTO users(username,password) VALUES ('ÑengoFlow','artistpassword');
-INSERT INTO users(username,password) VALUES ('Duki','artistpassword');
-INSERT INTO users(username,password) VALUES ('FunzoBabyLoud','artistpassword');
-INSERT INTO users(username,password) VALUES ('Jbalvin','artistpassword');
-INSERT INTO users(username,password) VALUES ('Rvfv','artistpassword');
-INSERT INTO users(username,password) VALUES ('Feid','artistpassword');
-INSERT INTO users(username,password) VALUES ('AnuelAA','artistpassword');
-INSERT INTO users(username,password) VALUES ('BadGyal','artistpassword');
-INSERT INTO users(username,password) VALUES ('PauloLondra','artistpassword');
-INSERT INTO users(username,password) VALUES ('DaddyYankee','artistpassword');
-INSERT INTO users(username,password) VALUES ('BadBunny','artistpassword');
-INSERT INTO users(username,password) VALUES ('Quevedo','artistpassword');
-INSERT INTO users(username,password) VALUES ('TiagoPZK','artistpassword');
-INSERT INTO users(username,password) VALUES ('MykeTowers','artistpassword');
-INSERT INTO users(username,password) VALUES ('Avicii','artistpassword');
+INSERT INTO users(username, password, profile_pic) VALUES ('JcReyes','artistpassword','https://i.imgur.com/EadAafp.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('KiddKeo','artistpassword','https://i.imgur.com/Iri54fU.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('ÑengoFlow','artistpassword','https://i.imgur.com/xVr7irO.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('Duki','artistpassword','https://i.imgur.com/Pm70jae.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('FunzoBabyLoud','artistpassword','https://i.imgur.com/wBP2YKx.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('Jbalvin','artistpassword','https://i.imgur.com/9zd6Dkm.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('Rvfv','artistpassword','https://i.imgur.com/6mP0y49.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('Feid','artistpassword','https://i.imgur.com/dGzHOF4.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('AnuelAA','artistpassword','https://i.imgur.com/t8cJZf7.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('BadGyal','artistpassword','https://i.imgur.com/toPT9vQ.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('PauloLondra','artistpassword','https://i.imgur.com/YKUYXcM.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('DaddyYankee','artistpassword','https://i.imgur.com/TsYLisX.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('BadBunny','artistpassword','https://i.imgur.com/hXVukwI.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('Quevedo','artistpassword','https://i.imgur.com/J5bzde0.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('TiagoPZK','artistpassword','https://i.imgur.com/Ek1nbT0.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('MykeTowers','artistpassword','https://i.imgur.com/G1H4QRC.png');
+INSERT INTO users(username, password, profile_pic) VALUES ('Avicii','artistpassword','https://i.imgur.com/jB9LrVt.png');
 
 INSERT INTO artist(name, username, profile_pic) VALUES('JC REYES','JcReyes','https://i.imgur.com/EadAafp.png');
 INSERT INTO artist(name, username, profile_pic) VALUES('Kidd Keo','KiddKeo','https://i.imgur.com/Iri54fU.png');
@@ -1641,17 +1641,71 @@ INSERT INTO song(name, genre, url, picture) VALUES ('Universitaria', 'trap', 'ht
 INSERT INTO song(name, genre, url, picture) VALUES ('Rimmel', 'techno', 'http://localhost/hyper/wp-content/uploads/2022/03/Rimmel-Quevedo.wav', 'https://i.imgur.com/TYySnkv.png');
 INSERT INTO song(name, genre, url, picture) VALUES ('No Me Digas Nada', 'house', 'http://localhost/hyper/wp-content/uploads/2022/03/No-Me-Digas-Nada-QUEVEDO-PROD.-LINTON.wav', 'https://i.imgur.com/8X56S8B.png');
 INSERT INTO users(username,password) VALUES ('noFoundArtist','noFoundArtist321');
-INSERT INTO artist(artist_id,name, username, profile_pic) VALUES('404','noFoundArtist','noFoundArtist','http://localhost/hyper/wp-content/uploads/2022/03/playlist.png');
-INSERT INTO album(album_id,name,artist_id,fecha,picture) VALUES (404,'NO ALBUM',404,'2021-01-01','http://localhost/hyper/wp-content/uploads/2022/03/playlist.png');
-INSERT INTO registro_album(album_id, song_id) VALUES (404, 457);
-INSERT INTO registro_album(album_id, song_id) VALUES (404, 458);
-INSERT INTO registro_album(album_id, song_id) VALUES (404, 459);
-INSERT INTO registro_album(album_id, song_id) VALUES (404, 460);
-INSERT INTO registro_album(album_id, song_id) VALUES (404, 461);
-INSERT INTO registro_album(album_id, song_id) VALUES (404, 462);
+INSERT INTO artist(name, username, profile_pic) VALUES('noFoundArtist','noFoundArtist','http://localhost/hyper/wp-content/uploads/2022/03/playlist.png');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('NO ALBUM',18,'2021-01-01','http://localhost/hyper/wp-content/uploads/2022/03/playlist.png');
+INSERT INTO registro_album(album_id, song_id) VALUES (35, 457);
+INSERT INTO registro_album(album_id, song_id) VALUES (35, 458);
+INSERT INTO registro_album(album_id, song_id) VALUES (35, 459);
+INSERT INTO registro_album(album_id, song_id) VALUES (35, 460);
+INSERT INTO registro_album(album_id, song_id) VALUES (35, 461);
+INSERT INTO registro_album(album_id, song_id) VALUES (35, 462);
 INSERT INTO registro_song(song_id, artist_id) VALUES (457, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (458, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (459, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (460, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (461, 14);
 INSERT INTO registro_song(song_id, artist_id) VALUES (462, 14);
+
+-- 
+-- Datos de iniciacion
+-- 
+INSERT INTO users(username,password, profile_pic) VALUES ('Matt','HeyImMatt','https://i.imgur.com/Z2iZVTK.png');
+INSERT INTO users(username,password, profile_pic) VALUES ('Richar','Richar23','https://i.imgur.com/Ld1zRF3.png');
+INSERT INTO users(username,password, profile_pic) VALUES ('Felipe','Felip3','https://i.imgur.com/W5ehctz.png');
+INSERT INTO users(username,password, profile_pic) VALUES ('Rosa','Rosa2022','https://i.imgur.com/wYcqyGG.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Matt''s Music','publica','Matt','https://i.imgur.com/WACxapa.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Richar''s Music','publica','Richar','https://i.imgur.com/9LIrTyv.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Felipe''s Music','publica','Felipe','https://i.imgur.com/THWTBmU.png');
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('Rosa''s Music','publica','Rosa','https://i.imgur.com/PZ5sDwL.png');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('11','23','Matt');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('11','56','Matt');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('11','107','Matt');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('11','200','Matt');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('11','245','Matt');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('11','267','Matt');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('11','374','Matt');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('12','26','Richar');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('12','2','Richar');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('12','67','Richar');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('12','104','Richar');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('12','106','Richar');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('12','400','Richar');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('12','201','Richar');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('13','56','Felipe');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('13','109','Felipe');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('13','321','Felipe');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('13','45','Felipe');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('13','178','Felipe');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('13','247','Felipe');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('13','278','Felipe');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('14','1','Rosa');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('14','84','Rosa');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('14','157','Rosa');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('14','190','Rosa');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('14','247','Rosa');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('14','357','Rosa');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('14','411','Rosa');
+
+-- 
+-- Version Servidor Lite
+-- 
+INSERT INTO playlist(name,privacity,user,picture) VALUES ('LIST VERSION LITE','publica','Matt','https://i.imgur.com/4inkvIR.png');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('15','457','Matt');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('15','458','Matt');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('15','460','Matt');
+INSERT INTO registro_playlist(playlist_id,song_id,user_added) VALUES ('15','462','Matt');
+INSERT INTO album(name,artist_id,fecha,picture) VALUES ('ALBUM VERSION LITE',14,'2022-04-24','https://i.imgur.com/4inkvIR.png');
+INSERT INTO registro_album(album_id, song_id) VALUES (36, 457);
+INSERT INTO registro_album(album_id, song_id) VALUES (36, 458);
+INSERT INTO registro_album(album_id, song_id) VALUES (36, 460);
+INSERT INTO registro_album(album_id, song_id) VALUES (36, 462);

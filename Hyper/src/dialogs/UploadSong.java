@@ -1,5 +1,7 @@
-package components;
+package dialogs;
 
+import appManagement.Utilities;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -20,7 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Base64;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,37 +38,40 @@ import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.commons.io.FileUtils;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
+import java.util.HashMap;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 15-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
  */
-public class CreatePlaylist extends javax.swing.JDialog {
+public class UploadSong extends javax.swing.JDialog {
 
     private java.awt.GridBagConstraints gridBagConstraints;
     private ColorReturner CReturner = new ColorReturner();
     private final Font coolvetica = Utilities.cargarCoolvetica();
     private JPanel contenedor;
     private javax.swing.JTextField inputNombre;
-    private javax.swing.JRadioButton radioPublica;
-    private javax.swing.JRadioButton radioPrivada;
-    private File fotoDePerfil;
-    private Popup popup;
-    private boolean fotoSelected = false;
-    private int guardado = 0;
-    private String linkImagen = null;
+    private components.Combobox selectGenero;
+    private File archivoCancion;
+    private boolean cancionSubida = false;
+    private String linkCancion = null;
+    private File archivoFoto;
+    private boolean fotoSubida = false;
+    private String linkPicture = null;
     private String username;
+    private Popup popup;
 
-    public CreatePlaylist() {
+    public UploadSong() {
         setBackground(CReturner.getBackground());
         setUndecorated(true);
         setResizable(false);
@@ -90,7 +94,7 @@ public class CreatePlaylist extends javax.swing.JDialog {
         javax.swing.JLabel texto = new javax.swing.JLabel();
         javax.swing.JLabel close = new javax.swing.JLabel();
 
-        texto.setText("Crear playlist");
+        texto.setText("Subir Canción");
         texto.setForeground(CReturner.getTexto());
         texto.setFont(coolvetica.deriveFont(22f));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -134,13 +138,11 @@ public class CreatePlaylist extends javax.swing.JDialog {
         javax.swing.JPanel datos = new javax.swing.JPanel();
         datos.setOpaque(false);
         datos.setLayout(new java.awt.GridBagLayout());
-        javax.swing.JLabel portada = new javax.swing.JLabel();
-        inputNombre = new javax.swing.JTextField();
-        javax.swing.ButtonGroup grupoPrivacidad = new javax.swing.ButtonGroup();
-        radioPublica = new javax.swing.JRadioButton();
-        radioPrivada = new javax.swing.JRadioButton();
-        datos.setLayout(new java.awt.GridBagLayout());
 
+        javax.swing.JLabel portada = new javax.swing.JLabel();
+        linkPicture = "http://localhost/hyper/wp-content/uploads/2022/03/playlist.png";
+        ImageIcon img = new ImageIcon(Utilities.transformarLink(linkPicture));
+        portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(175, 175, Image.SCALE_SMOOTH))));
         portada.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -167,14 +169,14 @@ public class CreatePlaylist extends javax.swing.JDialog {
                 FileFilter imageFilter = new FileNameExtensionFilter(
                         "Image files", ImageIO.getReaderFileSuffixes());
                 inputPic.setFileFilter(imageFilter);
-                int returnVal = inputPic.showOpenDialog(CreatePlaylist.this);
+                int returnVal = inputPic.showOpenDialog(UploadSong.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    fotoDePerfil = inputPic.getSelectedFile();
-                    ImageIcon img = new ImageIcon(fotoDePerfil.getPath());
+                    archivoFoto = inputPic.getSelectedFile();
+                    ImageIcon img = new ImageIcon(archivoFoto.getPath());
                     portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(175, 175, Image.SCALE_SMOOTH))));
-                    fotoSelected = true;
+                    fotoSubida = true;
                 } else {
-                    fotoSelected = false;
+                    fotoSubida = false;
                 }
             }
         });
@@ -188,10 +190,11 @@ public class CreatePlaylist extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
         datos.add(portada, gridBagConstraints);
 
+        inputNombre = new javax.swing.JTextField();
         JPanel contNombre = new javax.swing.JPanel();
         contNombre.setOpaque(false);
         contNombre.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, CReturner.getTexto()));
-        inputNombre.setText("Nombre playlist");
+        inputNombre.setText("Nombre canción");
         inputNombre.setForeground(CReturner.getTexto());
         inputNombre.setBackground(CReturner.getBackground());
         inputNombre.setBorder(null);
@@ -216,8 +219,9 @@ public class CreatePlaylist extends javax.swing.JDialog {
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
         contNombre.add(inputNombre, gridBagConstraints);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.1;
@@ -225,33 +229,56 @@ public class CreatePlaylist extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
         datos.add(contNombre, gridBagConstraints);
 
-        grupoPrivacidad.add(radioPublica);
-        radioPublica.setText("Publica");
-        radioPublica.setBackground(CReturner.getBackground());
-        radioPublica.setForeground(CReturner.getTexto());
-        radioPublica.setFont(coolvetica.deriveFont(15f));
+        selectGenero = new components.Combobox();
+        selectGenero.setModel(new javax.swing.DefaultComboBoxModel<>(
+                new String[]{"trap", "reggaeton", "rap", "techno", "house"}
+        ));
+        selectGenero.setLabeText("");
+        selectGenero.setSelectedItem(CReturner.getTemaActual());
+        selectGenero.setBackground(CReturner.getTexto2());
+        selectGenero.setForeground(CReturner.getTexto());
+        selectGenero.setBorder(null);
+        selectGenero.setPreferredSize(new Dimension(100, 30));
+        selectGenero.setFont(coolvetica.deriveFont(15f));
+        selectGenero.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.1;
-        datos.add(radioPublica, gridBagConstraints);
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        datos.add(selectGenero, gridBagConstraints);
 
-        grupoPrivacidad.add(radioPrivada);
-        radioPrivada.setText("Privada");
-        radioPrivada.setBackground(CReturner.getBackground());
-        radioPrivada.setForeground(CReturner.getTexto());
-        radioPrivada.setFont(coolvetica.deriveFont(15f));
+        javax.swing.JButton subirCancion = new javax.swing.JButton();
+        subirCancion.setText("Seleccionar Canción");
+        subirCancion.setFont(coolvetica.deriveFont(14f));
+        subirCancion.setForeground(CReturner.getBackground());
+        subirCancion.setBackground(CReturner.getTexto());
+        subirCancion.setBorder(null);
+        subirCancion.addActionListener((java.awt.event.ActionEvent evt) -> {
+            JFileChooser inputSong = new JFileChooser();
+            FileFilter songFilter = new FileNameExtensionFilter("wav files", "wav");
+            inputSong.setFileFilter(songFilter);
+            int returnVal = inputSong.showOpenDialog(UploadSong.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                archivoCancion = inputSong.getSelectedFile();
+                cancionSubida = true;
+            } else {
+                cancionSubida = false;
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        datos.add(radioPrivada, gridBagConstraints);
-        String picture = "http://localhost/hyper/wp-content/uploads/2022/03/playlist.png";
-        ImageIcon img = new ImageIcon(Utilities.transformarLink(picture));
-        portada.setIcon(new ImageIcon((img.getImage().getScaledInstance(175, 175, Image.SCALE_SMOOTH))));
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        datos.add(subirCancion, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -265,60 +292,56 @@ public class CreatePlaylist extends javax.swing.JDialog {
         javax.swing.JPanel botones = new javax.swing.JPanel();
         botones.setOpaque(false);
         botones.setLayout(new java.awt.GridBagLayout());
-        javax.swing.JButton guardar = new javax.swing.JButton();
+        javax.swing.JButton subir = new javax.swing.JButton();
 
-        guardar.setText("CREAR");
-        guardar.setFont(coolvetica.deriveFont(16f));
-        guardar.setForeground(CReturner.getBackground());
-        guardar.setBackground(CReturner.getTexto());
-        guardar.setBorder(null);
-        guardar.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if (comprobarDatos()) {
-                    guardado = 1;
-                    Statement sentencia;
-                    try {
-                        Class.forName("com.mysql.cj.jdbc.Driver");
-                        Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
+        subir.setText("SUBIR");
+        subir.setFont(coolvetica.deriveFont(16f));
+        subir.setForeground(CReturner.getBackground());
+        subir.setBackground(CReturner.getTexto());
+        subir.setBorder(null);
+        subir.addActionListener((java.awt.event.ActionEvent evt) -> {
+            if (comprobarDatos()) {
+                Statement sentencia;
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
                         sentencia = conexion.createStatement();
-                        String sql = null;
-                        if (fotoSelected) {
-                            linkImagen = uploadImage();
-                        }
-                        String privacidad;
-                        if (radioPublica.isSelected()) {
-                            privacidad = "publica";
-                        } else {
-                            privacidad = "privada";
-                        }
-                        if (fotoSelected) {
-                            sql = "INSERT INTO playlist(name,privacity,user,picture) "
-                                    + "VALUES ('" + inputNombre.getText() + "','" + privacidad + "','" + username + "','" + linkImagen + "')";
-                            sentencia.executeUpdate(sql);
-                        } else {
-                            sql = "INSERT INTO playlist(name,privacity,user) "
-                                    + "VALUES ('" + inputNombre.getText() + "','" + privacidad + "','" + username + "')";
-                            sentencia.executeUpdate(sql);
-                        }
-                        String idPlaylist = null;
-                        sql = "SELECT playlist.playlist_id "
-                                + "FROM playlist "
-                                + "WHERE playlist.name = '" + inputNombre.getText() + "' AND playlist.user = '" + username + "'";
+                        String idArtista = null;
+                        String sql = "SELECT artist.artist_id "
+                                + "FROM artist "
+                                + "WHERE artist.username = '" + username + "'";
                         ResultSet resul = sentencia.executeQuery(sql);
                         if (resul.next()) {
-                            idPlaylist = resul.getString("playlist_id");
+                            idArtista = resul.getString("artist_id");
                         }
-                        sql = "INSERT INTO registro_savedlist "
-                                + "VALUES('" + idPlaylist + "','" + username + "',false)";
+                        linkPicture = uploadImage();
+                        linkCancion = uploadSong();
+                        sql = "INSERT INTO song(name,genre,url,picture) "
+                                + "VALUES('" + inputNombre.getText() + "','" + selectGenero.getSelectedItem().toString() + "',"
+                                + "'" + linkCancion + "','" + linkPicture + "')";
+                        sentencia.executeUpdate(sql);
+                        String songId = null;
+                        sql = "SELECT song.song_id "
+                                + "FROM song "
+                                + "WHERE song.name = '" + inputNombre.getText() + "' AND song.url = '" + linkCancion + "'";
+                        resul = sentencia.executeQuery(sql);
+                        if (resul.next()) {
+                            songId = resul.getString("song_id");
+                        }
+                        sql = "INSERT INTO registro_song(song_id, artist_id) "
+                                + "VALUES ('" + songId + "','" + idArtista + "')";
+                        sentencia.executeUpdate(sql);
+                        sql = "INSERT INTO registro_album(album_id, song_id) "
+                                + "VALUES ('35','" + songId + "')";
                         sentencia.executeUpdate(sql);
                         sentencia.close();
-                        conexion.close();
-                    } catch (SQLException | ClassNotFoundException ex) {
-                        Logger.getLogger(EditDialog.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    dispose();
+                } catch (SQLException | ClassNotFoundException ex) {
+                    Logger.getLogger(EditDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                setCursor(null);
+                dispose();
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -326,7 +349,7 @@ public class CreatePlaylist extends javax.swing.JDialog {
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        botones.add(guardar, gridBagConstraints);
+        botones.add(subir, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -340,13 +363,15 @@ public class CreatePlaylist extends javax.swing.JDialog {
 
     private boolean comprobarDatos() {
         boolean valido = true;
-        if (inputNombre.getText().isBlank()) {
+        if (!fotoSubida) {
             valido = false;
-            JOptionPane.showMessageDialog(new JFrame(), "Introduce un nombre valido.", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-        if (!radioPublica.isSelected() && !radioPrivada.isSelected()) {
+            JOptionPane.showMessageDialog(new JFrame(), "Tienes que seleccionar una foto", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } else if (!cancionSubida) {
             valido = false;
-            JOptionPane.showMessageDialog(new JFrame(), "Selecciona la privacidad de la lista.", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(new JFrame(), "Tienes que subir la canción", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } else if (inputNombre.getText().isBlank()) {
+            valido = false;
+            JOptionPane.showMessageDialog(new JFrame(), "Elige un nombre valido para tu canción", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
         return valido;
     }
@@ -359,23 +384,23 @@ public class CreatePlaylist extends javax.swing.JDialog {
             XmlRpcClient rpcClient = new XmlRpcClient();
             rpcClient.setConfig(config);
 
-            BufferedImage bImage = ImageIO.read(fotoDePerfil);
+            BufferedImage bImage = ImageIO.read(archivoFoto);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            String formato = fotoDePerfil.getName().substring(fotoDePerfil.getName().indexOf(".") + 1);
+            String formato = archivoFoto.getName().substring(archivoFoto.getName().indexOf(".") + 1);
             ImageIO.write(bImage, formato, bos);
             byte[] outputByteArray = bos.toByteArray();
             String base64EncodedString = Base64.getEncoder().encodeToString(outputByteArray);
 
-            Map content = new Hashtable();
-            content.put("name", fotoDePerfil.getName());
-            content.put("type", "image/" + formato);
-            content.put("bits", base64EncodedString);
-            content.put("overwrite", false);
+            Map contenido = new HashMap();
+            contenido.put("name", archivoFoto.getName());
+            contenido.put("type", "image/" + formato);
+            contenido.put("bits", base64EncodedString);
+            contenido.put("overwrite", false);
             Object result = rpcClient.execute("wp.uploadFile", new Object[]{
                 0,
                 "root",
                 "root",
-                content
+                contenido
             });
 
             int start = result.toString().indexOf("thumbnail=") + 10;
@@ -383,8 +408,8 @@ public class CreatePlaylist extends javax.swing.JDialog {
             linkImagen = result.toString().substring(start, end);
             // Esta mal configurado el encoding que le llega a Wordpress y he 
             // tenido que hacer este feo apaño para por lo menos poder usarlo.
-            Path source = Paths.get(fotoDePerfil.getPath());
-            Path target = Paths.get("E:/xampp/htdocs/" + linkImagen.substring(17));
+            Path source = Paths.get(archivoFoto.getPath());
+            Path target = Paths.get(CReturner.getRutaXampp() + linkImagen.substring(17));
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (XmlRpcException | IOException e) {
             System.out.println("Imagen no subida.");
@@ -392,7 +417,39 @@ public class CreatePlaylist extends javax.swing.JDialog {
         return linkImagen;
     }
 
-    public int getGuardado() {
-        return guardado;
+    private String uploadSong() {
+        String songLink = null;
+        try {
+            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+            config.setServerURL(new URL("http://localhost/hyper/" + "/xmlrpc.php"));
+            XmlRpcClient rpcClient = new XmlRpcClient();
+            rpcClient.setConfig(config);
+            byte[] bytes = FileUtils.readFileToByteArray(archivoCancion);
+            String base64EncodedString = Base64.getEncoder().encodeToString(bytes);
+            Map contenido = new HashMap();
+            contenido.put("name", archivoCancion.getName());
+            contenido.put("type", "audio/wav");
+            contenido.put("bits", base64EncodedString);
+            contenido.put("overwrite", false);
+            Object result = rpcClient.execute("wp.uploadFile", new Object[]{
+                0,
+                "root",
+                "root",
+                contenido
+            });
+
+            int start = result.toString().indexOf("thumbnail=") + 10;
+            int end = result.toString().indexOf(",", start);
+            songLink = result.toString().substring(start, end);
+            // Esta mal configurado el encoding que le llega a Wordpress y he 
+            // tenido que hacer este feo apaño para por lo menos poder usarlo.
+            Path source = Paths.get(archivoCancion.getPath());
+            Path target = Paths.get(CReturner.getRutaXampp() + songLink.substring(17));
+            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+        } catch (XmlRpcException | IOException e) {
+            System.out.println("Canción no subida.");
+        }
+        return songLink;
     }
+
 }

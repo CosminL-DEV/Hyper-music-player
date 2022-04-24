@@ -2,13 +2,13 @@ package components;
 
 import java.awt.Dimension;
 import javax.swing.JScrollBar;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 08-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************

@@ -3,9 +3,10 @@ package views;
 import components.ReviewPlaylist;
 import components.ScrollBar;
 import components.TopBar;
-import components.Utilities;
-import details.Album;
-import details.Playlist;
+import appManagement.Utilities;
+import album.Album;
+import playlist.Playlist;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -22,15 +23,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import songManager.QueueManager;
-import songManager.QueueManager.Cancion;
-import themeManagement.ColorReturner;
+import songManager.BotBar;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 13-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -42,19 +42,17 @@ public class Biblioteca extends JPanel {
     private JPanel content;
     private JScrollPane scrollPane;
     private JPanel main;
-    private JPanel botBar;
-    private JPanel topBar;
+    private BotBar botBar;
+    private TopBar topBar;
     private JLabel home;
     private String miUsername;
     private final ColorReturner CReturner = new ColorReturner();
     private java.awt.GridBagConstraints gridBagConstraints;
     private final Font coolvetica = Utilities.cargarCoolvetica();
     private JFrame window;
-    
-    
 
-    public Biblioteca(JPanel listaPlaylist, JPanel interfazPrinc, JPanel botBar, JScrollPane scrollPane, 
-            JPanel main, JPanel topBar, JLabel home, JFrame window) {
+    public Biblioteca(JPanel listaPlaylist, JPanel interfazPrinc, BotBar botBar, JScrollPane scrollPane,
+            JPanel main, TopBar topBar, JLabel home, JFrame window) {
         this.window = window;
         this.content = this;
         this.listaPlaylist = listaPlaylist;
@@ -137,28 +135,30 @@ public class Biblioteca extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT playlist.playlist_id, playlist.picture, playlist.name, playlist.user "
-                    + "FROM playlist, registro_savedlist "
-                    + "WHERE registro_savedlist.user = '" + miUsername + "' AND playlist.playlist_id = registro_savedlist.playlist_id";
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT playlist.playlist_id, playlist.picture, playlist.name, playlist.user "
+                        + "FROM playlist, registro_savedlist "
+                        + "WHERE registro_savedlist.user = '" + miUsername + "' AND playlist.playlist_id = registro_savedlist.playlist_id";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("playlist_id"), resul.getString("picture"), resul.getString("name"), resul.getString("user"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Playlist(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        listas1.add(elemento);
                     }
-                });
-                listas1.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Biblioteca.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -215,28 +215,30 @@ public class Biblioteca extends JPanel {
         Statement sentencia;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT album.album_id, album.picture, album.name AS nombre, artist.name AS artista "
-                    + "FROM album, artist, registro_savedalbum "
-                    + "WHERE album.artist_id = artist.artist_id AND registro_savedalbum.album_id = album.album_id AND registro_savedalbum.user = '" + miUsername + "'";
-            ResultSet resul = sentencia.executeQuery(sql);
-            while (resul.next()) {
-                ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("album_id"), resul.getString("picture"), resul.getString("nombre"), resul.getString("artista"));
-                elemento.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
-                        cargarNuevoPanel();
-                        interfazPrinc.revalidate();
-                        interfazPrinc.repaint();
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT album.album_id, album.picture, album.name AS nombre, artist.name AS artista "
+                        + "FROM album, artist, registro_savedalbum "
+                        + "WHERE album.artist_id = artist.artist_id AND registro_savedalbum.album_id = album.album_id AND registro_savedalbum.user = '" + miUsername + "'";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    while (resul.next()) {
+                        ReviewPlaylist elemento = new ReviewPlaylist(resul.getString("album_id"), resul.getString("picture"), resul.getString("nombre"), resul.getString("artista"));
+                        elemento.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                content = new Album(elemento.getId(), listaPlaylist, interfazPrinc, botBar, scrollPane, main, topBar, home, window);
+                                cargarNuevoPanel();
+                                interfazPrinc.revalidate();
+                                interfazPrinc.repaint();
+                                setCursor(null);
+                            }
+                        });
+                        listas1.add(elemento);
                     }
-                });
-                listas1.add(elemento);
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Biblioteca.class
                     .getName()).log(Level.SEVERE, null, ex);

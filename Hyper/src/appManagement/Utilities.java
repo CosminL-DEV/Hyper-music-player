@@ -1,5 +1,6 @@
-package components;
+package appManagement;
 
+import playlist.Playlist;
 import interfaz.Interfaz;
 import java.awt.AlphaComposite;
 import java.awt.Font;
@@ -11,7 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,6 +24,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,20 +42,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import themeManagement.ColorReturner;
+import components.ItemPlaylist;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 01-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
  */
 public class Utilities {
-
-    private final ImgCircleConverter convertidor = new ImgCircleConverter();
 
     public static BufferedImage transformarLink(String picture) {
         URL url;
@@ -84,18 +87,18 @@ public class Utilities {
         String picture = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root");
-            sentencia = conexion.createStatement();
-            String sql = "SELECT profile_pic FROM users WHERE username='" + username + "'";
-            ResultSet resul = sentencia.executeQuery(sql);
-            resul.next();
-            picture = resul.getString("profile_pic");
-            if (picture == null) {
-                picture = "http://localhost/hyper/wp-content/uploads/2022/04/user.png";
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT profile_pic FROM users WHERE username='" + username + "'";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    resul.next();
+                    picture = resul.getString("profile_pic");
+                    if (picture == null) {
+                        picture = "http://localhost/hyper/wp-content/uploads/2022/04/user.png";
+                    }
+                }
+                sentencia.close();
             }
-            resul.close();
-            sentencia.close();
-            conexion.close();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -120,8 +123,8 @@ public class Utilities {
 
     public static void cambiarTema(String nuevoTema) {
         nuevoTema = nuevoTema.toLowerCase();
-        Document documento = null;
-        File archivo = null;
+        Document documento;
+        File archivo;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -138,15 +141,14 @@ public class Utilities {
             StreamResult result = new StreamResult(archivo);
             transformer.transform(source, result);
         } catch (ParserConfigurationException | SAXException | IOException | TransformerConfigurationException e) {
-            e.printStackTrace();
         } catch (TransformerException ex) {
             Logger.getLogger(Utilities.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public static void escribirRuta(String nuevaRuta){
-        Document documento = null;
-        File archivo = null;
+
+    public static void escribirRuta(String nuevaRuta) {
+        Document documento;
+        File archivo;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -163,9 +165,42 @@ public class Utilities {
             StreamResult result = new StreamResult(archivo);
             transformer.transform(source, result);
         } catch (ParserConfigurationException | SAXException | IOException | TransformerConfigurationException e) {
-            e.printStackTrace();
         } catch (TransformerException ex) {
             Logger.getLogger(Utilities.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void descargarCanciones(String elem) {
+        Statement sentencia;
+        ColorReturner CReturner = new ColorReturner();
+        String linkCancionActual = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/hyper", "root", "root")) {
+                sentencia = conexion.createStatement();
+                String sql = "SELECT song.url "
+                        + "FROM song "
+                        + "WHERE song.song_id = '" + elem + "'";
+                try (ResultSet resul = sentencia.executeQuery(sql)) {
+                    if (resul.next()) {
+                        linkCancionActual = resul.getString("url");
+                    }
+                }
+                sentencia.close();
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        AudioInputStream stream;
+        File archivo;
+        try {
+            stream = AudioSystem.getAudioInputStream(new URL(linkCancionActual));
+            archivo = new File(CReturner.getFolderPath().toString() + "/" + elem + ".wav");
+            AudioSystem.write(stream, AudioFileFormat.Type.WAVE, archivo);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedAudioFileException | IOException ex) {
+            Logger.getLogger(Playlist.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

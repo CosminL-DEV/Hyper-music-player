@@ -1,4 +1,4 @@
-package tabla;
+package album;
 
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -7,27 +7,27 @@ import javax.swing.table.AbstractTableModel;
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 11-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
  */
-public class PlaylistTableModel extends AbstractTableModel {
+public class AlbumTableModel extends AbstractTableModel {
 
-    List contenido;
+    private List contenido;
 
-    public PlaylistTableModel(List contenido) {
+    public AlbumTableModel(List contenido) {
         this.contenido = contenido;
     }
 
     @Override
     public Class getColumnClass(int columnIndex) {
-        return PlaylistFeed.class;
+        return AlbumFeed.class;
     }
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return 3;
     }
 
     @Override

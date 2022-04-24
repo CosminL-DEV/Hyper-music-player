@@ -1,8 +1,8 @@
-package tabla;
+package playlist;
 
-import com.sun.jdi.connect.LaunchingConnector;
+import components.CancionDisplay;
 import components.ImgCircleConverter;
-import components.Utilities;
+import appManagement.Utilities;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Image;
@@ -13,13 +13,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
-import themeManagement.ColorReturner;
+import appManagement.ColorReturner;
 
 /**
  * ************************************
  *
  * @author Cosmin Ionut Lungu
- * @since 11-04-2022
+ * @since 24-04-2022
  * @version 1.0
  *
  * ************************************
@@ -31,7 +31,6 @@ public class PlaylistCellRender implements TableCellRenderer {
         PlaylistFeed feed = (PlaylistFeed) value;
         ColorReturner CReturner = new ColorReturner();
         Font coolvetica = Utilities.cargarCoolvetica();
-        ImgCircleConverter convertidor = new ImgCircleConverter();
         if (row == 0) {
             JPanel panel = new JPanel(new java.awt.GridLayout(1, 1));
             panel.setOpaque(false);
@@ -100,6 +99,7 @@ public class PlaylistCellRender implements TableCellRenderer {
                     if (picture == null) {
                         picture = "http://localhost/hyper/wp-content/uploads/2022/04/user.png";
                     }
+                    ImgCircleConverter convertidor = new ImgCircleConverter();
                     ImageIcon img = new ImageIcon(convertidor.convertirImagen(Utilities.transformarLink(picture)));
                     user.setIcon(new ImageIcon(img.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH)));
                     user.setText(feed.getUserAdded());

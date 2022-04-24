@@ -53,7 +53,11 @@ Es obligatorio guardar la ruta terminandola en /htdocs/ para su correcto funcion
 ## Lanzar Xampp
 Para iniciar el servidor, habra que dirigirse dentro de la carpeta de Xampp y buscar el archivo xampp_start.
 
-Una vez ejecutado ya se podra iniciar Hyper sin ningun tipo de fallo.
+Una vez ejecutado ya se podra iniciar Hyper sin ningun tipo de fallo (Importante no cerrarlo mientras se quiera usar Hyper).
+
+![Xampp.start](https://i.imgur.com/dBgpE7X.png)
+
+Para apagar Xampp de manera segura, sin cerrar el otro terminal, ejecutamos el archivo xampp_stop y esperamos a que se cierren ambos por si solos.
 
 
 ## Fallo MySQL

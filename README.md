@@ -34,15 +34,12 @@ Caracteristicas:
 
 ## Requisitos
 - Xampp: Es el servidor local con el contenido de la base de datos MySQL y gran parte de los archivos de Hyper.
+- JDK 15.0.1: Es la version en la cual se ha desarrollado el programa, una version mas nueva puede causar fallos con las librerias utilizadas.
 
 ## Configurar Xampp
-Para configurar Xampp tendremos que acceder al archivo themes.xml, el cual se encuentra en la ruta Hyper\scr\ y tendremos el siguiente contenido: 
+Para configurar Xampp tendremos que copiar la carpeta Xampp proporcionada en el directorio C:/ con el siguiente resultado:
 
-![themes.xml](https://i.imgur.com/6HkfzDX.png)
-
-Y a continuación reemplazar la ruta del elemento xampp, poniendo en su lugar la ruta en la que se haya guardado el servidor.
-
-Es obligatorio guardar la ruta terminándola en /htdocs/ para su correcto funcionamiento
+![xampp_ruta](https://i.imgur.com/NzYqTxl.png)
 
 ## Lanzar Xampp
 Para iniciar el servidor, habrá que dirigirse dentro de la carpeta de Xampp y buscar el archivo xampp_start.

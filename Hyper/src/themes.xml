@@ -3,7 +3,7 @@
         <ruta>C:\Users\cosmi\AppData\Local\Hyper\Almacenamiento</ruta>
     </ubicacion>
     <xampp>
-        <ruta>E:/xampp/htdocs/</ruta>
+        <ruta>C:/xampp/htdocs/</ruta>
     </xampp>
     <selected>
         <tema>dark-yellow</tema>

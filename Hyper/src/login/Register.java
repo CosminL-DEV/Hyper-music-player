@@ -34,6 +34,8 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import appManagement.ColorReturner;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
 /**
@@ -101,6 +103,7 @@ public class Register extends JPanel {
         javax.swing.JLabel labelUser = new javax.swing.JLabel();
         javax.swing.JLabel labelNombre = new javax.swing.JLabel();
         javax.swing.JLabel titulo = new javax.swing.JLabel();
+        javax.swing.JLabel atras = new javax.swing.JLabel();
         javax.swing.JPanel usuario = new javax.swing.JPanel();
         inputUser = new javax.swing.JTextField();
         inputNombre = new javax.swing.JTextField();
@@ -113,6 +116,36 @@ public class Register extends JPanel {
         formulario.setLayout(
                 new java.awt.GridBagLayout());
 
+        atras.setFont(lemonB.deriveFont(24f));
+        atras.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        atras.setText(
+                "<-");
+        atras.setForeground(new Color(255, 223, 76));
+        atras.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setVisible(false);
+                panelLogin.setVisible(true);
+            }
+
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                atras.setForeground(Color.RED);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                atras.setForeground(new Color(255, 223, 76));
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 15, 0);
+
+        formulario.add(atras, gridBagConstraints);
+
         titulo.setFont(lemonB.deriveFont(24f));
         titulo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
@@ -121,6 +154,7 @@ public class Register extends JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 15, 0);
 
         formulario.add(titulo, gridBagConstraints);
@@ -143,7 +177,7 @@ public class Register extends JPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 0);
@@ -162,7 +196,7 @@ public class Register extends JPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 0);
@@ -181,7 +215,7 @@ public class Register extends JPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 15, 0);
@@ -203,7 +237,7 @@ public class Register extends JPanel {
         extras3.add(inputNombre);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 15, 0);
@@ -211,7 +245,7 @@ public class Register extends JPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 0);
@@ -263,7 +297,7 @@ public class Register extends JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         formulario.add(acceder, gridBagConstraints);
@@ -271,7 +305,7 @@ public class Register extends JPanel {
         inputPass.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(30, 32, 34)));
         inputPass2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(30, 32, 34)));
 
-        add(formulario, new org.netbeans.lib.awtextra.AbsoluteConstraints(375, 35, 300, 450));
+        add(formulario, new org.netbeans.lib.awtextra.AbsoluteConstraints(375, 0, 300, 500));
     }
 
     public void setLogin(JPanel panelLogin) {

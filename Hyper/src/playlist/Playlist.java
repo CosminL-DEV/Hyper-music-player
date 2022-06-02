@@ -418,7 +418,7 @@ public class Playlist extends JPanel {
                             sql = "DELETE FROM registro_savedlist "
                                     + "WHERE registro_savedlist.playlist_id = '" + playlistID + "' AND registro_savedlist.user = '" + username + "'";
                             guardada = false;
-                            saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIcons() + "guardado.png"));
+                            saved = new javax.swing.ImageIcon(getClass().getResource(CReturner.getIconsOpuestos()+ "guardado.png"));
                             guardado.setIcon(new ImageIcon(saved.getImage().getScaledInstance(60, 61, Image.SCALE_SMOOTH)));
                         } else {
                             sql = "INSERT INTO registro_savedlist "
